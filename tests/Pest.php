@@ -1,6 +1,9 @@
 <?php
 
+use Database\Seeders\CmsPageSeeder;
+use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 /*
@@ -16,6 +19,10 @@ use Tests\TestCase;
 
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
+    ->beforeEach(function () {
+        Cache::flush();
+        $this->seed([RolePermissionSeeder::class, CmsPageSeeder::class]);
+    })
     ->in('Feature');
 
 /*

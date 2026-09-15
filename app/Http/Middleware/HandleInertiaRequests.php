@@ -2,6 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Category;
+use App\Models\CmsPage;
+use App\Services\CartResolver;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -40,8 +43,20 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'auth' => [
                 'user' => $request->user(),
+                'roles' => fn () => $request->user()?->getRoleNames() ?? [],
+                'permissions' => fn () => $request->user()?->getAllPermissions()->pluck('name') ?? [],
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'cart' => [
+                'count' => fn () => app(CartResolver::class)->resolve($request)->itemCount(),
+            ],
+            'navCategories' => fn () => Category::query()
+                ->whereNull('parent_id')
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->limit(8)
+                ->get(['id', 'name', 'slug']),
+            'contactInfo' => fn () => CmsPage::query()->where('slug', 'contact')->first()?->sections,
         ];
     }
 }

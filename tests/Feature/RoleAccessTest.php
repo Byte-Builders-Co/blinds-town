@@ -1,10 +1,9 @@
 <?php
 
-use App\Enums\UserRole;
 use App\Models\User;
 
 test('customers cannot access the admin dashboard', function () {
-    $customer = User::factory()->create(['role' => UserRole::Customer]);
+    $customer = User::factory()->create();
 
     $response = $this->actingAs($customer)->get('/admin/dashboard');
 
@@ -12,23 +11,15 @@ test('customers cannot access the admin dashboard', function () {
 });
 
 test('admins can access the admin dashboard', function () {
-    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    $admin = User::factory()->admin()->create();
 
     $response = $this->actingAs($admin)->get('/admin/dashboard');
 
     $response->assertOk();
 });
 
-test('admins cannot access the customer dashboard', function () {
-    $admin = User::factory()->create(['role' => UserRole::Admin]);
-
-    $response = $this->actingAs($admin)->get(route('dashboard'));
-
-    $response->assertForbidden();
-});
-
 test('login redirects admins to the admin dashboard', function () {
-    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    $admin = User::factory()->admin()->create();
 
     $response = $this->post(route('login.store'), [
         'email' => $admin->email,
@@ -38,15 +29,15 @@ test('login redirects admins to the admin dashboard', function () {
     $response->assertRedirect(route('admin.dashboard'));
 });
 
-test('login redirects customers to the customer dashboard', function () {
-    $customer = User::factory()->create(['role' => UserRole::Customer]);
+test('login redirects customers to the shop homepage', function () {
+    $customer = User::factory()->create();
 
     $response = $this->post(route('login.store'), [
         'email' => $customer->email,
         'password' => 'password',
     ]);
 
-    $response->assertRedirect(route('dashboard'));
+    $response->assertRedirect(route('home'));
 });
 
 test('admin created via the admin:create command can access the admin dashboard', function () {

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Customer\AddressController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
 use Illuminate\Auth\Middleware\RequirePassword;
@@ -24,6 +25,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('user-password.update');
 
     Route::inertia('settings/appearance', 'settings/appearance')->name('appearance.edit');
+
+    Route::get('settings/addresses', [AddressController::class, 'index'])->name('addresses.index');
+    Route::post('settings/addresses', [AddressController::class, 'store'])->name('addresses.store');
+    Route::put('settings/addresses/{address}', [AddressController::class, 'update'])->name('addresses.update');
+    Route::delete('settings/addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
+    Route::patch('settings/addresses/{address}/default', [AddressController::class, 'setDefault'])->name('addresses.set-default');
 });
 
 Route::get('.well-known/passkey-endpoints', function () {

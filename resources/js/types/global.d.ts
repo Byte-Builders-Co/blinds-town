@@ -1,4 +1,6 @@
 import type { Auth } from '@/types/auth';
+import type { ContactSections } from '@/types/cms';
+import type { CategoryOption } from '@/types/shop';
 
 declare module 'react' {
     interface InputHTMLAttributes<T> {
@@ -12,6 +14,9 @@ declare module '@inertiajs/core' {
             name: string;
             auth: Auth;
             sidebarOpen: boolean;
+            cart: { count: number };
+            navCategories: CategoryOption[];
+            contactInfo: ContactSections | null;
             [key: string]: unknown;
         };
     }

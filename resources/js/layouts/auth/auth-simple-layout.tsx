@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import AppLogoIcon from '@/components/app-logo-icon';
+import AppLogo from '@/components/app-logo';
 import { home } from '@/routes';
 import type { AuthLayoutProps } from '@/types';
 
@@ -7,32 +7,41 @@ export default function AuthSimpleLayout({
     children,
     title,
     description,
+    card = true,
 }: AuthLayoutProps) {
-    return (
-        <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
-            <div className="w-full max-w-sm">
-                <div className="flex flex-col gap-8">
-                    <div className="flex flex-col items-center gap-4">
-                        <Link
-                            href={home()}
-                            className="flex flex-col items-center gap-2 font-medium"
-                        >
-                            <div className="mb-1 flex h-9 w-9 items-center justify-center rounded-md">
-                                <AppLogoIcon className="size-9 fill-current text-[var(--foreground)] dark:text-white" />
-                            </div>
-                            <span className="sr-only">{title}</span>
-                        </Link>
+    const header = (
+        <div className="mb-4 space-y-1">
+            <h1 className="text-2xl font-normal text-[#0F1111]">{title}</h1>
+            <p className="text-muted-foreground text-sm">{description}</p>
+        </div>
+    );
 
-                        <div className="space-y-2 text-center">
-                            <h1 className="text-xl font-medium">{title}</h1>
-                            <p className="text-muted-foreground text-center text-sm">
-                                {description}
-                            </p>
+    return (
+        <div className="flex min-h-svh flex-col items-center gap-6 bg-white p-6 pt-10 md:p-10 md:pt-16">
+            <div className="w-full max-w-87.5">
+                <div className="flex flex-col gap-6">
+                    <Link href={home()} className="flex justify-center">
+                        <AppLogo />
+                    </Link>
+
+                    {card ? (
+                        <div className="rounded-lg border border-[#ddd] bg-white p-6 shadow-[0_2px_5px_rgba(15,17,17,0.15)]">
+                            {header}
+                            {children}
                         </div>
-                    </div>
-                    {children}
+                    ) : (
+                        <div>
+                            {header}
+                            {children}
+                        </div>
+                    )}
                 </div>
             </div>
+
+            <p className="text-muted-foreground max-w-xs pb-4 text-center text-xs">
+                By continuing, you agree to our Terms &amp; Conditions and
+                Privacy Policy.
+            </p>
         </div>
     );
 }

@@ -1,5 +1,6 @@
 import { Link, router } from '@inertiajs/react';
 import { LogOut, Settings } from 'lucide-react';
+import type { ReactNode } from 'react';
 import {
     DropdownMenuGroup,
     DropdownMenuItem,
@@ -14,9 +15,10 @@ import type { User } from '@/types';
 
 type Props = {
     user: User;
+    extraItems?: ReactNode;
 };
 
-export function UserMenuContent({ user }: Props) {
+export function UserMenuContent({ user, extraItems }: Props) {
     const cleanup = useMobileNavigation();
 
     const handleLogout = () => {
@@ -32,6 +34,12 @@ export function UserMenuContent({ user }: Props) {
                 </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
+            {extraItems && (
+                <>
+                    <DropdownMenuGroup>{extraItems}</DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                </>
+            )}
             <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
                     <Link

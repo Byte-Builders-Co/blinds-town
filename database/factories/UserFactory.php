@@ -18,6 +18,18 @@ class UserFactory extends Factory
     protected static ?string $password;
 
     /**
+     * Configure the model factory.
+     */
+    public function configure(): static
+    {
+        return $this->afterCreating(function (User $user) {
+            if ($user->roles()->doesntExist()) {
+                $user->assignRole('customer');
+            }
+        });
+    }
+
+    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -25,7 +37,8 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'first_name' => fake()->firstName(),
+            'last_name' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
@@ -56,5 +69,29 @@ class UserFactory extends Factory
             'two_factor_recovery_codes' => encrypt(json_encode(['recovery-code-1'])),
             'two_factor_confirmed_at' => now(),
         ]);
+    }
+
+    /**
+     * Indicate that the user is a super admin.
+     */
+    public function superAdmin(): static
+    {
+        return $this->afterCreating(fn (User $user) => $user->syncRoles(['super-admin']));
+    }
+
+    /**
+     * Indicate that the user is an admin.
+     */
+    public function admin(): static
+    {
+        return $this->afterCreating(fn (User $user) => $user->syncRoles(['admin']));
+    }
+
+    /**
+     * Indicate that the user is a staff member.
+     */
+    public function staff(): static
+    {
+        return $this->afterCreating(fn (User $user) => $user->syncRoles(['staff']));
     }
 }

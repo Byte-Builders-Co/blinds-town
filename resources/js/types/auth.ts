@@ -1,12 +1,23 @@
-export type UserRole = 'admin' | 'customer';
+export type UserStatus = 'active' | 'inactive' | 'blocked';
+
+export const USER_STATUS_LABELS: Record<UserStatus, string> = {
+    active: 'Active',
+    inactive: 'Inactive',
+    blocked: 'Blocked',
+};
 
 export type User = {
     id: number;
+    first_name: string;
+    last_name: string;
     name: string;
     email: string;
+    mobile_number: string | null;
+    profile_image_path: string | null;
+    date_of_birth: string | null;
+    status: UserStatus;
     avatar?: string;
     email_verified_at: string | null;
-    role: UserRole;
     two_factor_enabled?: boolean;
     created_at: string;
     updated_at: string;
@@ -15,6 +26,8 @@ export type User = {
 
 export type Auth = {
     user: User;
+    roles: string[];
+    permissions: string[];
 };
 
 export type Passkey = {

@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Validator;
@@ -47,9 +46,10 @@ class CreateAdminUser extends Command
 
         if ($existing) {
             $existing->forceFill([
-                'role' => UserRole::Admin,
                 'email_verified_at' => $existing->email_verified_at ?? now(),
             ])->save();
+
+            $existing->syncRoles(['admin']);
 
             $this->components->info("Existing user [{$email}] promoted to admin.");
 
@@ -85,13 +85,18 @@ class CreateAdminUser extends Command
             return self::FAILURE;
         }
 
-        (new User)->forceFill([
-            'name' => $name,
+        [$firstName, $lastName] = array_pad(explode(' ', $name, 2), 2, '');
+
+        $admin = (new User)->forceFill([
+            'first_name' => $firstName,
+            'last_name' => $lastName,
             'email' => $email,
             'password' => $password,
-            'role' => UserRole::Admin,
             'email_verified_at' => now(),
-        ])->save();
+        ]);
+        $admin->save();
+
+        $admin->assignRole('admin');
 
         $this->components->info("Admin user [{$email}] created.");
 

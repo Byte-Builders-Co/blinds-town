@@ -35,4 +35,22 @@ return [
         ],
     ],
 
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+    ],
+
+    'sms' => [
+        'driver' => env('SMS_DRIVER'),
+        'key' => env('SMS_API_KEY'),
+        'from' => env('SMS_FROM_NUMBER'),
+    ],
+
+    'whatsapp' => [
+        'driver' => env('WHATSAPP_DRIVER'),
+        'key' => env('WHATSAPP_API_KEY'),
+        'from' => env('WHATSAPP_FROM_NUMBER'),
+    ],
+
 ];

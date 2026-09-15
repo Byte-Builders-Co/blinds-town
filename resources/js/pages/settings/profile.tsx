@@ -1,12 +1,14 @@
 import { Form, Head, usePage } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import DeleteUser from '@/components/delete-user';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useInitials } from '@/hooks/use-initials';
 import { edit } from '@/routes/profile';
 import type { Auth } from '@/types';
 import { send } from '@/routes/verification';
@@ -23,6 +25,7 @@ export default function Profile({
     status?: string;
 }) {
     const { auth } = usePage<PageProps>().props;
+    const getInitials = useInitials();
 
     return (
         <>
@@ -34,11 +37,12 @@ export default function Profile({
                 <Heading
                     variant="small"
                     title="Profile"
-                    description="Update your name and email address"
+                    description="Update your name, contact details, and photo"
                 />
 
                 <Form
                     {...ProfileController.update.form()}
+                    encType="multipart/form-data"
                     options={{
                         preserveScroll: true,
                     }}
@@ -46,23 +50,61 @@ export default function Profile({
                 >
                     {({ processing, errors }) => (
                         <>
-                            <div className="grid gap-2">
-                                <Label htmlFor="name">Name</Label>
+                            <div className="flex items-center gap-4">
+                                <Avatar className="h-16 w-16">
+                                    <AvatarImage
+                                        src={
+                                            auth.user.profile_image_path
+                                                ? `/storage/${auth.user.profile_image_path}`
+                                                : undefined
+                                        }
+                                        alt={auth.user.name}
+                                    />
+                                    <AvatarFallback className="text-lg">
+                                        {getInitials(auth.user.name)}
+                                    </AvatarFallback>
+                                </Avatar>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="avatar">
+                                        Profile photo
+                                    </Label>
+                                    <Input
+                                        id="avatar"
+                                        type="file"
+                                        name="avatar"
+                                        accept="image/*"
+                                        className="max-w-xs"
+                                    />
+                                    <InputError message={errors.avatar} />
+                                </div>
+                            </div>
 
-                                <Input
-                                    id="name"
-                                    className="mt-1 block w-full"
-                                    defaultValue={auth.user.name}
-                                    name="name"
-                                    required
-                                    autoComplete="name"
-                                    placeholder="Full name"
-                                />
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="first_name">
+                                        First name
+                                    </Label>
+                                    <Input
+                                        id="first_name"
+                                        defaultValue={auth.user.first_name}
+                                        name="first_name"
+                                        required
+                                        autoComplete="given-name"
+                                    />
+                                    <InputError message={errors.first_name} />
+                                </div>
 
-                                <InputError
-                                    className="mt-2"
-                                    message={errors.name}
-                                />
+                                <div className="grid gap-2">
+                                    <Label htmlFor="last_name">Last name</Label>
+                                    <Input
+                                        id="last_name"
+                                        defaultValue={auth.user.last_name}
+                                        name="last_name"
+                                        required
+                                        autoComplete="family-name"
+                                    />
+                                    <InputError message={errors.last_name} />
+                                </div>
                             </div>
 
                             <div className="grid gap-2">
@@ -83,6 +125,42 @@ export default function Profile({
                                     className="mt-2"
                                     message={errors.email}
                                 />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="mobile_number">
+                                        Mobile number
+                                    </Label>
+                                    <Input
+                                        id="mobile_number"
+                                        defaultValue={
+                                            auth.user.mobile_number ?? ''
+                                        }
+                                        name="mobile_number"
+                                        autoComplete="tel"
+                                    />
+                                    <InputError
+                                        message={errors.mobile_number}
+                                    />
+                                </div>
+
+                                <div className="grid gap-2">
+                                    <Label htmlFor="date_of_birth">
+                                        Date of birth
+                                    </Label>
+                                    <Input
+                                        id="date_of_birth"
+                                        type="date"
+                                        defaultValue={
+                                            auth.user.date_of_birth ?? ''
+                                        }
+                                        name="date_of_birth"
+                                    />
+                                    <InputError
+                                        message={errors.date_of_birth}
+                                    />
+                                </div>
                             </div>
 
                             {mustVerifyEmail &&
