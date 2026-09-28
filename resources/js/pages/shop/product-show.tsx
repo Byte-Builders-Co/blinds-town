@@ -196,7 +196,6 @@ export default function ProductShow({
 
             return changed ? next : prev;
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedOptionIds, optionGroups]);
 
     const visibleGroups = useMemo(
