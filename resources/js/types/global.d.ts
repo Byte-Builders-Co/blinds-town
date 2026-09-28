@@ -3,6 +3,9 @@ import type { ContactSections } from "@/types/cms";
 import type { CategoryOption } from "@/types/shop";
 
 declare module "react" {
+    // T must match React's own InputHTMLAttributes<T> signature for this
+    // declaration merge to apply; renaming it breaks the merge project-wide.
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface InputHTMLAttributes<T> {
         passwordrules?: string;
     }

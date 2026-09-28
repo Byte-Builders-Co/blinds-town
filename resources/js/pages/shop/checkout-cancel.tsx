@@ -19,7 +19,7 @@ export default function CheckoutCancel({ order }: { order: Order }) {
                 <h1 className="text-2xl font-semibold">Checkout cancelled</h1>
                 <p className="text-muted-foreground mt-2">
                     Order {order.order_number} was not completed. Your cart has
-                    been kept, and you can try again whenever you're ready.
+                    been kept, and you can try again whenever you&apos;re ready.
                 </p>
 
                 <div className="mt-8 flex justify-center gap-4">

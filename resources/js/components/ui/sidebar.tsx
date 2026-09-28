@@ -42,6 +42,10 @@ type SidebarContext = {
 
 const SidebarContext = React.createContext<SidebarContext | null>(null);
 
+function setSidebarCookie(open: boolean) {
+    document.cookie = `${SIDEBAR_COOKIE_NAME}=${open}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+}
+
 function useSidebar() {
     const context = React.useContext(SidebarContext);
     if (!context) {
@@ -81,7 +85,7 @@ function SidebarProvider({
             }
 
             // This sets the cookie to keep the sidebar state.
-            document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+            setSidebarCookie(openState);
         },
         [setOpenProp, open],
     );

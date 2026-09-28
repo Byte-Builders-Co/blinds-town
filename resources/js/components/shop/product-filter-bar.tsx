@@ -55,6 +55,8 @@ export function ProductFilterBar({
     );
     const [sort, setSort] = useState(filters.sort ?? "featured");
     const isFirstRender = useRef(true);
+    const submitRef =
+        useRef<(overrides?: Record<string, FormDataConvertible>) => void>(null);
 
     const submit = (overrides: Record<string, FormDataConvertible> = {}) => {
         const params: Record<string, FormDataConvertible> = {
@@ -76,14 +78,17 @@ export function ProductFilterBar({
     };
 
     useEffect(() => {
+        submitRef.current = submit;
+    });
+
+    useEffect(() => {
         if (isFirstRender.current) {
             isFirstRender.current = false;
             return;
         }
 
-        const timeout = setTimeout(() => submit(), 400);
+        const timeout = setTimeout(() => submitRef.current?.(), 400);
         return () => clearTimeout(timeout);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [search, minPrice, maxPrice]);
 
     const toggleColor = (label: string) => {

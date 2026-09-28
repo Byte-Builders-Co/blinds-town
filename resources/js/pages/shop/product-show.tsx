@@ -82,6 +82,41 @@ function isValueVisible(
     );
 }
 
+// Drops any selection whose "show only when" prerequisite is no longer met
+// (e.g. switching Operation Type away from Motorized clears a previously
+// chosen Motor) so stale, no-longer-visible options never get priced or
+// submitted. Returns the same reference when nothing needs pruning.
+function pruneInvisibleSelections(
+    optionGroups: ProductOptionGroup[],
+    selected: Record<number, number[]>,
+): Record<number, number[]> {
+    const selectedIds = Object.values(selected).flat();
+    let changed = false;
+    const next: Record<number, number[]> = {};
+
+    for (const group of optionGroups) {
+        if (!isGroupVisible(group, selectedIds)) {
+            if ((selected[group.id]?.length ?? 0) > 0) changed = true;
+            continue;
+        }
+
+        const kept = (selected[group.id] ?? []).filter((id) => {
+            const value = group.values.find((v) => v.id === id);
+            return value !== undefined && isValueVisible(value, selectedIds);
+        });
+
+        if (kept.length !== (selected[group.id]?.length ?? 0)) {
+            changed = true;
+        }
+
+        if (kept.length > 0) {
+            next[group.id] = kept;
+        }
+    }
+
+    return changed ? next : selected;
+}
+
 export default function ProductShow({
     product,
     relatedProducts,
@@ -134,69 +169,40 @@ export default function ProductShow({
         }
         return heightBounds.min;
     });
-    const [selected, setSelected] = useState<Record<number, number[]>>(() => {
-        if (editingCartItem?.selected_options) {
-            return groupSelections(
-                optionGroups,
-                editingCartItem.selected_options,
-            );
-        }
-
-        const defaults: Record<number, number[]> = {};
-        for (const group of optionGroups) {
-            const defaultValue =
-                group.values.find((v) => v.is_default) ?? group.values[0];
-            if (defaultValue) {
-                defaults[group.id] = [defaultValue.id];
+    const [rawSelected, setSelected] = useState<Record<number, number[]>>(
+        () => {
+            if (editingCartItem?.selected_options) {
+                return groupSelections(
+                    optionGroups,
+                    editingCartItem.selected_options,
+                );
             }
-        }
-        return defaults;
-    });
+
+            const defaults: Record<number, number[]> = {};
+            for (const group of optionGroups) {
+                const defaultValue =
+                    group.values.find((v) => v.is_default) ?? group.values[0];
+                if (defaultValue) {
+                    defaults[group.id] = [defaultValue.id];
+                }
+            }
+            return defaults;
+        },
+    );
     const [measurementPhoto, setMeasurementPhoto] = useState<File | null>(null);
     const [breakdown, setBreakdown] = useState<PriceBreakdown | null>(null);
     const [quoteError, setQuoteError] = useState<string | null>(null);
     const [quoting, setQuoting] = useState(false);
 
+    const selected = pruneInvisibleSelections(optionGroups, rawSelected);
+    if (selected !== rawSelected) {
+        setSelected(selected);
+    }
+
     const selectedOptionIds = useMemo(
         () => Object.values(selected).flat(),
         [selected],
     );
-
-    // Drop any selection whose "show only when" prerequisite is no longer
-    // met (e.g. switching Operation Type away from Motorized clears a
-    // previously chosen Motor) so stale, no-longer-visible options never
-    // get priced or submitted.
-    useEffect(() => {
-        setSelected((prev) => {
-            let changed = false;
-            const next: Record<number, number[]> = {};
-
-            for (const group of optionGroups) {
-                if (!isGroupVisible(group, selectedOptionIds)) {
-                    if ((prev[group.id]?.length ?? 0) > 0) changed = true;
-                    continue;
-                }
-
-                const kept = (prev[group.id] ?? []).filter((id) => {
-                    const value = group.values.find((v) => v.id === id);
-                    return (
-                        value !== undefined &&
-                        isValueVisible(value, selectedOptionIds)
-                    );
-                });
-
-                if (kept.length !== (prev[group.id]?.length ?? 0)) {
-                    changed = true;
-                }
-
-                if (kept.length > 0) {
-                    next[group.id] = kept;
-                }
-            }
-
-            return changed ? next : prev;
-        });
-    }, [selectedOptionIds, optionGroups]);
 
     const visibleGroups = useMemo(
         () => optionGroups.filter((g) => isGroupVisible(g, selectedOptionIds)),

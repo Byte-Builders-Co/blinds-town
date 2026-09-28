@@ -55,8 +55,8 @@ export default function CheckoutSuccess({ order }: { order: Order }) {
                             Finalising your order&hellip;
                         </h1>
                         <p className="text-muted-foreground mt-2">
-                            We're confirming your payment. Refresh this page in
-                            a moment, or check your order below.
+                            We&apos;re confirming your payment. Refresh this
+                            page in a moment, or check your order below.
                         </p>
                     </>
                 )}

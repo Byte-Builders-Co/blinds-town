@@ -18,7 +18,7 @@ export default function Wishlist({ items }: { items: WishlistItem[] }) {
 
                 {items.length === 0 ? (
                     <p className="text-muted-foreground mt-8">
-                        You haven't added anything to your wishlist yet.
+                        You haven&apos;t added anything to your wishlist yet.
                     </p>
                 ) : (
                     <div className="mt-8 divide-y">

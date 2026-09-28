@@ -386,7 +386,7 @@ export default function Checkout({
                         )}
                         {appliedCoupon && !couponError && (
                             <p className="mt-1 text-sm text-green-600">
-                                Coupon "{appliedCoupon}" applied.
+                                Coupon &quot;{appliedCoupon}&quot; applied.
                             </p>
                         )}
                     </div>

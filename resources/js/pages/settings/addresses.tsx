@@ -37,7 +37,7 @@ export default function Addresses({ addresses }: { addresses: Address[] }) {
 
                 {addresses.length === 0 ? (
                     <p className="text-muted-foreground text-sm">
-                        You haven't added any addresses yet.
+                        You haven&apos;t added any addresses yet.
                     </p>
                 ) : (
                     <div className="grid gap-4 sm:grid-cols-2">

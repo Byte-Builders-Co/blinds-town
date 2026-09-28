@@ -17,7 +17,7 @@ export default function OrdersIndex({ orders }: { orders: Paginated<Order> }) {
 
                 {orders.data.length === 0 ? (
                     <p className="text-muted-foreground mt-8">
-                        You haven't placed any orders yet.
+                        You haven&apos;t placed any orders yet.
                     </p>
                 ) : (
                     <div className="mt-8 divide-y">
