@@ -1,20 +1,20 @@
-import { Link, usePage } from '@inertiajs/react';
-import { Mail, Phone, ShieldCheck, Truck } from 'lucide-react';
-import type { ReactNode } from 'react';
-import AppLogo from '@/components/app-logo';
-import { ShopHeader } from '@/components/shop/shop-header';
-import { faq, home } from '@/routes';
-import { index as ordersIndex } from '@/routes/orders';
-import { show as categoryShow } from '@/routes/categories';
+import { Link, usePage } from "@inertiajs/react";
+import { Mail, Phone, ShieldCheck, Truck } from "lucide-react";
+import type { ReactNode } from "react";
+import AppLogo from "@/components/app-logo";
+import { ShopHeader } from "@/components/shop/shop-header";
+import { faq, home } from "@/routes";
+import { index as ordersIndex } from "@/routes/orders";
+import { show as categoryShow } from "@/routes/categories";
 import {
     about,
     privacyPolicy,
     returnRefundPolicy,
     shippingPolicy,
     terms,
-} from '@/routes/cms';
-import { show as contactShow } from '@/routes/contact';
-import { index as productsIndex } from '@/routes/products';
+} from "@/routes/cms";
+import { show as contactShow } from "@/routes/contact";
+import { index as productsIndex } from "@/routes/products";
 
 export default function ShopLayout({ children }: { children: ReactNode }) {
     const { auth, navCategories, contactInfo } = usePage().props;
@@ -63,7 +63,7 @@ export default function ShopLayout({ children }: { children: ReactNode }) {
                                 </p>
                                 <p className="text-xs">
                                     {contactInfo?.email ??
-                                        'We reply within 24 hours'}
+                                        "We reply within 24 hours"}
                                 </p>
                             </div>
                         </div>
@@ -127,7 +127,7 @@ export default function ShopLayout({ children }: { children: ReactNode }) {
                             {navCategories.map((category) => (
                                 <li key={category.id}>
                                     <Link
-                                        href={categoryShow(category.slug ?? '')}
+                                        href={categoryShow(category.slug ?? "")}
                                         className="hover:text-white"
                                     >
                                         {category.name}

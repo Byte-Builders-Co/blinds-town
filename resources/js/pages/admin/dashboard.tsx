@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head } from "@inertiajs/react";
 import {
     Package,
     ReceiptText,
@@ -6,11 +6,11 @@ import {
     TrendingUp,
     Users,
     Wallet,
-} from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatCurrency } from '@/lib/utils';
-import { dashboard } from '@/routes/admin';
-import type { DashboardStats } from '@/types';
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatCurrency } from "@/lib/utils";
+import { dashboard } from "@/routes/admin";
+import type { DashboardStats } from "@/types";
 
 function StatCard({
     label,
@@ -89,7 +89,7 @@ export default function AdminDashboard({ stats }: { stats: DashboardStats }) {
 AdminDashboard.layout = {
     breadcrumbs: [
         {
-            title: 'Dashboard',
+            title: "Dashboard",
             href: dashboard(),
         },
     ],

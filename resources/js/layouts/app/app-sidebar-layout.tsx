@@ -1,10 +1,10 @@
-import { usePage } from '@inertiajs/react';
-import { AppContent } from '@/components/app-content';
-import { AppShell } from '@/components/app-shell';
-import { AppSidebar } from '@/components/app-sidebar';
-import { AppSidebarHeader } from '@/components/app-sidebar-header';
-import { ShopHeader } from '@/components/shop/shop-header';
-import type { AppLayoutProps } from '@/types';
+import { usePage } from "@inertiajs/react";
+import { AppContent } from "@/components/app-content";
+import { AppShell } from "@/components/app-shell";
+import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebarHeader } from "@/components/app-sidebar-header";
+import { ShopHeader } from "@/components/shop/shop-header";
+import type { AppLayoutProps } from "@/types";
 
 export default function AppSidebarLayout({
     children,
@@ -12,7 +12,7 @@ export default function AppSidebarLayout({
 }: AppLayoutProps) {
     const { auth } = usePage().props;
     const isAdminPanelUser = auth.roles.some((role) =>
-        ['super-admin', 'admin', 'staff'].includes(role),
+        ["super-admin", "admin", "staff"].includes(role),
     );
 
     if (!isAdminPanelUser) {

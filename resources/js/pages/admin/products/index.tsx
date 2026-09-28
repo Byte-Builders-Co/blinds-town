@@ -1,11 +1,11 @@
-import { Head, Link, router } from '@inertiajs/react';
-import { Plus } from 'lucide-react';
-import { PaginationLinks } from '@/components/pagination-links';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { formatCurrency } from '@/lib/utils';
-import { create, destroy, edit, index } from '@/routes/admin/products';
-import type { Paginated, Product } from '@/types';
+import { Head, Link, router } from "@inertiajs/react";
+import { Plus } from "lucide-react";
+import { PaginationLinks } from "@/components/pagination-links";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/lib/utils";
+import { create, destroy, edit, index } from "@/routes/admin/products";
+import type { Paginated, Product } from "@/types";
 
 export default function AdminProductsIndex({
     products,
@@ -35,7 +35,7 @@ export default function AdminProductsIndex({
                             <div>
                                 <p className="font-medium">{product.name}</p>
                                 <p className="text-muted-foreground text-sm">
-                                    {product.category?.name} &middot; From{' '}
+                                    {product.category?.name} &middot; From{" "}
                                     {formatCurrency(product.base_price)}
                                 </p>
                             </div>
@@ -43,13 +43,13 @@ export default function AdminProductsIndex({
                                 <Badge
                                     variant={
                                         product.is_featured
-                                            ? 'default'
-                                            : 'secondary'
+                                            ? "default"
+                                            : "secondary"
                                     }
                                 >
                                     {product.is_featured
-                                        ? 'Featured'
-                                        : 'Not Featured'}
+                                        ? "Featured"
+                                        : "Not Featured"}
                                 </Badge>
                                 <Button variant="outline" size="sm" asChild>
                                     <Link href={edit(product)}>Edit</Link>
@@ -81,5 +81,5 @@ export default function AdminProductsIndex({
 }
 
 AdminProductsIndex.layout = {
-    breadcrumbs: [{ title: 'Products', href: index() }],
+    breadcrumbs: [{ title: "Products", href: index() }],
 };

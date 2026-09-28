@@ -1,11 +1,11 @@
-import { Head, Link } from '@inertiajs/react';
-import { Badge } from '@/components/ui/badge';
-import { PaginationLinks } from '@/components/pagination-links';
-import { PaymentStatusBadge } from '@/components/shop/payment-status-badge';
-import { formatCurrency } from '@/lib/utils';
-import { show } from '@/routes/orders';
-import { ORDER_STATUS_LABELS } from '@/types';
-import type { Order, Paginated } from '@/types';
+import { Head, Link } from "@inertiajs/react";
+import { Badge } from "@/components/ui/badge";
+import { PaginationLinks } from "@/components/pagination-links";
+import { PaymentStatusBadge } from "@/components/shop/payment-status-badge";
+import { formatCurrency } from "@/lib/utils";
+import { show } from "@/routes/orders";
+import { ORDER_STATUS_LABELS } from "@/types";
+import type { Order, Paginated } from "@/types";
 
 export default function OrdersIndex({ orders }: { orders: Paginated<Order> }) {
     return (
@@ -36,7 +36,7 @@ export default function OrdersIndex({ orders }: { orders: Paginated<Order> }) {
                                             order.created_at,
                                         ).toLocaleDateString()}
                                         {order.items_count !== undefined &&
-                                            ` · ${order.items_count} item${order.items_count === 1 ? '' : 's'}`}
+                                            ` · ${order.items_count} item${order.items_count === 1 ? "" : "s"}`}
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-2">

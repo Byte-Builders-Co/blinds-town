@@ -1,5 +1,5 @@
-import { formatCurrency } from '@/lib/utils';
-import type { ProductOptionValue } from '@/types';
+import { formatCurrency } from "@/lib/utils";
+import type { ProductOptionValue } from "@/types";
 
 export function OptionValueCards({
     values,
@@ -28,8 +28,8 @@ export function OptionValueCards({
                         onClick={() => onToggle(value.id)}
                         className={`flex flex-col items-start gap-1 rounded-lg border p-3 text-left transition ${
                             isSelected
-                                ? 'border-primary bg-primary/5 ring-primary/30 ring-2'
-                                : 'border-border hover:border-primary/50'
+                                ? "border-primary bg-primary/5 ring-primary/30 ring-2"
+                                : "border-border hover:border-primary/50"
                         }`}
                     >
                         {showImage && value.image_path && (
@@ -49,7 +49,7 @@ export function OptionValueCards({
                         )}
                         {modifier !== 0 && (
                             <span className="text-muted-foreground text-xs">
-                                {modifier > 0 ? '+' : ''}
+                                {modifier > 0 ? "+" : ""}
                                 {formatCurrency(value.price_modifier)}
                             </span>
                         )}

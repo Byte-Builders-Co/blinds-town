@@ -1,6 +1,6 @@
-import { KeyRound, Trash2 } from 'lucide-react';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { KeyRound, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogClose,
@@ -9,8 +9,8 @@ import {
     DialogFooter,
     DialogTitle,
     DialogTrigger,
-} from '@/components/ui/dialog';
-import type { Passkey } from '@/types/auth';
+} from "@/components/ui/dialog";
+import type { Passkey } from "@/types/auth";
 
 type Props = {
     passkey: Passkey;
@@ -83,7 +83,7 @@ export default function PasskeyItem({ passkey, onDelete }: Props) {
                             onClick={handleDelete}
                             disabled={isDeleting}
                         >
-                            {isDeleting ? 'Removing...' : 'Remove passkey'}
+                            {isDeleting ? "Removing..." : "Remove passkey"}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

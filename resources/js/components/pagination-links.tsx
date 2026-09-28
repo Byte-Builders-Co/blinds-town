@@ -1,11 +1,11 @@
-import { Link } from '@inertiajs/react';
-import { cn } from '@/lib/utils';
-import type { Paginated } from '@/types';
+import { Link } from "@inertiajs/react";
+import { cn } from "@/lib/utils";
+import type { Paginated } from "@/types";
 
 export function PaginationLinks<T>({
     paginated,
 }: {
-    paginated: Pick<Paginated<T>, 'links' | 'last_page'>;
+    paginated: Pick<Paginated<T>, "links" | "last_page">;
 }) {
     if (paginated.last_page <= 1) {
         return null;
@@ -20,10 +20,10 @@ export function PaginationLinks<T>({
                             href={link.url}
                             preserveScroll
                             className={cn(
-                                'rounded-md px-3 py-1.5 text-sm',
+                                "rounded-md px-3 py-1.5 text-sm",
                                 link.active
-                                    ? 'bg-primary text-primary-foreground'
-                                    : 'hover:bg-accent',
+                                    ? "bg-primary text-primary-foreground"
+                                    : "hover:bg-accent",
                             )}
                             dangerouslySetInnerHTML={{ __html: link.label }}
                         />

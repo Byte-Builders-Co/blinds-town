@@ -1,12 +1,12 @@
-import { Head } from '@inertiajs/react';
-import { ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { Head } from "@inertiajs/react";
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 import {
     Collapsible,
     CollapsibleContent,
     CollapsibleTrigger,
-} from '@/components/ui/collapsible';
-import type { Faq } from '@/types';
+} from "@/components/ui/collapsible";
+import type { Faq } from "@/types";
 
 function FaqItem({ faq }: { faq: Faq }) {
     const [open, setOpen] = useState(false);
@@ -20,7 +20,7 @@ function FaqItem({ faq }: { faq: Faq }) {
             <CollapsibleTrigger className="flex w-full items-center justify-between text-left font-medium">
                 {faq.question}
                 <ChevronDown
-                    className={`size-4 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`}
+                    className={`size-4 shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
                 />
             </CollapsibleTrigger>
             <CollapsibleContent className="text-muted-foreground mt-2 text-sm whitespace-pre-line">
@@ -32,7 +32,7 @@ function FaqItem({ faq }: { faq: Faq }) {
 
 export default function ShopFaqs({ faqs }: { faqs: Faq[] }) {
     const categories = Array.from(
-        new Set(faqs.map((faq) => faq.category ?? 'General')),
+        new Set(faqs.map((faq) => faq.category ?? "General")),
     );
 
     return (
@@ -57,7 +57,7 @@ export default function ShopFaqs({ faqs }: { faqs: Faq[] }) {
                             {faqs
                                 .filter(
                                     (faq) =>
-                                        (faq.category ?? 'General') ===
+                                        (faq.category ?? "General") ===
                                         category,
                                 )
                                 .map((faq) => (

@@ -1,10 +1,10 @@
-import { Form, Head } from '@inertiajs/react';
-import ContactController from '@/actions/App/Http/Controllers/ContactController';
-import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import type { CmsPage, ContactSections } from '@/types';
+import { Form, Head } from "@inertiajs/react";
+import ContactController from "@/actions/App/Http/Controllers/ContactController";
+import InputError from "@/components/input-error";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import type { CmsPage, ContactSections } from "@/types";
 
 export default function ShopContact({ page }: { page: CmsPage }) {
     const business = page.sections as unknown as ContactSections;

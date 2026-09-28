@@ -1,9 +1,9 @@
-import { Form, Head } from '@inertiajs/react';
-import AdminCouponController from '@/actions/App/Http/Controllers/Admin/CouponController';
-import { CouponFormFields } from '@/components/admin/coupon-form-fields';
-import { Button } from '@/components/ui/button';
-import { create, index } from '@/routes/admin/coupons';
-import type { CouponRestrictionOption } from '@/types';
+import { Form, Head } from "@inertiajs/react";
+import AdminCouponController from "@/actions/App/Http/Controllers/Admin/CouponController";
+import { CouponFormFields } from "@/components/admin/coupon-form-fields";
+import { Button } from "@/components/ui/button";
+import { create, index } from "@/routes/admin/coupons";
+import type { CouponRestrictionOption } from "@/types";
 
 export default function AdminCouponCreate({
     products,
@@ -43,7 +43,7 @@ export default function AdminCouponCreate({
 
 AdminCouponCreate.layout = {
     breadcrumbs: [
-        { title: 'Coupons', href: index() },
-        { title: 'New', href: create() },
+        { title: "Coupons", href: index() },
+        { title: "New", href: create() },
     ],
 };

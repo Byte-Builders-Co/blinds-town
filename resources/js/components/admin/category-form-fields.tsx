@@ -1,30 +1,30 @@
-import InputError from '@/components/input-error';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import InputError from "@/components/input-error";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import type { Category, CategoryOption } from '@/types';
+} from "@/components/ui/select";
+import type { Category, CategoryOption } from "@/types";
 
 type Errors = Partial<
     Record<
-        | 'parent_id'
-        | 'name'
-        | 'short_description'
-        | 'description'
-        | 'image'
-        | 'banner_image'
-        | 'meta_title'
-        | 'meta_description'
-        | 'meta_keywords'
-        | 'sort_order'
-        | 'is_featured'
-        | 'is_active',
+        | "parent_id"
+        | "name"
+        | "short_description"
+        | "description"
+        | "image"
+        | "banner_image"
+        | "meta_title"
+        | "meta_description"
+        | "meta_keywords"
+        | "sort_order"
+        | "is_featured"
+        | "is_active",
         string
     >
 >;
@@ -44,7 +44,7 @@ export function CategoryFormFields({
                 <Label htmlFor="parent_id">Parent category (optional)</Label>
                 <Select
                     name="parent_id"
-                    defaultValue={category?.parent_id?.toString() ?? 'none'}
+                    defaultValue={category?.parent_id?.toString() ?? "none"}
                 >
                     <SelectTrigger id="parent_id" className="w-full">
                         <SelectValue />
@@ -84,7 +84,7 @@ export function CategoryFormFields({
                 <Input
                     id="short_description"
                     name="short_description"
-                    defaultValue={category?.short_description ?? ''}
+                    defaultValue={category?.short_description ?? ""}
                 />
                 <InputError message={errors.short_description} />
             </div>
@@ -94,7 +94,7 @@ export function CategoryFormFields({
                 <textarea
                     id="description"
                     name="description"
-                    defaultValue={category?.description ?? ''}
+                    defaultValue={category?.description ?? ""}
                     className="border-input dark:bg-input/30 min-h-24 rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs"
                 />
                 <InputError message={errors.description} />
@@ -150,7 +150,7 @@ export function CategoryFormFields({
                     <Input
                         id="meta_title"
                         name="meta_title"
-                        defaultValue={category?.meta_title ?? ''}
+                        defaultValue={category?.meta_title ?? ""}
                     />
                     <InputError message={errors.meta_title} />
                 </div>
@@ -160,7 +160,7 @@ export function CategoryFormFields({
                     <Input
                         id="meta_description"
                         name="meta_description"
-                        defaultValue={category?.meta_description ?? ''}
+                        defaultValue={category?.meta_description ?? ""}
                     />
                     <InputError message={errors.meta_description} />
                 </div>
@@ -170,7 +170,7 @@ export function CategoryFormFields({
                     <Input
                         id="meta_keywords"
                         name="meta_keywords"
-                        defaultValue={category?.meta_keywords ?? ''}
+                        defaultValue={category?.meta_keywords ?? ""}
                     />
                     <InputError message={errors.meta_keywords} />
                 </div>

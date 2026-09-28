@@ -25,60 +25,60 @@ export type CategoryOption = {
     slug?: string;
 };
 
-export type MeasurementUnit = 'cm' | 'inch';
+export type MeasurementUnit = "cm" | "inch";
 
 export type OptionGroupKind =
-    | 'fabric'
-    | 'color'
-    | 'material'
-    | 'pattern'
-    | 'opacity'
-    | 'mount_type'
-    | 'control_type'
-    | 'chain_cord'
-    | 'operation_type'
-    | 'motor'
-    | 'mechanism'
-    | 'accessory'
-    | 'custom';
+    | "fabric"
+    | "color"
+    | "material"
+    | "pattern"
+    | "opacity"
+    | "mount_type"
+    | "control_type"
+    | "chain_cord"
+    | "operation_type"
+    | "motor"
+    | "mechanism"
+    | "accessory"
+    | "custom";
 
-export type OptionSelectionType = 'single' | 'multiple';
+export type OptionSelectionType = "single" | "multiple";
 
 export const OPTION_GROUP_KIND_LABELS: Record<OptionGroupKind, string> = {
-    fabric: 'Fabric',
-    color: 'Color',
-    material: 'Material',
-    pattern: 'Pattern',
-    opacity: 'Opacity',
-    mount_type: 'Mount Type',
-    control_type: 'Control Type',
-    chain_cord: 'Chain/Cord',
-    operation_type: 'Operation Type',
-    motor: 'Motor',
-    mechanism: 'Mechanism',
-    accessory: 'Accessory',
-    custom: 'Custom',
+    fabric: "Fabric",
+    color: "Color",
+    material: "Material",
+    pattern: "Pattern",
+    opacity: "Opacity",
+    mount_type: "Mount Type",
+    control_type: "Control Type",
+    chain_cord: "Chain/Cord",
+    operation_type: "Operation Type",
+    motor: "Motor",
+    mechanism: "Mechanism",
+    accessory: "Accessory",
+    custom: "Custom",
 };
 
 /** Kinds rendered as visual selectors (swatches/image cards) before the size step. */
 export const VISUAL_OPTION_KINDS: OptionGroupKind[] = [
-    'color',
-    'pattern',
-    'material',
-    'fabric',
-    'opacity',
+    "color",
+    "pattern",
+    "material",
+    "fabric",
+    "opacity",
 ];
 
 /** Kinds rendered after the size step (operation/motor/mechanism/accessories/etc). */
 export const FUNCTIONAL_OPTION_KINDS: OptionGroupKind[] = [
-    'operation_type',
-    'mount_type',
-    'control_type',
-    'motor',
-    'mechanism',
-    'chain_cord',
-    'accessory',
-    'custom',
+    "operation_type",
+    "mount_type",
+    "control_type",
+    "motor",
+    "mechanism",
+    "chain_cord",
+    "accessory",
+    "custom",
 ];
 
 export type ProductOptionValue = {
@@ -109,11 +109,11 @@ export type ProductOptionGroup = {
     values: ProductOptionValue[];
 };
 
-export type PricingTierType = 'flat' | 'per_sqm';
+export type PricingTierType = "flat" | "per_sqm";
 
 export const PRICING_TIER_TYPE_LABELS: Record<PricingTierType, string> = {
-    flat: 'Flat price for range',
-    per_sqm: 'Rate per m²',
+    flat: "Flat price for range",
+    per_sqm: "Rate per m²",
 };
 
 export type ProductPricingTier = {
@@ -127,12 +127,12 @@ export type ProductPricingTier = {
     is_active: boolean;
 };
 
-export type StockStatus = 'in_stock' | 'out_of_stock' | 'made_to_order';
+export type StockStatus = "in_stock" | "out_of_stock" | "made_to_order";
 
 export const STOCK_STATUS_LABELS: Record<StockStatus, string> = {
-    in_stock: 'In Stock',
-    out_of_stock: 'Out of Stock',
-    made_to_order: 'Available for Customization',
+    in_stock: "In Stock",
+    out_of_stock: "Out of Stock",
+    made_to_order: "Available for Customization",
 };
 
 export type Product = {
@@ -204,7 +204,7 @@ export type ProductReview = {
     title: string;
     comment: string;
     images: string[] | null;
-    status: 'pending' | 'approved' | 'rejected' | 'hidden';
+    status: "pending" | "approved" | "rejected" | "hidden";
     created_at: string;
     user?: { id: number; first_name: string; last_name: string };
     product?: { id: number; name: string };
@@ -255,69 +255,69 @@ export type Cart = {
 };
 
 export type OrderStatus =
-    | 'pending'
-    | 'confirmed'
-    | 'measurement_pending'
-    | 'manufacturing'
-    | 'ready_to_ship'
-    | 'shipped'
-    | 'delivered'
-    | 'cancelled';
+    | "pending"
+    | "confirmed"
+    | "measurement_pending"
+    | "manufacturing"
+    | "ready_to_ship"
+    | "shipped"
+    | "delivered"
+    | "cancelled";
 
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
-    pending: 'Pending',
-    confirmed: 'Confirmed',
-    measurement_pending: 'Measurement Pending',
-    manufacturing: 'Manufacturing',
-    ready_to_ship: 'Ready to Ship',
-    shipped: 'Shipped',
-    delivered: 'Delivered',
-    cancelled: 'Cancelled',
+    pending: "Pending",
+    confirmed: "Confirmed",
+    measurement_pending: "Measurement Pending",
+    manufacturing: "Manufacturing",
+    ready_to_ship: "Ready to Ship",
+    shipped: "Shipped",
+    delivered: "Delivered",
+    cancelled: "Cancelled",
 };
 
 export const ORDER_STATUS_SEQUENCE: OrderStatus[] = [
-    'pending',
-    'confirmed',
-    'measurement_pending',
-    'manufacturing',
-    'ready_to_ship',
-    'shipped',
-    'delivered',
+    "pending",
+    "confirmed",
+    "measurement_pending",
+    "manufacturing",
+    "ready_to_ship",
+    "shipped",
+    "delivered",
 ];
 
-export type PaymentMethod = 'online' | 'cod';
+export type PaymentMethod = "online" | "cod";
 
 export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
-    online: 'Online Payment',
-    cod: 'Cash on Delivery',
+    online: "Online Payment",
+    cod: "Cash on Delivery",
 };
 
 export type PaymentStatus =
-    | 'pending'
-    | 'processing'
-    | 'paid'
-    | 'failed'
-    | 'cancelled'
-    | 'refunded'
-    | 'partially_refunded';
+    | "pending"
+    | "processing"
+    | "paid"
+    | "failed"
+    | "cancelled"
+    | "refunded"
+    | "partially_refunded";
 
 export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
-    pending: 'Pending',
-    processing: 'Processing',
-    paid: 'Paid',
-    failed: 'Failed',
-    cancelled: 'Cancelled',
-    refunded: 'Refunded',
-    partially_refunded: 'Partially Refunded',
+    pending: "Pending",
+    processing: "Processing",
+    paid: "Paid",
+    failed: "Failed",
+    cancelled: "Cancelled",
+    refunded: "Refunded",
+    partially_refunded: "Partially Refunded",
 };
 
-export type RefundStatus = 'requested' | 'processing' | 'refunded' | 'failed';
+export type RefundStatus = "requested" | "processing" | "refunded" | "failed";
 
 export const REFUND_STATUS_LABELS: Record<RefundStatus, string> = {
-    requested: 'Refund Requested',
-    processing: 'Refund Processing',
-    refunded: 'Refunded',
-    failed: 'Refund Failed',
+    requested: "Refund Requested",
+    processing: "Refund Processing",
+    refunded: "Refunded",
+    failed: "Refund Failed",
 };
 
 export type Refund = {

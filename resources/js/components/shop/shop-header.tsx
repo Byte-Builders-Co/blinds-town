@@ -1,4 +1,4 @@
-import { Link, router, usePage } from '@inertiajs/react';
+import { Link, router, usePage } from "@inertiajs/react";
 import {
     Heart,
     Package,
@@ -6,31 +6,31 @@ import {
     ShieldCheck,
     ShoppingCart,
     User,
-} from 'lucide-react';
-import { type FormEvent, useState } from 'react';
-import AppLogo from '@/components/app-logo';
+} from "lucide-react";
+import { type FormEvent, useState } from "react";
+import AppLogo from "@/components/app-logo";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { UserMenuContent } from '@/components/user-menu-content';
-import { useCurrentUrl } from '@/hooks/use-current-url';
-import { home, login } from '@/routes';
-import { dashboard as adminDashboard } from '@/routes/admin';
-import { show as categoryShow } from '@/routes/categories';
-import { index as cartIndex } from '@/routes/cart';
-import { index as ordersIndex } from '@/routes/orders';
-import { index as productsIndex } from '@/routes/products';
-import { index as wishlistIndex } from '@/routes/wishlist';
+} from "@/components/ui/dropdown-menu";
+import { UserMenuContent } from "@/components/user-menu-content";
+import { useCurrentUrl } from "@/hooks/use-current-url";
+import { home, login } from "@/routes";
+import { dashboard as adminDashboard } from "@/routes/admin";
+import { show as categoryShow } from "@/routes/categories";
+import { index as cartIndex } from "@/routes/cart";
+import { index as ordersIndex } from "@/routes/orders";
+import { index as productsIndex } from "@/routes/products";
+import { index as wishlistIndex } from "@/routes/wishlist";
 
 export function ShopHeader() {
     const { auth, cart, navCategories } = usePage().props;
-    const [search, setSearch] = useState('');
+    const [search, setSearch] = useState("");
     const { isCurrentUrl } = useCurrentUrl();
     const isAdminPanelUser = auth.roles.some((role) =>
-        ['super-admin', 'admin', 'staff'].includes(role),
+        ["super-admin", "admin", "staff"].includes(role),
     );
 
     const submitSearch = (e: FormEvent) => {
@@ -39,10 +39,10 @@ export function ShopHeader() {
     };
 
     const navLinks = [
-        { title: 'Home', href: home() },
+        { title: "Home", href: home() },
         ...navCategories.map((category) => ({
             title: category.name,
-            href: categoryShow(category.slug ?? ''),
+            href: categoryShow(category.slug ?? ""),
         })),
     ];
 
@@ -68,8 +68,8 @@ export function ShopHeader() {
                             href={link.href}
                             className={`shrink-0 border-b-2 pb-1 whitespace-nowrap transition-colors ${
                                 isCurrentUrl(link.href)
-                                    ? 'border-primary text-primary'
-                                    : 'text-foreground/80 hover:text-primary border-transparent'
+                                    ? "border-primary text-primary"
+                                    : "text-foreground/80 hover:text-primary border-transparent"
                             }`}
                         >
                             {link.title}

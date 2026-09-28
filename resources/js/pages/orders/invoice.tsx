@@ -1,9 +1,9 @@
-import { Head } from '@inertiajs/react';
-import { Printer } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { formatCurrency } from '@/lib/utils';
-import { PAYMENT_METHOD_LABELS, PAYMENT_STATUS_LABELS } from '@/types';
-import type { Order } from '@/types';
+import { Head } from "@inertiajs/react";
+import { Printer } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/lib/utils";
+import { PAYMENT_METHOD_LABELS, PAYMENT_STATUS_LABELS } from "@/types";
+import type { Order } from "@/types";
 
 export default function Invoice({ order }: { order: Order }) {
     return (
@@ -56,7 +56,7 @@ export default function Invoice({ order }: { order: Order }) {
                                     `, ${order.shipping_line2}`}
                             </p>
                             <p>
-                                {order.shipping_city},{' '}
+                                {order.shipping_city},{" "}
                                 {order.shipping_postal_code}
                             </p>
                             <p>{order.shipping_country}</p>
@@ -84,12 +84,12 @@ export default function Invoice({ order }: { order: Order }) {
                                                 <p className="text-muted-foreground text-xs">
                                                     {item.selected_options
                                                         .map((o) => o.label)
-                                                        .join(', ')}
+                                                        .join(", ")}
                                                 </p>
                                             )}
                                     </td>
                                     <td className="py-2">
-                                        {item.width_cm}cm &times;{' '}
+                                        {item.width_cm}cm &times;{" "}
                                         {item.height_cm}cm
                                     </td>
                                     <td className="py-2 text-right">
@@ -177,13 +177,13 @@ export default function Invoice({ order }: { order: Order }) {
                             <p>
                                 <span className="text-muted-foreground">
                                     Payment method:
-                                </span>{' '}
+                                </span>{" "}
                                 {PAYMENT_METHOD_LABELS[order.payment.method]}
                             </p>
                             <p>
                                 <span className="text-muted-foreground">
                                     Payment status:
-                                </span>{' '}
+                                </span>{" "}
                                 {PAYMENT_STATUS_LABELS[order.payment.status]}
                             </p>
                         </div>

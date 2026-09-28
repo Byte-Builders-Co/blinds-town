@@ -49,9 +49,4 @@ export type NotificationSettings = {
 };
 
 export type SettingsGroup =
-    | 'store'
-    | 'business'
-    | 'tax'
-    | 'shipping'
-    | 'payment'
-    | 'notifications';
+    "store" | "business" | "tax" | "shipping" | "payment" | "notifications";

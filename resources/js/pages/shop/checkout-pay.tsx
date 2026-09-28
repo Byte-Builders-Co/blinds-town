@@ -3,15 +3,15 @@ import {
     PaymentElement,
     useElements,
     useStripe,
-} from '@stripe/react-stripe-js';
-import { loadStripe, type Stripe } from '@stripe/stripe-js';
-import { Head, Link } from '@inertiajs/react';
-import { type FormEvent, useMemo, useRef, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { formatCurrency } from '@/lib/utils';
-import { index as cartIndex } from '@/routes/cart';
-import { success } from '@/routes/checkout';
-import type { Order } from '@/types';
+} from "@stripe/react-stripe-js";
+import { loadStripe, type Stripe } from "@stripe/stripe-js";
+import { Head, Link } from "@inertiajs/react";
+import { type FormEvent, useMemo, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/lib/utils";
+import { index as cartIndex } from "@/routes/cart";
+import { success } from "@/routes/checkout";
+import type { Order } from "@/types";
 
 function PaymentForm({ order }: { order: Order }) {
     const stripe = useStripe();
@@ -46,7 +46,7 @@ function PaymentForm({ order }: { order: Order }) {
         if (error) {
             setErrorMessage(
                 error.message ??
-                    'Your payment could not be completed. Please try again.',
+                    "Your payment could not be completed. Please try again.",
             );
             setIsProcessing(false);
             submittedRef.current = false;
@@ -70,7 +70,7 @@ function PaymentForm({ order }: { order: Order }) {
                 disabled={!stripe || !elements || isProcessing}
             >
                 {isProcessing
-                    ? 'Processing…'
+                    ? "Processing…"
                     : `Pay ${formatCurrency(order.total, order.currency)}`}
             </Button>
         </form>
@@ -98,7 +98,7 @@ export default function CheckoutPay({
             <div className="mx-auto max-w-lg px-4 py-12 sm:px-6 lg:px-8">
                 <h1 className="text-2xl font-semibold">Complete payment</h1>
                 <p className="text-muted-foreground mt-2 text-sm">
-                    Order {order.order_number} &middot;{' '}
+                    Order {order.order_number} &middot;{" "}
                     {formatCurrency(order.total, order.currency)}
                 </p>
 

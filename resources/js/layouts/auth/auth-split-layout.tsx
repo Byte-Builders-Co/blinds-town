@@ -1,21 +1,21 @@
-import { Link, usePage } from '@inertiajs/react';
-import { Ruler, ShieldCheck, Truck } from 'lucide-react';
-import AppLogo from '@/components/app-logo';
-import { home } from '@/routes';
-import type { AuthLayoutProps } from '@/types';
+import { Link, usePage } from "@inertiajs/react";
+import { Ruler, ShieldCheck, Truck } from "lucide-react";
+import AppLogo from "@/components/app-logo";
+import { home } from "@/routes";
+import type { AuthLayoutProps } from "@/types";
 
 const trustPoints = [
     {
         icon: Ruler,
-        text: 'Made to your exact window measurements',
+        text: "Made to your exact window measurements",
     },
     {
         icon: Truck,
-        text: 'Free shipping on every order',
+        text: "Free shipping on every order",
     },
     {
         icon: ShieldCheck,
-        text: 'Quality guaranteed, built to last',
+        text: "Quality guaranteed, built to last",
     },
 ];
 
@@ -30,7 +30,7 @@ function Slats() {
                     className="h-3 shrink-0 rounded-full"
                     style={{
                         background:
-                            'linear-gradient(90deg, oklch(0.98 0.01 75 / 0.16), oklch(0.98 0.01 75 / 0.05) 45%, oklch(0.98 0.01 75 / 0.16))',
+                            "linear-gradient(90deg, oklch(0.98 0.01 75 / 0.16), oklch(0.98 0.01 75 / 0.05) 45%, oklch(0.98 0.01 75 / 0.16))",
                         transform: `scaleX(${1 - Math.abs(i - 6.5) * 0.012})`,
                     }}
                 />
@@ -52,7 +52,7 @@ export default function AuthSplitLayout({
                 className="relative hidden h-full flex-col justify-between overflow-hidden p-10 text-white lg:flex"
                 style={{
                     background:
-                        'linear-gradient(160deg, oklch(0.3 0.05 45), oklch(0.5 0.13 45) 55%, oklch(0.62 0.15 60))',
+                        "linear-gradient(160deg, oklch(0.3 0.05 45), oklch(0.5 0.13 45) 55%, oklch(0.62 0.15 60))",
                 }}
             >
                 <Slats />

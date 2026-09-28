@@ -1,20 +1,20 @@
-import { Form, Head, Link } from '@inertiajs/react';
-import AdminSettingsController from '@/actions/App/Http/Controllers/Admin/SettingsController';
-import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { edit } from '@/routes/admin/settings';
-import type { SettingsGroup } from '@/types';
+import { Form, Head, Link } from "@inertiajs/react";
+import AdminSettingsController from "@/actions/App/Http/Controllers/Admin/SettingsController";
+import InputError from "@/components/input-error";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { edit } from "@/routes/admin/settings";
+import type { SettingsGroup } from "@/types";
 
 const groupTitles: Record<SettingsGroup, string> = {
-    store: 'Website Configuration',
-    business: 'Basic Store Settings',
-    tax: 'Basic Store Settings: GST / Tax',
-    shipping: 'Basic Store Settings: Shipping',
-    payment: 'Basic Store Settings: Payment',
-    notifications: 'Email Notifications',
+    store: "Website Configuration",
+    business: "Basic Store Settings",
+    tax: "Basic Store Settings: GST / Tax",
+    shipping: "Basic Store Settings: Shipping",
+    payment: "Basic Store Settings: Payment",
+    notifications: "Email Notifications",
 };
 
 /**
@@ -23,10 +23,10 @@ const groupTitles: Record<SettingsGroup, string> = {
  * shipping and payment reachable without adding extra top-level nav items.
  */
 const basicStoreSettingsTabs: { group: SettingsGroup; label: string }[] = [
-    { group: 'business', label: 'Business Info' },
-    { group: 'tax', label: 'GST / Tax' },
-    { group: 'shipping', label: 'Shipping' },
-    { group: 'payment', label: 'Payment' },
+    { group: "business", label: "Business Info" },
+    { group: "tax", label: "GST / Tax" },
+    { group: "shipping", label: "Shipping" },
+    { group: "payment", label: "Payment" },
 ];
 
 function SettingCheckbox(props: {
@@ -63,9 +63,9 @@ function Field(props: {
             <Input
                 id={props.name}
                 name={props.name}
-                type={props.type ?? 'text'}
-                step={props.type === 'number' ? '0.01' : undefined}
-                defaultValue={props.defaultValue ?? ''}
+                type={props.type ?? "text"}
+                step={props.type === "number" ? "0.01" : undefined}
+                defaultValue={props.defaultValue ?? ""}
                 required={props.required}
             />
             <InputError message={props.error} />
@@ -94,7 +94,7 @@ export default function AdminSettingsPage({
                             <Button
                                 key={tab.group}
                                 variant={
-                                    tab.group === group ? 'default' : 'outline'
+                                    tab.group === group ? "default" : "outline"
                                 }
                                 size="sm"
                                 asChild
@@ -108,13 +108,13 @@ export default function AdminSettingsPage({
                 <Form
                     {...AdminSettingsController.update.form(group)}
                     encType={
-                        group === 'store' ? 'multipart/form-data' : undefined
+                        group === "store" ? "multipart/form-data" : undefined
                     }
                     className="mt-6 space-y-4"
                 >
                     {({ processing, errors }) => (
                         <>
-                            {group === 'store' && (
+                            {group === "store" && (
                                 <>
                                     <Field
                                         name="store_name"
@@ -195,7 +195,7 @@ export default function AdminSettingsPage({
                                 </>
                             )}
 
-                            {group === 'business' && (
+                            {group === "business" && (
                                 <>
                                     <Field
                                         name="legal_business_name"
@@ -241,7 +241,7 @@ export default function AdminSettingsPage({
                                 </>
                             )}
 
-                            {group === 'tax' && (
+                            {group === "tax" && (
                                 <>
                                     <SettingCheckbox
                                         name="gst_enabled"
@@ -266,7 +266,7 @@ export default function AdminSettingsPage({
                                 </>
                             )}
 
-                            {group === 'shipping' && (
+                            {group === "shipping" && (
                                 <>
                                     <SettingCheckbox
                                         name="shipping_enabled"
@@ -306,7 +306,7 @@ export default function AdminSettingsPage({
                                 </>
                             )}
 
-                            {group === 'payment' && (
+                            {group === "payment" && (
                                 <>
                                     <Field
                                         name="payment_gateway"
@@ -329,7 +329,7 @@ export default function AdminSettingsPage({
                                 </>
                             )}
 
-                            {group === 'notifications' && (
+                            {group === "notifications" && (
                                 <>
                                     <fieldset className="grid gap-3 rounded-lg border p-4">
                                         <legend className="text-sm font-medium">
@@ -426,5 +426,5 @@ export default function AdminSettingsPage({
 }
 
 AdminSettingsPage.layout = {
-    breadcrumbs: [{ title: 'Settings', href: edit('store') }],
+    breadcrumbs: [{ title: "Settings", href: edit("store") }],
 };

@@ -1,8 +1,8 @@
-import { Head, router } from '@inertiajs/react';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { index } from '@/routes/admin/reports';
+import { Head, router } from "@inertiajs/react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { index } from "@/routes/admin/reports";
 import type {
     BestSeller,
     CustomerCounts,
@@ -11,7 +11,7 @@ import type {
     ReportFilters,
     RevenueSummary,
     SalesSummary,
-} from '@/types';
+} from "@/types";
 
 function formatCurrency(value: number): string {
     return `$${value.toFixed(2)}`;
@@ -42,14 +42,14 @@ function Section({
 }
 
 const statusLabels: Record<string, string> = {
-    pending: 'Pending',
-    confirmed: 'Confirmed',
-    measurement_pending: 'Measurement Pending',
-    manufacturing: 'Manufacturing',
-    ready_to_ship: 'Ready to Ship',
-    shipped: 'Shipped',
-    delivered: 'Delivered',
-    cancelled: 'Cancelled',
+    pending: "Pending",
+    confirmed: "Confirmed",
+    measurement_pending: "Measurement Pending",
+    manufacturing: "Manufacturing",
+    ready_to_ship: "Ready to Ship",
+    shipped: "Shipped",
+    delivered: "Delivered",
+    cancelled: "Cancelled",
 };
 
 export default function AdminReportsIndex({
@@ -222,21 +222,21 @@ export default function AdminReportsIndex({
                     <div className="mb-3 flex gap-2">
                         <Button
                             variant={
-                                filters.sort === 'units' ? 'default' : 'outline'
+                                filters.sort === "units" ? "default" : "outline"
                             }
                             size="sm"
-                            onClick={() => apply({ sort: 'units' })}
+                            onClick={() => apply({ sort: "units" })}
                         >
                             Sort by Units Sold
                         </Button>
                         <Button
                             variant={
-                                filters.sort === 'revenue'
-                                    ? 'default'
-                                    : 'outline'
+                                filters.sort === "revenue"
+                                    ? "default"
+                                    : "outline"
                             }
                             size="sm"
-                            onClick={() => apply({ sort: 'revenue' })}
+                            onClick={() => apply({ sort: "revenue" })}
                         >
                             Sort by Revenue
                         </Button>
@@ -298,5 +298,5 @@ export default function AdminReportsIndex({
 }
 
 AdminReportsIndex.layout = {
-    breadcrumbs: [{ title: 'Reports', href: index() }],
+    breadcrumbs: [{ title: "Reports", href: index() }],
 };

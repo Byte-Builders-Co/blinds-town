@@ -1,13 +1,13 @@
-import { Head, Link, router } from '@inertiajs/react';
-import { Pencil, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { formatCurrency } from '@/lib/utils';
-import { resolveSelectedOptionLabels } from '@/lib/shop';
-import { destroy, update } from '@/routes/cart';
-import { index as checkoutIndex } from '@/routes/checkout';
-import { show } from '@/routes/products';
-import type { Cart } from '@/types';
+import { Head, Link, router } from "@inertiajs/react";
+import { Pencil, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { formatCurrency } from "@/lib/utils";
+import { resolveSelectedOptionLabels } from "@/lib/shop";
+import { destroy, update } from "@/routes/cart";
+import { index as checkoutIndex } from "@/routes/checkout";
+import { show } from "@/routes/products";
+import type { Cart } from "@/types";
 
 export default function ShopCart({ cart }: { cart: Cart }) {
     const grandTotal = cart.items.reduce(
@@ -88,19 +88,19 @@ export default function ShopCart({ cart }: { cart: Cart }) {
                                                 <div>
                                                     <span className="font-medium">
                                                         Width:
-                                                    </span>{' '}
+                                                    </span>{" "}
                                                     {item.width_cm}cm
-                                                    {'  '}
+                                                    {"  "}
                                                     <span className="font-medium">
                                                         Height:
-                                                    </span>{' '}
+                                                    </span>{" "}
                                                     {item.height_cm}cm
                                                 </div>
                                                 {optionLabels.map((o, i) => (
                                                     <div key={i}>
                                                         <span className="font-medium">
                                                             {o.group}:
-                                                        </span>{' '}
+                                                        </span>{" "}
                                                         {o.label}
                                                     </div>
                                                 ))}
@@ -108,7 +108,7 @@ export default function ShopCart({ cart }: { cart: Cart }) {
                                             <p className="mt-1 text-sm">
                                                 {formatCurrency(
                                                     item.unit_price,
-                                                )}{' '}
+                                                )}{" "}
                                                 each
                                             </p>
                                             <div className="mt-1 flex items-center gap-3">

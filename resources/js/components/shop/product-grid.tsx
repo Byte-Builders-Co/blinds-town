@@ -1,10 +1,10 @@
-import { PaginationLinks } from '@/components/pagination-links';
-import { ProductCard } from '@/components/shop/product-card';
-import type { Paginated, Product } from '@/types';
+import { PaginationLinks } from "@/components/pagination-links";
+import { ProductCard } from "@/components/shop/product-card";
+import type { Paginated, Product } from "@/types";
 
 export function ProductGrid({
     products,
-    emptyMessage = 'No products found.',
+    emptyMessage = "No products found.",
 }: {
     products: Paginated<Product>;
     emptyMessage?: string;

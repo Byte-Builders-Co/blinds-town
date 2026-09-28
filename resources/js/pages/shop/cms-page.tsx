@@ -1,6 +1,6 @@
-import { Head } from '@inertiajs/react';
-import { RichText } from '@/components/shop/rich-text';
-import type { CmsPage } from '@/types';
+import { Head } from "@inertiajs/react";
+import { RichText } from "@/components/shop/rich-text";
+import type { CmsPage } from "@/types";
 
 export default function ShopCmsPage({ page }: { page: CmsPage }) {
     return (
@@ -14,7 +14,7 @@ export default function ShopCmsPage({ page }: { page: CmsPage }) {
             <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
                 <h1 className="text-3xl font-semibold">{page.title}</h1>
                 <div className="mt-6">
-                    <RichText text={page.content ?? ''} />
+                    <RichText text={page.content ?? ""} />
                 </div>
             </div>
         </>

@@ -1,9 +1,9 @@
-import { Form, Head } from '@inertiajs/react';
-import AdminCategoryController from '@/actions/App/Http/Controllers/Admin/CategoryController';
-import { CategoryFormFields } from '@/components/admin/category-form-fields';
-import { Button } from '@/components/ui/button';
-import { create, index } from '@/routes/admin/categories';
-import type { CategoryOption } from '@/types';
+import { Form, Head } from "@inertiajs/react";
+import AdminCategoryController from "@/actions/App/Http/Controllers/Admin/CategoryController";
+import { CategoryFormFields } from "@/components/admin/category-form-fields";
+import { Button } from "@/components/ui/button";
+import { create, index } from "@/routes/admin/categories";
+import type { CategoryOption } from "@/types";
 
 export default function AdminCategoryCreate({
     parentOptions,
@@ -41,7 +41,7 @@ export default function AdminCategoryCreate({
 
 AdminCategoryCreate.layout = {
     breadcrumbs: [
-        { title: 'Categories', href: index() },
-        { title: 'New', href: create() },
+        { title: "Categories", href: index() },
+        { title: "New", href: create() },
     ],
 };

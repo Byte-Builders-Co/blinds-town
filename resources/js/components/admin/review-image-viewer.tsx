@@ -1,13 +1,13 @@
-import { router } from '@inertiajs/react';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { router } from "@inertiajs/react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
-} from '@/components/ui/dialog';
-import { removeImage } from '@/routes/admin/reviews';
+} from "@/components/ui/dialog";
+import { removeImage } from "@/routes/admin/reviews";
 
 export function ReviewImageViewer({
     reviewId,

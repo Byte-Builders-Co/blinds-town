@@ -1,20 +1,20 @@
-import { Head, router, usePage } from '@inertiajs/react';
-import { Star } from 'lucide-react';
-import { useState } from 'react';
-import { ReviewImageViewer } from '@/components/admin/review-image-viewer';
-import { PaginationLinks } from '@/components/pagination-links';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Head, router, usePage } from "@inertiajs/react";
+import { Star } from "lucide-react";
+import { useState } from "react";
+import { ReviewImageViewer } from "@/components/admin/review-image-viewer";
+import { PaginationLinks } from "@/components/pagination-links";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import { destroy, index, updateStatus } from '@/routes/admin/reviews';
-import type { Paginated, ProductReview } from '@/types';
+} from "@/components/ui/select";
+import { destroy, index, updateStatus } from "@/routes/admin/reviews";
+import type { Paginated, ProductReview } from "@/types";
 
 type Filters = { search?: string; status?: string; rating?: string };
 
@@ -24,7 +24,7 @@ function Stars({ rating }: { rating: number }) {
             {[1, 2, 3, 4, 5].map((n) => (
                 <Star
                     key={n}
-                    className={`size-3.5 ${n <= rating ? 'fill-current text-amber-500' : 'text-muted-foreground/30'}`}
+                    className={`size-3.5 ${n <= rating ? "fill-current text-amber-500" : "text-muted-foreground/30"}`}
                 />
             ))}
         </div>
@@ -33,12 +33,12 @@ function Stars({ rating }: { rating: number }) {
 
 const statusVariant: Record<
     string,
-    'default' | 'secondary' | 'destructive' | 'outline'
+    "default" | "secondary" | "destructive" | "outline"
 > = {
-    pending: 'outline',
-    approved: 'default',
-    rejected: 'destructive',
-    hidden: 'secondary',
+    pending: "outline",
+    approved: "default",
+    rejected: "destructive",
+    hidden: "secondary",
 };
 
 export default function AdminReviewsIndex({
@@ -48,7 +48,7 @@ export default function AdminReviewsIndex({
     reviews: Paginated<ProductReview>;
     filters: Filters;
 }) {
-    const [search, setSearch] = useState(filters.search ?? '');
+    const [search, setSearch] = useState(filters.search ?? "");
     const { errors } = usePage().props;
 
     const applyFilters = (patch: Partial<Filters>) => {
@@ -82,16 +82,16 @@ export default function AdminReviewsIndex({
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter') applyFilters({});
+                            if (e.key === "Enter") applyFilters({});
                         }}
                         onBlur={() => applyFilters({})}
                         className="max-w-xs"
                     />
                     <Select
-                        value={filters.status ?? 'all'}
+                        value={filters.status ?? "all"}
                         onValueChange={(value) =>
                             applyFilters({
-                                status: value === 'all' ? undefined : value,
+                                status: value === "all" ? undefined : value,
                             })
                         }
                     >
@@ -107,10 +107,10 @@ export default function AdminReviewsIndex({
                         </SelectContent>
                     </Select>
                     <Select
-                        value={filters.rating ?? 'all'}
+                        value={filters.rating ?? "all"}
                         onValueChange={(value) =>
                             applyFilters({
-                                rating: value === 'all' ? undefined : value,
+                                rating: value === "all" ? undefined : value,
                             })
                         }
                     >
@@ -121,7 +121,7 @@ export default function AdminReviewsIndex({
                             <SelectItem value="all">All ratings</SelectItem>
                             {[5, 4, 3, 2, 1].map((n) => (
                                 <SelectItem key={n} value={n.toString()}>
-                                    {n} star{n === 1 ? '' : 's'}
+                                    {n} star{n === 1 ? "" : "s"}
                                 </SelectItem>
                             ))}
                         </SelectContent>
@@ -136,11 +136,11 @@ export default function AdminReviewsIndex({
                                     <p className="font-medium">
                                         {review.user
                                             ? `${review.user.first_name} ${review.user.last_name}`
-                                            : 'Customer'}
+                                            : "Customer"}
                                         <span className="text-muted-foreground font-normal">
-                                            {' '}
-                                            &middot;{' '}
-                                            {review.product?.name ?? 'Product'}
+                                            {" "}
+                                            &middot;{" "}
+                                            {review.product?.name ?? "Product"}
                                         </span>
                                     </p>
                                     <div className="mt-1">
@@ -172,40 +172,40 @@ export default function AdminReviewsIndex({
                                         {review.status}
                                     </Badge>
                                     <div className="flex gap-2">
-                                        {review.status !== 'approved' && (
+                                        {review.status !== "approved" && (
                                             <Button
                                                 size="sm"
                                                 variant="outline"
                                                 onClick={() =>
                                                     setStatus(
                                                         review,
-                                                        'approved',
+                                                        "approved",
                                                     )
                                                 }
                                             >
                                                 Approve
                                             </Button>
                                         )}
-                                        {review.status !== 'rejected' && (
+                                        {review.status !== "rejected" && (
                                             <Button
                                                 size="sm"
                                                 variant="outline"
                                                 onClick={() =>
                                                     setStatus(
                                                         review,
-                                                        'rejected',
+                                                        "rejected",
                                                     )
                                                 }
                                             >
                                                 Reject
                                             </Button>
                                         )}
-                                        {review.status !== 'hidden' && (
+                                        {review.status !== "hidden" && (
                                             <Button
                                                 size="sm"
                                                 variant="outline"
                                                 onClick={() =>
-                                                    setStatus(review, 'hidden')
+                                                    setStatus(review, "hidden")
                                                 }
                                             >
                                                 Hide
@@ -217,7 +217,7 @@ export default function AdminReviewsIndex({
                                             onClick={() => {
                                                 if (
                                                     confirm(
-                                                        'Delete this review?',
+                                                        "Delete this review?",
                                                     )
                                                 ) {
                                                     router.delete(
@@ -250,5 +250,5 @@ export default function AdminReviewsIndex({
 }
 
 AdminReviewsIndex.layout = {
-    breadcrumbs: [{ title: 'Reviews', href: index() }],
+    breadcrumbs: [{ title: "Reviews", href: index() }],
 };

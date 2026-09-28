@@ -7,6 +7,8 @@
         "build:ssr": "vp build && vp build --ssr",
         "dev": "vp dev",
         "check": "vp check",
+        "format": "prettier --write resources/ --cache --cache-location .prettiercache",
+        "lint": "eslint . --fix",
         "check:fix": "vp check --fix",
         "types:check": "tsc --noEmit"
     },
@@ -28,7 +30,7 @@
         "@radix-ui/react-toggle-group": "^1.1.2",
         "@radix-ui/react-tooltip": "^1.1.8",
         "@stripe/react-stripe-js": "^6.9.0",
-        "@stripe/stripe-js": "^7.10.0",
+        "@stripe/stripe-js": "^9.10.0",
         "@tailwindcss/vite": "^4.1.11",
         "@types/react": "^19.2.0",
         "@types/react-dom": "^19.2.0",
@@ -53,6 +55,8 @@
         "@rolldown/plugin-babel": "^0.2.3",
         "@types/node": "^22.13.5",
         "babel-plugin-react-compiler": "^1.0.0",
+        "prettier": "^3.9.9",
+        "prettier-plugin-tailwindcss": "^0.8.1",
         "vite-plus": "0.3.0"
     },
     "optionalDependencies": {

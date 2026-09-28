@@ -1,12 +1,12 @@
-import { Head, Link } from '@inertiajs/react';
-import { Star } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { WishlistButton } from '@/components/shop/wishlist-button';
-import { formatCurrency } from '@/lib/utils';
-import { show } from '@/routes/products';
-import { STOCK_STATUS_LABELS } from '@/types';
-import type { WishlistItem } from '@/types';
+import { Head, Link } from "@inertiajs/react";
+import { Star } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { WishlistButton } from "@/components/shop/wishlist-button";
+import { formatCurrency } from "@/lib/utils";
+import { show } from "@/routes/products";
+import { STOCK_STATUS_LABELS } from "@/types";
+import type { WishlistItem } from "@/types";
 
 export default function Wishlist({ items }: { items: WishlistItem[] }) {
     return (
@@ -43,7 +43,7 @@ export default function Wishlist({ items }: { items: WishlistItem[] }) {
                                         {item.product.name}
                                     </Link>
                                     <p className="mt-1 text-sm font-medium">
-                                        From{' '}
+                                        From{" "}
                                         {formatCurrency(
                                             item.product.sale_price ??
                                                 item.product.base_price,

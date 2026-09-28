@@ -1,33 +1,33 @@
-import { Head, useForm } from '@inertiajs/react';
-import { type FormEvent, useEffect, useMemo, useState } from 'react';
-import { OptionValueCards } from '@/components/shop/option-value-cards';
-import { ProductGallery } from '@/components/shop/product-gallery';
-import { RelatedProducts } from '@/components/shop/related-products';
-import { ReviewForm } from '@/components/shop/review-form';
-import { ReviewList } from '@/components/shop/review-list';
-import { WishlistButton } from '@/components/shop/wishlist-button';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Head, useForm } from "@inertiajs/react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { OptionValueCards } from "@/components/shop/option-value-cards";
+import { ProductGallery } from "@/components/shop/product-gallery";
+import { RelatedProducts } from "@/components/shop/related-products";
+import { ReviewForm } from "@/components/shop/review-form";
+import { ReviewList } from "@/components/shop/review-list";
+import { WishlistButton } from "@/components/shop/wishlist-button";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { resolveSelectedOptionLabels } from '@/lib/shop';
-import { formatCurrency } from '@/lib/utils';
-import { reconfigure, store as addToCart } from '@/routes/cart';
-import { quote } from '@/routes/products';
+} from "@/components/ui/select";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { resolveSelectedOptionLabels } from "@/lib/shop";
+import { formatCurrency } from "@/lib/utils";
+import { reconfigure, store as addToCart } from "@/routes/cart";
+import { quote } from "@/routes/products";
 import {
     FUNCTIONAL_OPTION_KINDS,
     STOCK_STATUS_LABELS,
     VISUAL_OPTION_KINDS,
-} from '@/types';
+} from "@/types";
 import type {
     CartItem,
     MeasurementUnit,
@@ -36,10 +36,10 @@ import type {
     Product,
     ProductOptionGroup,
     ProductReview,
-} from '@/types';
+} from "@/types";
 
 function boundsInUnit(minCm: number, maxCm: number, unit: MeasurementUnit) {
-    if (unit === 'cm') {
+    if (unit === "cm") {
         return { min: minCm, max: maxCm };
     }
 
@@ -73,7 +73,7 @@ function isGroupVisible(group: ProductOptionGroup, selectedIds: number[]) {
 }
 
 function isValueVisible(
-    value: ProductOptionGroup['values'][number],
+    value: ProductOptionGroup["values"][number],
     selectedIds: number[],
 ) {
     return (
@@ -120,7 +120,7 @@ export default function ProductShow({
 
     const [width, setWidth] = useState(() => {
         if (editingCartItem) {
-            return unit === 'inch'
+            return unit === "inch"
                 ? Math.round((editingCartItem.width_cm / 2.54) * 10) / 10
                 : editingCartItem.width_cm;
         }
@@ -128,7 +128,7 @@ export default function ProductShow({
     });
     const [height, setHeight] = useState(() => {
         if (editingCartItem) {
-            return unit === 'inch'
+            return unit === "inch"
                 ? Math.round((editingCartItem.height_cm / 2.54) * 10) / 10
                 : editingCartItem.height_cm;
         }
@@ -212,18 +212,17 @@ export default function ProductShow({
     );
 
     type Section =
-        | { type: 'group'; group: ProductOptionGroup }
-        | { type: 'size' };
+        { type: "group"; group: ProductOptionGroup } | { type: "size" };
 
     const sections: Section[] = [
-        ...visualGroups.map((group) => ({ type: 'group' as const, group })),
-        { type: 'size' as const },
-        ...functionalGroups.map((group) => ({ type: 'group' as const, group })),
+        ...visualGroups.map((group) => ({ type: "group" as const, group })),
+        { type: "size" as const },
+        ...functionalGroups.map((group) => ({ type: "group" as const, group })),
     ];
 
     const mountInstructions = useMemo(() => {
         for (const group of optionGroups) {
-            if (group.kind !== 'mount_type') continue;
+            if (group.kind !== "mount_type") continue;
             const selectedId = selected[group.id]?.[0];
             const value = group.values.find((v) => v.id === selectedId);
             if (value?.instructions) return value.instructions;
@@ -256,7 +255,7 @@ export default function ProductShow({
                 }),
                 {
                     signal: controller.signal,
-                    headers: { Accept: 'application/json' },
+                    headers: { Accept: "application/json" },
                 },
             )
                 .then(async (res) => {
@@ -264,12 +263,11 @@ export default function ProductShow({
                         const body = await res.json().catch(() => null);
                         const firstError = body?.errors
                             ? (Object.values(body.errors)[0] as
-                                  | string[]
-                                  | undefined)
+                                  string[] | undefined)
                             : null;
                         setQuoteError(
                             firstError?.[0] ??
-                                'Unable to calculate a price for this configuration.',
+                                "Unable to calculate a price for this configuration.",
                         );
                         setBreakdown(null);
                         return;
@@ -325,7 +323,7 @@ export default function ProductShow({
     ];
 
     const toggleValue = (group: ProductOptionGroup, valueId: number) => {
-        if (group.selection_type === 'multiple') {
+        if (group.selection_type === "multiple") {
             setSelected((prev) => {
                 const current = prev[group.id] ?? [];
                 return {
@@ -361,7 +359,7 @@ export default function ProductShow({
                     )}
                 </Label>
 
-                {group.kind === 'color' ? (
+                {group.kind === "color" ? (
                     <div className="flex flex-wrap gap-2">
                         {visibleValues.map((value) => {
                             const isSelected = selectedIds.includes(value.id);
@@ -376,33 +374,33 @@ export default function ProductShow({
                                     onClick={() => toggleValue(group, value.id)}
                                     className={`size-9 rounded-full border-2 transition ${
                                         isSelected
-                                            ? 'border-primary ring-primary/30 ring-2'
-                                            : 'border-border hover:border-primary/50'
+                                            ? "border-primary ring-primary/30 ring-2"
+                                            : "border-border hover:border-primary/50"
                                     }`}
                                     style={{
                                         backgroundColor:
-                                            value.hex_color ?? '#e5e5e5',
+                                            value.hex_color ?? "#e5e5e5",
                                     }}
                                 />
                             );
                         })}
                     </div>
                 ) : VISUAL_OPTION_KINDS.includes(group.kind) ||
-                  group.kind === 'operation_type' ||
-                  group.kind === 'motor' ||
-                  group.kind === 'mechanism' ||
-                  group.kind === 'accessory' ? (
+                  group.kind === "operation_type" ||
+                  group.kind === "motor" ||
+                  group.kind === "mechanism" ||
+                  group.kind === "accessory" ? (
                     <OptionValueCards
                         values={visibleValues}
                         selectedIds={selectedIds}
                         onToggle={(valueId) => toggleValue(group, valueId)}
                         showDescription={
-                            group.kind === 'motor' ||
-                            group.kind === 'mechanism' ||
-                            group.kind === 'accessory'
+                            group.kind === "motor" ||
+                            group.kind === "mechanism" ||
+                            group.kind === "accessory"
                         }
                     />
-                ) : group.selection_type === 'multiple' ? (
+                ) : group.selection_type === "multiple" ? (
                     <div className="flex flex-wrap gap-3">
                         {visibleValues.map((value) => (
                             <div
@@ -452,7 +450,7 @@ export default function ProductShow({
                     </ToggleGroup>
                 )}
 
-                {group.kind === 'color' && selectedValues[0] && (
+                {group.kind === "color" && selectedValues[0] && (
                     <p className="text-muted-foreground text-xs">
                         {selectedValues[0].label}
                         {Number(selectedValues[0].price_modifier) > 0 &&
@@ -460,7 +458,7 @@ export default function ProductShow({
                     </p>
                 )}
 
-                {group.kind === 'mount_type' && mountInstructions && (
+                {group.kind === "mount_type" && mountInstructions && (
                     <p className="bg-muted mt-1 rounded-md p-2 text-xs">
                         {mountInstructions}
                     </p>
@@ -504,7 +502,7 @@ export default function ProductShow({
                             {product.sale_price !== null ? (
                                 <>
                                     <span className="text-2xl font-semibold">
-                                        From{' '}
+                                        From{" "}
                                         {formatCurrency(product.sale_price)}
                                     </span>
                                     <span className="text-muted-foreground line-through">
@@ -535,7 +533,7 @@ export default function ProductShow({
                             {sections.map((section, index) => {
                                 const stepNumber = index + 1;
 
-                                if (section.type === 'size') {
+                                if (section.type === "size") {
                                     return (
                                         <div
                                             key="size"
@@ -641,7 +639,7 @@ export default function ProductShow({
                                                     <p className="text-muted-foreground text-xs">
                                                         {heightBounds.min}
                                                         &ndash;
-                                                        {heightBounds.max}{' '}
+                                                        {heightBounds.max}{" "}
                                                         {unit}
                                                     </p>
                                                     {form.errors.height && (
@@ -669,7 +667,7 @@ export default function ProductShow({
                                     value={form.data.quantity}
                                     onChange={(e) =>
                                         form.setData(
-                                            'quantity',
+                                            "quantity",
                                             Number(e.target.value),
                                         )
                                     }
@@ -768,7 +766,7 @@ export default function ProductShow({
                                         </p>
                                         <p className="text-2xl font-semibold">
                                             {quoting
-                                                ? '…'
+                                                ? "…"
                                                 : breakdown
                                                   ? formatCurrency(
                                                         breakdown.final_price,
@@ -784,8 +782,8 @@ export default function ProductShow({
                                         disabled={form.processing || !breakdown}
                                     >
                                         {editingCartItem
-                                            ? 'Save Changes'
-                                            : 'Add to cart'}
+                                            ? "Save Changes"
+                                            : "Add to cart"}
                                     </Button>
                                 </div>
                             </div>

@@ -41,5 +41,5 @@ export type BestSeller = {
 export type ReportFilters = {
     from: string;
     to: string;
-    sort: 'units' | 'revenue';
+    sort: "units" | "revenue";
 };

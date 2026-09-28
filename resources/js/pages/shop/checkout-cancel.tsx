@@ -1,8 +1,8 @@
-import { Head, Link, useForm } from '@inertiajs/react';
-import { Button } from '@/components/ui/button';
-import { index as cartIndex } from '@/routes/cart';
-import { retry } from '@/routes/checkout';
-import type { Order } from '@/types';
+import { Head, Link, useForm } from "@inertiajs/react";
+import { Button } from "@/components/ui/button";
+import { index as cartIndex } from "@/routes/cart";
+import { retry } from "@/routes/checkout";
+import type { Order } from "@/types";
 
 export default function CheckoutCancel({ order }: { order: Order }) {
     const retryForm = useForm({});

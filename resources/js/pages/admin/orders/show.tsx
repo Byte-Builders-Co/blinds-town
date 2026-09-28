@@ -1,27 +1,27 @@
-import { Head, useForm } from '@inertiajs/react';
-import InputError from '@/components/input-error';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { OrderTimeline } from '@/components/shop/order-timeline';
-import { PaymentStatusBadge } from '@/components/shop/payment-status-badge';
+import { Head, useForm } from "@inertiajs/react";
+import InputError from "@/components/input-error";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { OrderTimeline } from "@/components/shop/order-timeline";
+import { PaymentStatusBadge } from "@/components/shop/payment-status-badge";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import { formatCurrency } from '@/lib/utils';
+} from "@/components/ui/select";
+import { formatCurrency } from "@/lib/utils";
 import {
     index,
     refund,
     updateStatus,
     updateTracking,
-} from '@/routes/admin/orders';
-import { ORDER_STATUS_LABELS, PAYMENT_METHOD_LABELS } from '@/types';
-import type { Order, OrderStatus } from '@/types';
+} from "@/routes/admin/orders";
+import { ORDER_STATUS_LABELS, PAYMENT_METHOD_LABELS } from "@/types";
+import type { Order, OrderStatus } from "@/types";
 
 export default function AdminOrderShow({
     order,
@@ -30,14 +30,14 @@ export default function AdminOrderShow({
     order: Order;
     statuses: OrderStatus[];
 }) {
-    const statusForm = useForm({ status: order.status, note: '' });
+    const statusForm = useForm({ status: order.status, note: "" });
     const trackingForm = useForm({
-        carrier: order.carrier ?? '',
-        tracking_number: order.tracking_number ?? '',
+        carrier: order.carrier ?? "",
+        tracking_number: order.tracking_number ?? "",
     });
     const refundForm = useForm({
-        amount: order.payment?.amount ?? '',
-        reason: '',
+        amount: order.payment?.amount ?? "",
+        reason: "",
     });
 
     const submitStatus = () => {
@@ -52,7 +52,7 @@ export default function AdminOrderShow({
         refundForm.post(refund(order).url, { preserveScroll: true });
     };
 
-    const canRefund = order.payment?.status === 'paid';
+    const canRefund = order.payment?.status === "paid";
 
     return (
         <>
@@ -84,7 +84,7 @@ export default function AdminOrderShow({
                                 value={statusForm.data.status}
                                 onValueChange={(value) =>
                                     statusForm.setData(
-                                        'status',
+                                        "status",
                                         value as OrderStatus,
                                     )
                                 }
@@ -109,7 +109,7 @@ export default function AdminOrderShow({
                             <Input
                                 value={statusForm.data.note}
                                 onChange={(e) =>
-                                    statusForm.setData('note', e.target.value)
+                                    statusForm.setData("note", e.target.value)
                                 }
                             />
                         </div>
@@ -133,7 +133,7 @@ export default function AdminOrderShow({
                                 value={trackingForm.data.carrier}
                                 onChange={(e) =>
                                     trackingForm.setData(
-                                        'carrier',
+                                        "carrier",
                                         e.target.value,
                                     )
                                 }
@@ -149,7 +149,7 @@ export default function AdminOrderShow({
                                 value={trackingForm.data.tracking_number}
                                 onChange={(e) =>
                                     trackingForm.setData(
-                                        'tracking_number',
+                                        "tracking_number",
                                         e.target.value,
                                     )
                                 }
@@ -184,7 +184,7 @@ export default function AdminOrderShow({
                             <h2 className="font-semibold">Payment</h2>
                             <div className="text-muted-foreground mt-3 space-y-1 text-sm">
                                 <p>
-                                    Method:{' '}
+                                    Method:{" "}
                                     {
                                         PAYMENT_METHOD_LABELS[
                                             order.payment.method
@@ -192,7 +192,7 @@ export default function AdminOrderShow({
                                     }
                                 </p>
                                 <p>
-                                    Amount:{' '}
+                                    Amount:{" "}
                                     {formatCurrency(
                                         order.payment.amount,
                                         order.currency,
@@ -200,7 +200,7 @@ export default function AdminOrderShow({
                                 </p>
                                 {order.payment.gateway_transaction_id && (
                                     <p>
-                                        Transaction:{' '}
+                                        Transaction:{" "}
                                         {order.payment.gateway_transaction_id}
                                     </p>
                                 )}
@@ -223,7 +223,7 @@ export default function AdminOrderShow({
                                                 {formatCurrency(
                                                     r.amount,
                                                     order.currency,
-                                                )}{' '}
+                                                )}{" "}
                                                 — {r.status}
                                             </p>
                                         ))}
@@ -246,7 +246,7 @@ export default function AdminOrderShow({
                                                 value={refundForm.data.amount}
                                                 onChange={(e) =>
                                                     refundForm.setData(
-                                                        'amount',
+                                                        "amount",
                                                         e.target.value,
                                                     )
                                                 }
@@ -261,7 +261,7 @@ export default function AdminOrderShow({
                                                 value={refundForm.data.reason}
                                                 onChange={(e) =>
                                                     refundForm.setData(
-                                                        'reason',
+                                                        "reason",
                                                         e.target.value,
                                                     )
                                                 }
@@ -300,7 +300,7 @@ export default function AdminOrderShow({
                                     cm
                                     {item.selected_options &&
                                         item.selected_options.length > 0 &&
-                                        ` · ${item.selected_options.map((o) => o.label).join(', ')}`}
+                                        ` · ${item.selected_options.map((o) => o.label).join(", ")}`}
                                 </p>
                                 {item.measurement_photo_path && (
                                     <a
@@ -410,7 +410,7 @@ export default function AdminOrderShow({
 
 AdminOrderShow.layout = {
     breadcrumbs: [
-        { title: 'Orders', href: index() },
-        { title: 'Order', href: '#' },
+        { title: "Orders", href: index() },
+        { title: "Order", href: "#" },
     ],
 };

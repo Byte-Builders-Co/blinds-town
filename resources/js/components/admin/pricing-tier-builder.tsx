@@ -1,17 +1,17 @@
-import { Plus, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import InputError from '@/components/input-error';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Plus, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import InputError from "@/components/input-error";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import { PRICING_TIER_TYPE_LABELS, type PricingTierType } from '@/types';
+} from "@/components/ui/select";
+import { PRICING_TIER_TYPE_LABELS, type PricingTierType } from "@/types";
 
 export type EditablePricingTier = {
     id?: number;
@@ -24,10 +24,10 @@ export type EditablePricingTier = {
 
 export function newPricingTier(): EditablePricingTier {
     return {
-        min_area_sqm: '0',
-        max_area_sqm: '',
-        pricing_type: 'per_sqm',
-        price: '0',
+        min_area_sqm: "0",
+        max_area_sqm: "",
+        pricing_type: "per_sqm",
+        price: "0",
         is_active: true,
     };
 }

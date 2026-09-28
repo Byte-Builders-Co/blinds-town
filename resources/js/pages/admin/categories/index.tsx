@@ -1,19 +1,19 @@
-import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Plus } from 'lucide-react';
-import { useState } from 'react';
-import { PaginationLinks } from '@/components/pagination-links';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Head, Link, router, usePage } from "@inertiajs/react";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import { PaginationLinks } from "@/components/pagination-links";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import { create, destroy, edit, index } from '@/routes/admin/categories';
-import type { Category, CategoryOption, Paginated } from '@/types';
+} from "@/components/ui/select";
+import { create, destroy, edit, index } from "@/routes/admin/categories";
+import type { Category, CategoryOption, Paginated } from "@/types";
 
 type Filters = {
     search?: string;
@@ -31,7 +31,7 @@ export default function AdminCategoriesIndex({
     parentOptions: CategoryOption[];
     filters: Filters;
 }) {
-    const [search, setSearch] = useState(filters.search ?? '');
+    const [search, setSearch] = useState(filters.search ?? "");
     const { errors } = usePage().props;
 
     const applyFilters = (patch: Partial<Filters>) => {
@@ -68,16 +68,16 @@ export default function AdminCategoriesIndex({
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter') applyFilters({});
+                            if (e.key === "Enter") applyFilters({});
                         }}
                         onBlur={() => applyFilters({})}
                         className="max-w-xs"
                     />
                     <Select
-                        value={filters.status ?? 'all'}
+                        value={filters.status ?? "all"}
                         onValueChange={(value) =>
                             applyFilters({
-                                status: value === 'all' ? undefined : value,
+                                status: value === "all" ? undefined : value,
                             })
                         }
                     >
@@ -91,10 +91,10 @@ export default function AdminCategoriesIndex({
                         </SelectContent>
                     </Select>
                     <Select
-                        value={filters.parent ?? 'all'}
+                        value={filters.parent ?? "all"}
                         onValueChange={(value) =>
                             applyFilters({
-                                parent: value === 'all' ? undefined : value,
+                                parent: value === "all" ? undefined : value,
                             })
                         }
                     >
@@ -117,10 +117,10 @@ export default function AdminCategoriesIndex({
                         </SelectContent>
                     </Select>
                     <Select
-                        value={filters.featured ?? 'all'}
+                        value={filters.featured ?? "all"}
                         onValueChange={(value) =>
                             applyFilters({
-                                featured: value === 'all' ? undefined : value,
+                                featured: value === "all" ? undefined : value,
                             })
                         }
                     >
@@ -145,20 +145,20 @@ export default function AdminCategoriesIndex({
                                     {category.name}
                                     {category.parent && (
                                         <span className="text-muted-foreground font-normal">
-                                            {' '}
-                                            &middot; under{' '}
+                                            {" "}
+                                            &middot; under{" "}
                                             {category.parent.name}
                                         </span>
                                     )}
                                 </p>
                                 <p className="text-muted-foreground text-sm">
                                     {category.products_count} product
-                                    {category.products_count === 1 ? '' : 's'}
-                                    {' · '}
+                                    {category.products_count === 1 ? "" : "s"}
+                                    {" · "}
                                     {category.children_count} subcategor
                                     {category.children_count === 1
-                                        ? 'y'
-                                        : 'ies'}
+                                        ? "y"
+                                        : "ies"}
                                 </p>
                             </div>
                             <div className="flex items-center gap-3">
@@ -168,11 +168,11 @@ export default function AdminCategoriesIndex({
                                 <Badge
                                     variant={
                                         category.is_active
-                                            ? 'default'
-                                            : 'secondary'
+                                            ? "default"
+                                            : "secondary"
                                     }
                                 >
-                                    {category.is_active ? 'Active' : 'Inactive'}
+                                    {category.is_active ? "Active" : "Inactive"}
                                 </Badge>
                                 <Button variant="outline" size="sm" asChild>
                                     <Link href={edit(category)}>Edit</Link>
@@ -208,5 +208,5 @@ export default function AdminCategoriesIndex({
 }
 
 AdminCategoriesIndex.layout = {
-    breadcrumbs: [{ title: 'Categories', href: index() }],
+    breadcrumbs: [{ title: "Categories", href: index() }],
 };

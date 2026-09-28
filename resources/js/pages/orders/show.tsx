@@ -1,20 +1,20 @@
-import { Head, Link, useForm } from '@inertiajs/react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { OrderTimeline } from '@/components/shop/order-timeline';
-import { PaymentStatusBadge } from '@/components/shop/payment-status-badge';
-import { formatCurrency } from '@/lib/utils';
-import { retry } from '@/routes/checkout';
-import { invoice } from '@/routes/orders';
-import { ORDER_STATUS_LABELS, PAYMENT_METHOD_LABELS } from '@/types';
-import type { Order } from '@/types';
+import { Head, Link, useForm } from "@inertiajs/react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { OrderTimeline } from "@/components/shop/order-timeline";
+import { PaymentStatusBadge } from "@/components/shop/payment-status-badge";
+import { formatCurrency } from "@/lib/utils";
+import { retry } from "@/routes/checkout";
+import { invoice } from "@/routes/orders";
+import { ORDER_STATUS_LABELS, PAYMENT_METHOD_LABELS } from "@/types";
+import type { Order } from "@/types";
 
 export default function OrderShow({ order }: { order: Order }) {
     const retryForm = useForm({});
     const canRetryPayment =
-        order.status === 'pending' &&
-        order.payment?.method === 'online' &&
-        order.payment.status !== 'paid';
+        order.status === "pending" &&
+        order.payment?.method === "online" &&
+        order.payment.status !== "paid";
 
     return (
         <>
@@ -77,7 +77,7 @@ export default function OrderShow({ order }: { order: Order }) {
                                 )}
                                 {order.shipped_at && (
                                     <p>
-                                        Shipped{' '}
+                                        Shipped{" "}
                                         {new Date(
                                             order.shipped_at,
                                         ).toLocaleDateString()}
@@ -103,7 +103,7 @@ export default function OrderShow({ order }: { order: Order }) {
                                     cm
                                     {item.selected_options &&
                                         item.selected_options.length > 0 &&
-                                        ` · ${item.selected_options.map((o) => o.label).join(', ')}`}
+                                        ` · ${item.selected_options.map((o) => o.label).join(", ")}`}
                                 </p>
                                 {item.measurement_photo_path && (
                                     <a

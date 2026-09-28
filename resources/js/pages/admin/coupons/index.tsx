@@ -1,19 +1,19 @@
-import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Plus } from 'lucide-react';
-import { useState } from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Head, Link, router, usePage } from "@inertiajs/react";
+import { Plus } from "lucide-react";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import { PaginationLinks } from '@/components/pagination-links';
-import { create, destroy, edit, index, toggle } from '@/routes/admin/coupons';
-import type { Coupon, Paginated } from '@/types';
+} from "@/components/ui/select";
+import { PaginationLinks } from "@/components/pagination-links";
+import { create, destroy, edit, index, toggle } from "@/routes/admin/coupons";
+import type { Coupon, Paginated } from "@/types";
 
 type Filters = { search?: string; type?: string; status?: string };
 
@@ -24,7 +24,7 @@ export default function AdminCouponsIndex({
     coupons: Paginated<Coupon>;
     filters: Filters;
 }) {
-    const [search, setSearch] = useState(filters.search ?? '');
+    const [search, setSearch] = useState(filters.search ?? "");
     const { errors } = usePage().props;
 
     const applyFilters = (patch: Partial<Filters>) => {
@@ -61,16 +61,16 @@ export default function AdminCouponsIndex({
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter') applyFilters({});
+                            if (e.key === "Enter") applyFilters({});
                         }}
                         onBlur={() => applyFilters({})}
                         className="max-w-xs"
                     />
                     <Select
-                        value={filters.type ?? 'all'}
+                        value={filters.type ?? "all"}
                         onValueChange={(value) =>
                             applyFilters({
-                                type: value === 'all' ? undefined : value,
+                                type: value === "all" ? undefined : value,
                             })
                         }
                     >
@@ -86,10 +86,10 @@ export default function AdminCouponsIndex({
                         </SelectContent>
                     </Select>
                     <Select
-                        value={filters.status ?? 'all'}
+                        value={filters.status ?? "all"}
                         onValueChange={(value) =>
                             applyFilters({
-                                status: value === 'all' ? undefined : value,
+                                status: value === "all" ? undefined : value,
                             })
                         }
                     >
@@ -114,31 +114,31 @@ export default function AdminCouponsIndex({
                                 <p className="font-medium">
                                     {coupon.code}
                                     <span className="text-muted-foreground font-normal">
-                                        {' '}
-                                        &middot;{' '}
-                                        {coupon.type === 'percentage'
+                                        {" "}
+                                        &middot;{" "}
+                                        {coupon.type === "percentage"
                                             ? `${coupon.value}%`
-                                            : `$${coupon.value}`}{' '}
+                                            : `$${coupon.value}`}{" "}
                                         off
                                     </span>
                                 </p>
                                 <p className="text-muted-foreground text-sm">
                                     Used {coupon.usages_count ?? 0} time
-                                    {coupon.usages_count === 1 ? '' : 's'}
+                                    {coupon.usages_count === 1 ? "" : "s"}
                                     {coupon.usage_limit
                                         ? ` of ${coupon.usage_limit}`
-                                        : ''}
+                                        : ""}
                                 </p>
                             </div>
                             <div className="flex items-center gap-3">
                                 <Badge
                                     variant={
                                         coupon.is_active
-                                            ? 'default'
-                                            : 'secondary'
+                                            ? "default"
+                                            : "secondary"
                                     }
                                 >
-                                    {coupon.is_active ? 'Active' : 'Inactive'}
+                                    {coupon.is_active ? "Active" : "Inactive"}
                                 </Badge>
                                 <Button
                                     variant="outline"
@@ -148,8 +148,8 @@ export default function AdminCouponsIndex({
                                     }
                                 >
                                     {coupon.is_active
-                                        ? 'Deactivate'
-                                        : 'Activate'}
+                                        ? "Deactivate"
+                                        : "Activate"}
                                 </Button>
                                 <Button variant="outline" size="sm" asChild>
                                     <Link href={edit(coupon)}>Edit</Link>
@@ -189,5 +189,5 @@ export default function AdminCouponsIndex({
 }
 
 AdminCouponsIndex.layout = {
-    breadcrumbs: [{ title: 'Coupons', href: index() }],
+    breadcrumbs: [{ title: "Coupons", href: index() }],
 };

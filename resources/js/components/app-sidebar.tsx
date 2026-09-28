@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage } from "@inertiajs/react";
 import {
     BarChart3,
     Package,
@@ -10,10 +10,10 @@ import {
     Tag,
     Ticket,
     Users,
-} from 'lucide-react';
-import AppLogo from '@/components/app-logo';
-import { NavMain } from '@/components/nav-main';
-import { NavUser } from '@/components/nav-user';
+} from "lucide-react";
+import AppLogo from "@/components/app-logo";
+import { NavMain } from "@/components/nav-main";
+import { NavUser } from "@/components/nav-user";
 import {
     Sidebar,
     SidebarContent,
@@ -22,17 +22,17 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-} from '@/components/ui/sidebar';
-import { dashboard as adminDashboard } from '@/routes/admin';
-import { index as adminCategoriesIndex } from '@/routes/admin/categories';
-import { index as adminCouponsIndex } from '@/routes/admin/coupons';
-import { index as adminCustomersIndex } from '@/routes/admin/customers';
-import { index as adminOrdersIndex } from '@/routes/admin/orders';
-import { index as adminProductsIndex } from '@/routes/admin/products';
-import { index as adminReportsIndex } from '@/routes/admin/reports';
-import { index as adminReviewsIndex } from '@/routes/admin/reviews';
-import { edit as adminSettingsEdit } from '@/routes/admin/settings';
-import type { NavGroup, NavItem } from '@/types';
+} from "@/components/ui/sidebar";
+import { dashboard as adminDashboard } from "@/routes/admin";
+import { index as adminCategoriesIndex } from "@/routes/admin/categories";
+import { index as adminCouponsIndex } from "@/routes/admin/coupons";
+import { index as adminCustomersIndex } from "@/routes/admin/customers";
+import { index as adminOrdersIndex } from "@/routes/admin/orders";
+import { index as adminProductsIndex } from "@/routes/admin/products";
+import { index as adminReportsIndex } from "@/routes/admin/reports";
+import { index as adminReviewsIndex } from "@/routes/admin/reviews";
+import { edit as adminSettingsEdit } from "@/routes/admin/settings";
+import type { NavGroup, NavItem } from "@/types";
 
 /**
  * The admin panel is scoped to exactly 9 modules: Dashboard, Product
@@ -43,40 +43,40 @@ import type { NavGroup, NavItem } from '@/types';
 function buildAdminNavGroups(permissions: string[]): NavGroup[] {
     const groups: NavGroup[] = [
         {
-            label: 'Overview',
+            label: "Overview",
             items: [
                 {
-                    title: 'Dashboard',
+                    title: "Dashboard",
                     href: adminDashboard(),
                     icon: ShieldCheck,
                 },
             ],
         },
         {
-            label: 'Catalog',
+            label: "Catalog",
             items: [
                 {
-                    title: 'Product Management',
+                    title: "Product Management",
                     href: adminProductsIndex(),
                     icon: Package,
                 },
                 {
-                    title: 'Category Management',
+                    title: "Category Management",
                     href: adminCategoriesIndex(),
                     icon: Tag,
                 },
             ],
         },
         {
-            label: 'Sales',
+            label: "Sales",
             items: [
                 {
-                    title: 'Order Management',
+                    title: "Order Management",
                     href: adminOrdersIndex(),
                     icon: ReceiptText,
                 },
                 {
-                    title: 'Customer Management',
+                    title: "Customer Management",
                     href: adminCustomersIndex(),
                     icon: Users,
                 },
@@ -86,32 +86,32 @@ function buildAdminNavGroups(permissions: string[]): NavGroup[] {
 
     const marketingItems: NavItem[] = [];
 
-    if (permissions.includes('coupons.view')) {
+    if (permissions.includes("coupons.view")) {
         marketingItems.push({
-            title: 'Offer & Discount Management',
+            title: "Offer & Discount Management",
             href: adminCouponsIndex(),
             icon: Ticket,
         });
     }
 
-    if (permissions.includes('reviews.view')) {
+    if (permissions.includes("reviews.view")) {
         marketingItems.push({
-            title: 'Product Reviews',
+            title: "Product Reviews",
             href: adminReviewsIndex(),
             icon: Star,
         });
     }
 
     if (marketingItems.length > 0) {
-        groups.push({ label: 'Marketing', items: marketingItems });
+        groups.push({ label: "Marketing", items: marketingItems });
     }
 
-    if (permissions.includes('reports.view')) {
+    if (permissions.includes("reports.view")) {
         groups.push({
-            label: 'Reports',
+            label: "Reports",
             items: [
                 {
-                    title: 'Reports',
+                    title: "Reports",
                     href: adminReportsIndex(),
                     icon: BarChart3,
                 },
@@ -119,23 +119,23 @@ function buildAdminNavGroups(permissions: string[]): NavGroup[] {
         });
     }
 
-    if (permissions.includes('settings.view')) {
+    if (permissions.includes("settings.view")) {
         groups.push({
-            label: 'System Settings',
+            label: "System Settings",
             items: [
                 {
-                    title: 'Website Configuration',
-                    href: adminSettingsEdit('store'),
+                    title: "Website Configuration",
+                    href: adminSettingsEdit("store"),
                     icon: Store,
                 },
                 {
-                    title: 'Basic Store Settings',
-                    href: adminSettingsEdit('business'),
+                    title: "Basic Store Settings",
+                    href: adminSettingsEdit("business"),
                     icon: SettingsIcon,
                 },
                 {
-                    title: 'Email Notifications',
-                    href: adminSettingsEdit('notifications'),
+                    title: "Email Notifications",
+                    href: adminSettingsEdit("notifications"),
                     icon: SettingsIcon,
                 },
             ],

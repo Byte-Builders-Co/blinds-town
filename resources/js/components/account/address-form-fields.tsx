@@ -1,15 +1,15 @@
-import InputError from '@/components/input-error';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import InputError from "@/components/input-error";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import type { Address } from '@/types';
+} from "@/components/ui/select";
+import type { Address } from "@/types";
 
 type Errors = Partial<Record<keyof Address, string>>;
 
@@ -60,7 +60,7 @@ export function AddressFormFields({
                 <Input
                     id="address_line2"
                     name="address_line2"
-                    defaultValue={address?.address_line2 ?? ''}
+                    defaultValue={address?.address_line2 ?? ""}
                 />
                 <InputError message={errors.address_line2} />
             </div>
@@ -116,14 +116,14 @@ export function AddressFormFields({
                 <Input
                     id="landmark"
                     name="landmark"
-                    defaultValue={address?.landmark ?? ''}
+                    defaultValue={address?.landmark ?? ""}
                 />
                 <InputError message={errors.landmark} />
             </div>
 
             <div className="grid gap-2">
                 <Label htmlFor="type">Address type</Label>
-                <Select name="type" defaultValue={address?.type ?? 'home'}>
+                <Select name="type" defaultValue={address?.type ?? "home"}>
                     <SelectTrigger id="type" className="w-full">
                         <SelectValue />
                     </SelectTrigger>

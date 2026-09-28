@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { cn } from '@/lib/utils';
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 export function ProductGallery({
     images,
@@ -38,10 +38,10 @@ export function ProductGallery({
                             type="button"
                             onClick={() => setActive(index)}
                             className={cn(
-                                'size-16 overflow-hidden rounded-md border-2',
+                                "size-16 overflow-hidden rounded-md border-2",
                                 index === active
-                                    ? 'border-primary'
-                                    : 'border-transparent',
+                                    ? "border-primary"
+                                    : "border-transparent",
                             )}
                         >
                             <img

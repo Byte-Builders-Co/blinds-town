@@ -1,36 +1,36 @@
-import InputError from '@/components/input-error';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import InputError from "@/components/input-error";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import type { Coupon, CouponRestrictionOption } from '@/types';
+} from "@/components/ui/select";
+import type { Coupon, CouponRestrictionOption } from "@/types";
 
 type Errors = Partial<
     Record<
-        | 'code'
-        | 'type'
-        | 'value'
-        | 'min_order_amount'
-        | 'max_discount'
-        | 'starts_at'
-        | 'ends_at'
-        | 'usage_limit'
-        | 'per_user_limit'
-        | 'is_active'
-        | 'product_ids'
-        | 'category_ids',
+        | "code"
+        | "type"
+        | "value"
+        | "min_order_amount"
+        | "max_discount"
+        | "starts_at"
+        | "ends_at"
+        | "usage_limit"
+        | "per_user_limit"
+        | "is_active"
+        | "product_ids"
+        | "category_ids",
         string
     >
 >;
 
 function toDateInputValue(value: string | null): string {
-    return value ? value.slice(0, 10) : '';
+    return value ? value.slice(0, 10) : "";
 }
 
 export function CouponFormFields({
@@ -70,7 +70,7 @@ export function CouponFormFields({
                     <Label htmlFor="type">Discount type</Label>
                     <Select
                         name="type"
-                        defaultValue={coupon?.type ?? 'percentage'}
+                        defaultValue={coupon?.type ?? "percentage"}
                     >
                         <SelectTrigger id="type" className="w-full">
                             <SelectValue />
@@ -111,7 +111,7 @@ export function CouponFormFields({
                         type="number"
                         step="0.01"
                         min={0}
-                        defaultValue={coupon?.min_order_amount ?? ''}
+                        defaultValue={coupon?.min_order_amount ?? ""}
                     />
                     <InputError message={errors.min_order_amount} />
                 </div>
@@ -126,7 +126,7 @@ export function CouponFormFields({
                         type="number"
                         step="0.01"
                         min={0}
-                        defaultValue={coupon?.max_discount ?? ''}
+                        defaultValue={coupon?.max_discount ?? ""}
                     />
                     <InputError message={errors.max_discount} />
                 </div>
@@ -168,7 +168,7 @@ export function CouponFormFields({
                         name="usage_limit"
                         type="number"
                         min={1}
-                        defaultValue={coupon?.usage_limit ?? ''}
+                        defaultValue={coupon?.usage_limit ?? ""}
                     />
                     <InputError message={errors.usage_limit} />
                 </div>
@@ -182,7 +182,7 @@ export function CouponFormFields({
                         name="per_user_limit"
                         type="number"
                         min={1}
-                        defaultValue={coupon?.per_user_limit ?? ''}
+                        defaultValue={coupon?.per_user_limit ?? ""}
                     />
                     <InputError message={errors.per_user_limit} />
                 </div>

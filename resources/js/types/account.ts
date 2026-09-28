@@ -1,4 +1,4 @@
-export type AddressType = 'home' | 'office' | 'other';
+export type AddressType = "home" | "office" | "other";
 
 export type Address = {
     id: number;

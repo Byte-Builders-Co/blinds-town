@@ -1,6 +1,6 @@
-import { Star } from 'lucide-react';
-import { useInitials } from '@/hooks/use-initials';
-import type { Paginated, ProductReview } from '@/types';
+import { Star } from "lucide-react";
+import { useInitials } from "@/hooks/use-initials";
+import type { Paginated, ProductReview } from "@/types";
 
 function Stars({ rating }: { rating: number }) {
     return (
@@ -8,7 +8,7 @@ function Stars({ rating }: { rating: number }) {
             {[1, 2, 3, 4, 5].map((n) => (
                 <Star
                     key={n}
-                    className={`size-4 ${n <= rating ? 'fill-current text-amber-500' : 'text-muted-foreground/30'}`}
+                    className={`size-4 ${n <= rating ? "fill-current text-amber-500" : "text-muted-foreground/30"}`}
                 />
             ))}
         </div>
@@ -32,11 +32,11 @@ export function ReviewList({
             <div className="flex flex-wrap items-start gap-8">
                 <div>
                     <p className="text-3xl font-semibold">
-                        {avgRating ? avgRating.toFixed(1) : '—'}
+                        {avgRating ? avgRating.toFixed(1) : "—"}
                     </p>
                     <Stars rating={Math.round(avgRating ?? 0)} />
                     <p className="text-muted-foreground mt-1 text-sm">
-                        {total} review{total === 1 ? '' : 's'}
+                        {total} review{total === 1 ? "" : "s"}
                     </p>
                 </div>
 
@@ -79,13 +79,13 @@ export function ReviewList({
                                         ? getInitials(
                                               `${review.user.first_name} ${review.user.last_name}`,
                                           )
-                                        : '?'}
+                                        : "?"}
                                 </div>
                                 <div>
                                     <p className="text-sm font-medium">
                                         {review.user
                                             ? `${review.user.first_name} ${review.user.last_name}`
-                                            : 'Customer'}
+                                            : "Customer"}
                                     </p>
                                     <p className="text-muted-foreground text-xs">
                                         {new Date(

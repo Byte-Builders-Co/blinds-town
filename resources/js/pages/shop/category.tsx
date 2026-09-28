@@ -1,14 +1,14 @@
-import { Head } from '@inertiajs/react';
-import { ProductFilterBar } from '@/components/shop/product-filter-bar';
-import { ProductGrid } from '@/components/shop/product-grid';
-import { show } from '@/routes/categories';
+import { Head } from "@inertiajs/react";
+import { ProductFilterBar } from "@/components/shop/product-filter-bar";
+import { ProductGrid } from "@/components/shop/product-grid";
+import { show } from "@/routes/categories";
 import type {
     Category,
     ColorOption,
     Paginated,
     Product,
     ProductFilters,
-} from '@/types';
+} from "@/types";
 
 export default function ShopCategory({
     category,

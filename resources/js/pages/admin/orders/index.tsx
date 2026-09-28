@@ -1,18 +1,18 @@
-import { Head, Link, router } from '@inertiajs/react';
-import { PaginationLinks } from '@/components/pagination-links';
-import { Badge } from '@/components/ui/badge';
-import { PaymentStatusBadge } from '@/components/shop/payment-status-badge';
+import { Head, Link, router } from "@inertiajs/react";
+import { PaginationLinks } from "@/components/pagination-links";
+import { Badge } from "@/components/ui/badge";
+import { PaymentStatusBadge } from "@/components/shop/payment-status-badge";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import { formatCurrency } from '@/lib/utils';
-import { index, show } from '@/routes/admin/orders';
-import { ORDER_STATUS_LABELS, PAYMENT_STATUS_LABELS } from '@/types';
-import type { Order, OrderStatus, PaymentStatus, Paginated } from '@/types';
+} from "@/components/ui/select";
+import { formatCurrency } from "@/lib/utils";
+import { index, show } from "@/routes/admin/orders";
+import { ORDER_STATUS_LABELS, PAYMENT_STATUS_LABELS } from "@/types";
+import type { Order, OrderStatus, PaymentStatus, Paginated } from "@/types";
 
 export default function AdminOrdersIndex({
     orders,
@@ -42,10 +42,10 @@ export default function AdminOrdersIndex({
                     <h1 className="text-2xl font-semibold">Orders</h1>
                     <div className="flex items-center gap-2">
                         <Select
-                            value={filters.status ?? 'all'}
+                            value={filters.status ?? "all"}
                             onValueChange={(value) =>
                                 updateFilters({
-                                    status: value === 'all' ? undefined : value,
+                                    status: value === "all" ? undefined : value,
                                 })
                             }
                         >
@@ -65,11 +65,11 @@ export default function AdminOrdersIndex({
                         </Select>
 
                         <Select
-                            value={filters.payment_status ?? 'all'}
+                            value={filters.payment_status ?? "all"}
                             onValueChange={(value) =>
                                 updateFilters({
                                     payment_status:
-                                        value === 'all' ? undefined : value,
+                                        value === "all" ? undefined : value,
                                 })
                             }
                         >
@@ -136,5 +136,5 @@ export default function AdminOrdersIndex({
 }
 
 AdminOrdersIndex.layout = {
-    breadcrumbs: [{ title: 'Orders', href: index() }],
+    breadcrumbs: [{ title: "Orders", href: index() }],
 };

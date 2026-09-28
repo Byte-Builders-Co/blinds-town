@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link } from "@inertiajs/react";
 import {
     ArrowRight,
     ClipboardCheck,
@@ -8,84 +8,84 @@ import {
     ShieldCheck,
     Truck,
     Wrench,
-} from 'lucide-react';
-import { CategoryCard } from '@/components/shop/category-card';
-import { ProductCard } from '@/components/shop/product-card';
-import { Button } from '@/components/ui/button';
-import { index as categoriesIndex } from '@/routes/categories';
-import { index as productsIndex } from '@/routes/products';
+} from "lucide-react";
+import { CategoryCard } from "@/components/shop/category-card";
+import { ProductCard } from "@/components/shop/product-card";
+import { Button } from "@/components/ui/button";
+import { index as categoriesIndex } from "@/routes/categories";
+import { index as productsIndex } from "@/routes/products";
 import type {
     Category,
     CmsBanner,
     CmsPage,
     HomepageSections,
     Product,
-} from '@/types';
+} from "@/types";
 
-const defaultHero: HomepageSections['hero'] = {
-    heading: 'Made-to-measure blinds,\ncut precisely to your window.',
+const defaultHero: HomepageSections["hero"] = {
+    heading: "Made-to-measure blinds,\ncut precisely to your window.",
     subheading:
         "Enter your window's width and height, pick your finish, and we'll cut it to size. Free shipping on every order.",
-    cta_text: 'Shop blinds',
-    cta_url: '#categories',
-    secondary_cta_text: 'Custom Blind',
-    secondary_cta_url: '#',
+    cta_text: "Shop blinds",
+    cta_url: "#categories",
+    secondary_cta_text: "Custom Blind",
+    secondary_cta_url: "#",
     image_path: null,
 };
 
 const whyChooseUs = [
     {
         icon: Ruler,
-        title: 'Custom-Made Sizes',
-        description: 'Perfect fit for every window',
+        title: "Custom-Made Sizes",
+        description: "Perfect fit for every window",
     },
     {
         icon: Shirt,
-        title: 'Premium Fabrics',
-        description: 'Durable & stylish materials',
+        title: "Premium Fabrics",
+        description: "Durable & stylish materials",
     },
     {
         icon: Wrench,
-        title: 'Easy Installation',
-        description: 'Hassle-free setup',
+        title: "Easy Installation",
+        description: "Hassle-free setup",
     },
     {
         icon: ClipboardCheck,
-        title: 'Free Measurement Guidance',
-        description: 'Expert support, always',
+        title: "Free Measurement Guidance",
+        description: "Expert support, always",
     },
     {
         icon: ShieldCheck,
-        title: 'Secure Payment',
-        description: 'Safe & trusted transactions',
+        title: "Secure Payment",
+        description: "Safe & trusted transactions",
     },
     {
         icon: Truck,
-        title: 'Fast Delivery',
-        description: 'At your doorstep',
+        title: "Fast Delivery",
+        description: "At your doorstep",
     },
 ];
 
 const howItWorks = [
     {
-        title: 'Choose Your Blind',
-        description: 'Explore our collection',
+        title: "Choose Your Blind",
+        description: "Explore our collection",
     },
     {
-        title: 'Enter Measurements',
-        description: 'Get the perfect fit',
+        title: "Enter Measurements",
+        description: "Get the perfect fit",
     },
     {
-        title: 'Customize Fabric & Style',
-        description: 'Pick your colors & options',
+        title: "Customize Fabric & Style",
+        description: "Pick your colors & options",
     },
     {
-        title: 'Place Order',
-        description: 'Secure checkout',
+        title: "Place Order",
+        description: "Secure checkout",
     },
     {
-        title: 'Get It Delivered',
-        description: 'Right to your home',
+        title: "Get It Delivered",
+        description: "Right to your home",
     },
 ];
 
@@ -93,18 +93,18 @@ const aboutIcons = [Ruler, Palette, Truck, ShieldCheck];
 
 function aboutHighlights(body: string) {
     return body
-        .split('\n\n')
+        .split("\n\n")
         .map((paragraph) => paragraph.trim())
         .filter(Boolean)
         .map((paragraph) => {
-            const [title, ...rest] = paragraph.split(' — ');
-            const description = rest.join(' — ').trim();
+            const [title, ...rest] = paragraph.split(" — ");
+            const description = rest.join(" — ").trim();
 
             return {
                 title: title.trim(),
                 description: description
                     ? description.charAt(0).toUpperCase() + description.slice(1)
-                    : '',
+                    : "",
             };
         });
 }
@@ -154,8 +154,8 @@ export default function Welcome({
 
                                 <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
                                     <Button size="lg" asChild>
-                                        <a href={hero.cta_url || '#categories'}>
-                                            {hero.cta_text || 'Shop blinds'}
+                                        <a href={hero.cta_url || "#categories"}>
+                                            {hero.cta_text || "Shop blinds"}
                                         </a>
                                     </Button>
 
@@ -169,7 +169,7 @@ export default function Welcome({
                                             <a
                                                 href={
                                                     hero.secondary_cta_url ||
-                                                    '#'
+                                                    "#"
                                                 }
                                             >
                                                 {hero.secondary_cta_text}
@@ -192,14 +192,14 @@ export default function Welcome({
 
                         <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
                             <Button size="lg" asChild>
-                                <a href={hero.cta_url || '#categories'}>
-                                    {hero.cta_text || 'Shop blinds'}
+                                <a href={hero.cta_url || "#categories"}>
+                                    {hero.cta_text || "Shop blinds"}
                                 </a>
                             </Button>
 
                             {hero.secondary_cta_text && (
                                 <Button size="lg" variant="outline" asChild>
-                                    <a href={hero.secondary_cta_url || '#'}>
+                                    <a href={hero.secondary_cta_url || "#"}>
                                         {hero.secondary_cta_text}
                                     </a>
                                 </Button>
@@ -217,7 +217,7 @@ export default function Welcome({
                             {banners.map((banner) => (
                                 <a
                                     key={banner.id}
-                                    href={banner.button_url ?? '#'}
+                                    href={banner.button_url ?? "#"}
                                     className="group relative block w-72 shrink-0 overflow-hidden rounded-sm border"
                                 >
                                     <img
@@ -333,7 +333,7 @@ export default function Welcome({
                             {promo.button_text && (
                                 <div className="mt-5">
                                     <Button size="lg" asChild>
-                                        <a href={promo.button_url || '/'}>
+                                        <a href={promo.button_url || "/"}>
                                             {promo.button_text}
                                             <ArrowRight className="size-4" />
                                         </a>

@@ -1,28 +1,28 @@
-import { Head, Link, router } from '@inertiajs/react';
-import { useState } from 'react';
-import { PaginationLinks } from '@/components/pagination-links';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
+import { Head, Link, router } from "@inertiajs/react";
+import { useState } from "react";
+import { PaginationLinks } from "@/components/pagination-links";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import { index, show } from '@/routes/admin/customers';
-import { USER_STATUS_LABELS } from '@/types/auth';
-import type { Paginated, User, UserStatus } from '@/types';
+} from "@/components/ui/select";
+import { index, show } from "@/routes/admin/customers";
+import { USER_STATUS_LABELS } from "@/types/auth";
+import type { Paginated, User, UserStatus } from "@/types";
 
 type Filters = { search?: string; status?: string };
 
 const statusVariant: Record<
     UserStatus,
-    'default' | 'secondary' | 'destructive'
+    "default" | "secondary" | "destructive"
 > = {
-    active: 'default',
-    inactive: 'secondary',
-    blocked: 'destructive',
+    active: "default",
+    inactive: "secondary",
+    blocked: "destructive",
 };
 
 export default function AdminCustomersIndex({
@@ -34,7 +34,7 @@ export default function AdminCustomersIndex({
     filters: Filters;
     statuses: UserStatus[];
 }) {
-    const [search, setSearch] = useState(filters.search ?? '');
+    const [search, setSearch] = useState(filters.search ?? "");
 
     const applyFilters = (patch: Partial<Filters>) => {
         router.get(
@@ -57,16 +57,16 @@ export default function AdminCustomersIndex({
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter') applyFilters({});
+                            if (e.key === "Enter") applyFilters({});
                         }}
                         onBlur={() => applyFilters({})}
                         className="max-w-xs"
                     />
                     <Select
-                        value={filters.status ?? 'all'}
+                        value={filters.status ?? "all"}
                         onValueChange={(value) =>
                             applyFilters({
-                                status: value === 'all' ? undefined : value,
+                                status: value === "all" ? undefined : value,
                             })
                         }
                     >
@@ -113,5 +113,5 @@ export default function AdminCustomersIndex({
 }
 
 AdminCustomersIndex.layout = {
-    breadcrumbs: [{ title: 'Customers', href: index() }],
+    breadcrumbs: [{ title: "Customers", href: index() }],
 };

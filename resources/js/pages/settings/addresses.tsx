@@ -1,19 +1,19 @@
-import { Form, Head, router } from '@inertiajs/react';
-import { useState } from 'react';
-import { Plus, Star, Trash2 } from 'lucide-react';
-import AddressController from '@/actions/App/Http/Controllers/Customer/AddressController';
-import { AddressFormFields } from '@/components/account/address-form-fields';
-import Heading from '@/components/heading';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Form, Head, router } from "@inertiajs/react";
+import { useState } from "react";
+import { Plus, Star, Trash2 } from "lucide-react";
+import AddressController from "@/actions/App/Http/Controllers/Customer/AddressController";
+import { AddressFormFields } from "@/components/account/address-form-fields";
+import Heading from "@/components/heading";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
-} from '@/components/ui/dialog';
-import { setDefault } from '@/routes/addresses';
-import type { Address } from '@/types';
+} from "@/components/ui/dialog";
+import { setDefault } from "@/routes/addresses";
+import type { Address } from "@/types";
 
 export default function Addresses({ addresses }: { addresses: Address[] }) {
     const [creating, setCreating] = useState(false);
@@ -64,10 +64,10 @@ export default function Addresses({ addresses }: { addresses: Address[] }) {
                                     {address.address_line2 &&
                                         `, ${address.address_line2}`}
                                     <br />
-                                    {address.city}, {address.state}{' '}
+                                    {address.city}, {address.state}{" "}
                                     {address.pincode}
                                     <br />
-                                    {address.country} &middot;{' '}
+                                    {address.country} &middot;{" "}
                                     {address.mobile_number}
                                 </p>
                                 <div className="mt-3 flex gap-2">
@@ -98,7 +98,7 @@ export default function Addresses({ addresses }: { addresses: Address[] }) {
                                         size="sm"
                                         onClick={() => {
                                             if (
-                                                confirm('Delete this address?')
+                                                confirm("Delete this address?")
                                             ) {
                                                 router.delete(
                                                     AddressController.destroy(

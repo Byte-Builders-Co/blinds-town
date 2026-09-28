@@ -1,9 +1,9 @@
-export type UserStatus = 'active' | 'inactive' | 'blocked';
+export type UserStatus = "active" | "inactive" | "blocked";
 
 export const USER_STATUS_LABELS: Record<UserStatus, string> = {
-    active: 'Active',
-    inactive: 'Inactive',
-    blocked: 'Blocked',
+    active: "Active",
+    inactive: "Inactive",
+    blocked: "Blocked",
 };
 
 export type User = {

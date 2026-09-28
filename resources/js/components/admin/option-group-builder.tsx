@@ -1,21 +1,21 @@
-import { Plus, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import InputError from '@/components/input-error';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Plus, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import InputError from "@/components/input-error";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
     OPTION_GROUP_KIND_LABELS,
     type OptionGroupKind,
     type OptionSelectionType,
-} from '@/types';
+} from "@/types";
 
 export type EditableOptionValue = {
     id?: number;
@@ -48,29 +48,29 @@ const OPTION_GROUP_KINDS = Object.keys(
 
 /** Kinds that support an image per option value. */
 const IMAGE_KINDS: OptionGroupKind[] = [
-    'fabric',
-    'color',
-    'pattern',
-    'material',
-    'operation_type',
-    'motor',
-    'mechanism',
-    'accessory',
+    "fabric",
+    "color",
+    "pattern",
+    "material",
+    "operation_type",
+    "motor",
+    "mechanism",
+    "accessory",
 ];
 
 /** Kinds where the free-text "instructions" field doubles as a description. */
 const DESCRIPTION_KINDS: OptionGroupKind[] = [
-    'mount_type',
-    'motor',
-    'mechanism',
-    'accessory',
+    "mount_type",
+    "motor",
+    "mechanism",
+    "accessory",
 ];
 
 export function newOptionGroup(): EditableOptionGroup {
     return {
-        name: '',
-        kind: 'custom',
-        selection_type: 'single',
+        name: "",
+        kind: "custom",
+        selection_type: "single",
         is_required: true,
         is_active: true,
         requires_option_value_id: null,
@@ -80,13 +80,13 @@ export function newOptionGroup(): EditableOptionGroup {
 
 export function newOptionValue(): EditableOptionValue {
     return {
-        label: '',
+        label: "",
         image: null,
         existing_image_path: null,
-        hex_color: '',
-        price_modifier: '0',
-        price_per_sqm: '',
-        instructions: '',
+        hex_color: "",
+        price_modifier: "0",
+        price_per_sqm: "",
+        instructions: "",
         is_default: false,
         is_active: true,
         requires_option_value_id: null,
@@ -100,7 +100,7 @@ function existingValueOptions(groups: EditableOptionGroup[]) {
             .filter((value) => value.id !== undefined)
             .map((value) => ({
                 id: value.id as number,
-                label: `${group.name || OPTION_GROUP_KIND_LABELS[group.kind]}: ${value.label || 'Untitled'}`,
+                label: `${group.name || OPTION_GROUP_KIND_LABELS[group.kind]}: ${value.label || "Untitled"}`,
             })),
     );
 }
@@ -262,12 +262,12 @@ export function OptionGroupBuilder({
                             <Select
                                 value={
                                     group.requires_option_value_id?.toString() ??
-                                    'none'
+                                    "none"
                                 }
                                 onValueChange={(value) =>
                                     updateGroup(groupIndex, {
                                         requires_option_value_id:
-                                            value === 'none'
+                                            value === "none"
                                                 ? null
                                                 : Number(value),
                                     })
@@ -328,10 +328,10 @@ export function OptionGroupBuilder({
                                         />
                                     </div>
 
-                                    {group.kind === 'color' && (
+                                    {group.kind === "color" && (
                                         <Input
                                             type="color"
-                                            value={value.hex_color || '#000000'}
+                                            value={value.hex_color || "#000000"}
                                             onChange={(e) =>
                                                 updateValue(
                                                     groupIndex,
@@ -375,7 +375,7 @@ export function OptionGroupBuilder({
                                         </div>
                                     )}
 
-                                    {group.kind === 'fabric' ? (
+                                    {group.kind === "fabric" ? (
                                         <Input
                                             type="number"
                                             step="0.01"
@@ -416,9 +416,9 @@ export function OptionGroupBuilder({
                                     {DESCRIPTION_KINDS.includes(group.kind) && (
                                         <Input
                                             placeholder={
-                                                group.kind === 'mount_type'
-                                                    ? 'Measurement instructions'
-                                                    : 'Description'
+                                                group.kind === "mount_type"
+                                                    ? "Measurement instructions"
+                                                    : "Description"
                                             }
                                             value={value.instructions}
                                             onChange={(e) =>
@@ -484,7 +484,7 @@ export function OptionGroupBuilder({
                                         <Select
                                             value={
                                                 value.requires_option_value_id?.toString() ??
-                                                'none'
+                                                "none"
                                             }
                                             onValueChange={(selected) =>
                                                 updateValue(
@@ -492,7 +492,7 @@ export function OptionGroupBuilder({
                                                     valueIndex,
                                                     {
                                                         requires_option_value_id:
-                                                            selected === 'none'
+                                                            selected === "none"
                                                                 ? null
                                                                 : Number(
                                                                       selected,

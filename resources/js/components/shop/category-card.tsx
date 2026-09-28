@@ -1,6 +1,6 @@
-import { Link } from '@inertiajs/react';
-import { show } from '@/routes/categories';
-import type { Category } from '@/types';
+import { Link } from "@inertiajs/react";
+import { show } from "@/routes/categories";
+import type { Category } from "@/types";
 
 export function CategoryCard({
     category,
@@ -31,7 +31,7 @@ export function CategoryCard({
             {showCount && category.products_count !== undefined && (
                 <p className="text-muted-foreground text-xs">
                     {category.products_count} product
-                    {category.products_count === 1 ? '' : 's'}
+                    {category.products_count === 1 ? "" : "s"}
                 </p>
             )}
         </Link>

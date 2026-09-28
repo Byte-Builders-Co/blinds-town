@@ -1,35 +1,35 @@
-import type { FormDataConvertible } from '@inertiajs/core';
-import { router } from '@inertiajs/react';
-import { SlidersHorizontal, X } from 'lucide-react';
-import { type ReactNode, useEffect, useRef, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import type { FormDataConvertible } from "@inertiajs/core";
+import { router } from "@inertiajs/react";
+import { SlidersHorizontal, X } from "lucide-react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
     Sheet,
     SheetContent,
     SheetHeader,
     SheetTitle,
     SheetTrigger,
-} from '@/components/ui/sheet';
-import type { CategoryOption, ColorOption, ProductFilters } from '@/types';
+} from "@/components/ui/sheet";
+import type { CategoryOption, ColorOption, ProductFilters } from "@/types";
 
 const SORT_OPTIONS = [
-    { value: 'featured', label: 'Featured' },
-    { value: 'newest', label: 'Newest' },
-    { value: 'price_low', label: 'Price: Low to High' },
-    { value: 'price_high', label: 'Price: High to Low' },
-    { value: 'name_asc', label: 'Name: A-Z' },
-    { value: 'name_desc', label: 'Name: Z-A' },
-    { value: 'popular', label: 'Most Popular' },
-    { value: 'rating', label: 'Highest Rated' },
+    { value: "featured", label: "Featured" },
+    { value: "newest", label: "Newest" },
+    { value: "price_low", label: "Price: Low to High" },
+    { value: "price_high", label: "Price: High to Low" },
+    { value: "name_asc", label: "Name: A-Z" },
+    { value: "name_desc", label: "Name: Z-A" },
+    { value: "popular", label: "Most Popular" },
+    { value: "rating", label: "Highest Rated" },
 ];
 
 export function ProductFilterBar({
@@ -45,15 +45,15 @@ export function ProductFilterBar({
     colorOptions: ColorOption[];
     children: ReactNode;
 }) {
-    const [search, setSearch] = useState(filters.search ?? '');
-    const [minPrice, setMinPrice] = useState(filters.min_price ?? '');
-    const [maxPrice, setMaxPrice] = useState(filters.max_price ?? '');
-    const [category, setCategory] = useState(filters.category ?? 'all');
+    const [search, setSearch] = useState(filters.search ?? "");
+    const [minPrice, setMinPrice] = useState(filters.min_price ?? "");
+    const [maxPrice, setMaxPrice] = useState(filters.max_price ?? "");
+    const [category, setCategory] = useState(filters.category ?? "all");
     const [color, setColor] = useState<string[]>(filters.color ?? []);
     const [availability, setAvailability] = useState(
-        filters.availability ?? 'all',
+        filters.availability ?? "all",
     );
-    const [sort, setSort] = useState(filters.sort ?? 'featured');
+    const [sort, setSort] = useState(filters.sort ?? "featured");
     const isFirstRender = useRef(true);
 
     const submit = (overrides: Record<string, FormDataConvertible> = {}) => {
@@ -61,9 +61,9 @@ export function ProductFilterBar({
             search: search || undefined,
             min_price: minPrice || undefined,
             max_price: maxPrice || undefined,
-            category: category !== 'all' ? category : undefined,
+            category: category !== "all" ? category : undefined,
             color: color.length > 0 ? color : undefined,
-            availability: availability !== 'all' ? availability : undefined,
+            availability: availability !== "all" ? availability : undefined,
             sort,
             ...overrides,
         };
@@ -95,13 +95,13 @@ export function ProductFilterBar({
     };
 
     const clearAll = () => {
-        setSearch('');
-        setMinPrice('');
-        setMaxPrice('');
-        setCategory('all');
+        setSearch("");
+        setMinPrice("");
+        setMaxPrice("");
+        setCategory("all");
         setColor([]);
-        setAvailability('all');
-        setSort('featured');
+        setAvailability("all");
+        setSort("featured");
         router.get(
             baseUrl,
             {},
@@ -113,9 +113,9 @@ export function ProductFilterBar({
         search ||
         minPrice ||
         maxPrice ||
-        category !== 'all' ||
+        category !== "all" ||
         color.length > 0 ||
-        availability !== 'all';
+        availability !== "all";
 
     const fields = (
         <div className="space-y-6">
@@ -137,7 +137,7 @@ export function ProductFilterBar({
                         onValueChange={(value) => {
                             setCategory(value);
                             submit({
-                                category: value !== 'all' ? value : undefined,
+                                category: value !== "all" ? value : undefined,
                             });
                         }}
                     >
@@ -191,8 +191,8 @@ export function ProductFilterBar({
                                 onClick={() => toggleColor(c.label)}
                                 className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs ${
                                     color.includes(c.label)
-                                        ? 'border-primary bg-primary/10'
-                                        : 'border-input'
+                                        ? "border-primary bg-primary/10"
+                                        : "border-input"
                                 }`}
                             >
                                 {c.hex_color && (
@@ -215,7 +215,7 @@ export function ProductFilterBar({
                     onValueChange={(value) => {
                         setAvailability(value);
                         submit({
-                            availability: value !== 'all' ? value : undefined,
+                            availability: value !== "all" ? value : undefined,
                         });
                     }}
                 >

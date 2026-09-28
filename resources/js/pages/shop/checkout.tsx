@@ -1,14 +1,14 @@
-import { Head, useForm } from '@inertiajs/react';
-import { type FormEvent, useEffect, useState } from 'react';
-import InputError from '@/components/input-error';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { resolveSelectedOptionLabels } from '@/lib/shop';
-import { formatCurrency } from '@/lib/utils';
-import { quote, store as storeCheckout } from '@/routes/checkout';
-import type { Address, Cart } from '@/types';
+import { Head, useForm } from "@inertiajs/react";
+import { type FormEvent, useEffect, useState } from "react";
+import InputError from "@/components/input-error";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { resolveSelectedOptionLabels } from "@/lib/shop";
+import { formatCurrency } from "@/lib/utils";
+import { quote, store as storeCheckout } from "@/routes/checkout";
+import type { Address, Cart } from "@/types";
 
 type QuoteBreakdown = {
     subtotal: number;
@@ -31,26 +31,26 @@ export default function Checkout({
     shippingCharge: number;
 }) {
     const defaultAddress = addresses.find((a) => a.is_default) ?? addresses[0];
-    const [selectedAddressId, setSelectedAddressId] = useState<number | 'new'>(
-        defaultAddress ? defaultAddress.id : 'new',
+    const [selectedAddressId, setSelectedAddressId] = useState<number | "new">(
+        defaultAddress ? defaultAddress.id : "new",
     );
     const [installationRequested, setInstallationRequested] = useState(false);
-    const [couponCode, setCouponCode] = useState('');
+    const [couponCode, setCouponCode] = useState("");
     const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
     const [couponError, setCouponError] = useState<string | null>(null);
     const [breakdown, setBreakdown] = useState<QuoteBreakdown | null>(null);
     const [quoting, setQuoting] = useState(false);
 
     const form = useForm({
-        shipping_name: defaultAddress?.full_name ?? '',
-        shipping_line1: defaultAddress?.address_line1 ?? '',
-        shipping_line2: defaultAddress?.address_line2 ?? '',
-        shipping_city: defaultAddress?.city ?? '',
-        shipping_postal_code: defaultAddress?.pincode ?? '',
-        shipping_country: defaultAddress?.country ?? '',
-        shipping_phone: defaultAddress?.mobile_number ?? '',
+        shipping_name: defaultAddress?.full_name ?? "",
+        shipping_line1: defaultAddress?.address_line1 ?? "",
+        shipping_line2: defaultAddress?.address_line2 ?? "",
+        shipping_city: defaultAddress?.city ?? "",
+        shipping_postal_code: defaultAddress?.pincode ?? "",
+        shipping_country: defaultAddress?.country ?? "",
+        shipping_phone: defaultAddress?.mobile_number ?? "",
         installation_requested: false,
-        coupon_code: '',
+        coupon_code: "",
     });
 
     const selectAddress = (address: Address) => {
@@ -59,7 +59,7 @@ export default function Checkout({
             ...form.data,
             shipping_name: address.full_name,
             shipping_line1: address.address_line1,
-            shipping_line2: address.address_line2 ?? '',
+            shipping_line2: address.address_line2 ?? "",
             shipping_city: address.city,
             shipping_postal_code: address.pincode,
             shipping_country: address.country,
@@ -78,14 +78,14 @@ export default function Checkout({
                         coupon_code: couponCode || undefined,
                     },
                 }),
-                { headers: { Accept: 'application/json' } },
+                { headers: { Accept: "application/json" } },
             )
                 .then(async (res) => {
                     if (!res.ok) {
                         const body = await res.json().catch(() => null);
                         setCouponError(
                             body?.errors?.coupon_code?.[0] ??
-                                'This coupon code is not valid.',
+                                "This coupon code is not valid.",
                         );
                         setAppliedCoupon(null);
                         return;
@@ -128,8 +128,8 @@ export default function Checkout({
                                         key={address.id}
                                         className={`cursor-pointer rounded-lg border p-3 text-sm ${
                                             selectedAddressId === address.id
-                                                ? 'border-primary bg-primary/5'
-                                                : ''
+                                                ? "border-primary bg-primary/5"
+                                                : ""
                                         }`}
                                     >
                                         <div className="flex items-start gap-3">
@@ -153,8 +153,8 @@ export default function Checkout({
                                                     {address.address_line1}
                                                     {address.address_line2 &&
                                                         `, ${address.address_line2}`}
-                                                    , {address.city},{' '}
-                                                    {address.state}{' '}
+                                                    , {address.city},{" "}
+                                                    {address.state}{" "}
                                                     {address.pincode}
                                                 </p>
                                             </div>
@@ -163,9 +163,9 @@ export default function Checkout({
                                 ))}
                                 <label
                                     className={`cursor-pointer rounded-lg border p-3 text-sm ${
-                                        selectedAddressId === 'new'
-                                            ? 'border-primary bg-primary/5'
-                                            : ''
+                                        selectedAddressId === "new"
+                                            ? "border-primary bg-primary/5"
+                                            : ""
                                     }`}
                                 >
                                     <div className="flex items-center gap-3">
@@ -173,10 +173,10 @@ export default function Checkout({
                                             type="radio"
                                             name="address_selection"
                                             checked={
-                                                selectedAddressId === 'new'
+                                                selectedAddressId === "new"
                                             }
                                             onChange={() =>
-                                                setSelectedAddressId('new')
+                                                setSelectedAddressId("new")
                                             }
                                         />
                                         Enter a new address
@@ -185,7 +185,7 @@ export default function Checkout({
                             </div>
                         )}
 
-                        {selectedAddressId === 'new' && (
+                        {selectedAddressId === "new" && (
                             <div className="mt-6 space-y-4">
                                 <div className="grid gap-2">
                                     <Label htmlFor="shipping_name">
@@ -196,7 +196,7 @@ export default function Checkout({
                                         value={form.data.shipping_name}
                                         onChange={(e) =>
                                             form.setData(
-                                                'shipping_name',
+                                                "shipping_name",
                                                 e.target.value,
                                             )
                                         }
@@ -216,7 +216,7 @@ export default function Checkout({
                                         value={form.data.shipping_line1}
                                         onChange={(e) =>
                                             form.setData(
-                                                'shipping_line1',
+                                                "shipping_line1",
                                                 e.target.value,
                                             )
                                         }
@@ -236,7 +236,7 @@ export default function Checkout({
                                         value={form.data.shipping_line2}
                                         onChange={(e) =>
                                             form.setData(
-                                                'shipping_line2',
+                                                "shipping_line2",
                                                 e.target.value,
                                             )
                                         }
@@ -256,7 +256,7 @@ export default function Checkout({
                                             value={form.data.shipping_city}
                                             onChange={(e) =>
                                                 form.setData(
-                                                    'shipping_city',
+                                                    "shipping_city",
                                                     e.target.value,
                                                 )
                                             }
@@ -278,7 +278,7 @@ export default function Checkout({
                                             }
                                             onChange={(e) =>
                                                 form.setData(
-                                                    'shipping_postal_code',
+                                                    "shipping_postal_code",
                                                     e.target.value,
                                                 )
                                             }
@@ -302,7 +302,7 @@ export default function Checkout({
                                             value={form.data.shipping_country}
                                             onChange={(e) =>
                                                 form.setData(
-                                                    'shipping_country',
+                                                    "shipping_country",
                                                     e.target.value,
                                                 )
                                             }
@@ -325,7 +325,7 @@ export default function Checkout({
                                             value={form.data.shipping_phone}
                                             onChange={(e) =>
                                                 form.setData(
-                                                    'shipping_phone',
+                                                    "shipping_phone",
                                                     e.target.value,
                                                 )
                                             }
@@ -371,7 +371,7 @@ export default function Checkout({
                                     variant="outline"
                                     size="sm"
                                     onClick={() => {
-                                        setCouponCode('');
+                                        setCouponCode("");
                                         setAppliedCoupon(null);
                                     }}
                                 >
@@ -414,7 +414,7 @@ export default function Checkout({
                                 <div key={item.id} className="text-sm">
                                     <div className="flex justify-between">
                                         <span className="font-medium">
-                                            {item.product?.name} &times;{' '}
+                                            {item.product?.name} &times;{" "}
                                             {item.quantity}
                                         </span>
                                         <span>
@@ -422,10 +422,10 @@ export default function Checkout({
                                         </span>
                                     </div>
                                     <p className="text-muted-foreground">
-                                        {item.width_cm}cm &times;{' '}
+                                        {item.width_cm}cm &times;{" "}
                                         {item.height_cm}cm
                                         {optionLabels.length > 0 &&
-                                            ` · ${optionLabels.map((o) => o.label).join(', ')}`}
+                                            ` · ${optionLabels.map((o) => o.label).join(", ")}`}
                                     </p>
                                 </div>
                             );
@@ -486,7 +486,7 @@ export default function Checkout({
                                     <span>Total</span>
                                     <span>
                                         {quoting
-                                            ? '…'
+                                            ? "…"
                                             : formatCurrency(breakdown.total)}
                                     </span>
                                 </div>
@@ -499,7 +499,7 @@ export default function Checkout({
                     </div>
 
                     <p className="text-muted-foreground mt-4 text-xs">
-                        Shipping charge shown reflects a flat{' '}
+                        Shipping charge shown reflects a flat{" "}
                         {formatCurrency(shippingCharge)} rate.
                     </p>
                 </div>

@@ -1,6 +1,6 @@
-import { Head } from '@inertiajs/react';
-import { CategoryCard } from '@/components/shop/category-card';
-import type { Category } from '@/types';
+import { Head } from "@inertiajs/react";
+import { CategoryCard } from "@/components/shop/category-card";
+import type { Category } from "@/types";
 
 export default function Categories({ categories }: { categories: Category[] }) {
     return (

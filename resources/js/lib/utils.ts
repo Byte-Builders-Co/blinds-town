@@ -1,22 +1,22 @@
-import type { InertiaLinkProps } from '@inertiajs/react';
-import { clsx } from 'clsx';
-import type { ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import type { InertiaLinkProps } from "@inertiajs/react";
+import { clsx } from "clsx";
+import type { ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export function toUrl(url: NonNullable<InertiaLinkProps['href']>): string {
-    return typeof url === 'string' ? url : url.url;
+export function toUrl(url: NonNullable<InertiaLinkProps["href"]>): string {
+    return typeof url === "string" ? url : url.url;
 }
 
 export function formatCurrency(
     amount: string | number,
-    currency: string = 'usd',
+    currency: string = "usd",
 ): string {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
+    return new Intl.NumberFormat("en-US", {
+        style: "currency",
         currency: currency.toUpperCase(),
     }).format(Number(amount));
 }

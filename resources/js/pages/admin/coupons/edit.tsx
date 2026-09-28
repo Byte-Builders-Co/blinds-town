@@ -1,9 +1,9 @@
-import { Form, Head } from '@inertiajs/react';
-import AdminCouponController from '@/actions/App/Http/Controllers/Admin/CouponController';
-import { CouponFormFields } from '@/components/admin/coupon-form-fields';
-import { Button } from '@/components/ui/button';
-import { index } from '@/routes/admin/coupons';
-import type { Coupon, CouponRestrictionOption } from '@/types';
+import { Form, Head } from "@inertiajs/react";
+import AdminCouponController from "@/actions/App/Http/Controllers/Admin/CouponController";
+import { CouponFormFields } from "@/components/admin/coupon-form-fields";
+import { Button } from "@/components/ui/button";
+import { index } from "@/routes/admin/coupons";
+import type { Coupon, CouponRestrictionOption } from "@/types";
 
 export default function AdminCouponEdit({
     coupon,
@@ -22,8 +22,8 @@ export default function AdminCouponEdit({
                 <h1 className="text-2xl font-semibold">Edit {coupon.code}</h1>
                 <p className="text-muted-foreground mt-1 text-sm">
                     Used {coupon.usages_count ?? 0} time
-                    {coupon.usages_count === 1 ? '' : 's'}
-                    {coupon.usage_limit ? ` of ${coupon.usage_limit}` : ''}.
+                    {coupon.usages_count === 1 ? "" : "s"}
+                    {coupon.usage_limit ? ` of ${coupon.usage_limit}` : ""}.
                 </p>
 
                 <Form
@@ -51,7 +51,7 @@ export default function AdminCouponEdit({
 
 AdminCouponEdit.layout = {
     breadcrumbs: [
-        { title: 'Coupons', href: index() },
-        { title: 'Edit', href: '#' },
+        { title: "Coupons", href: index() },
+        { title: "Edit", href: "#" },
     ],
 };

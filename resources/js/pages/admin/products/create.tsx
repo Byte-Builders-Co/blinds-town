@@ -1,27 +1,27 @@
-import { Head, useForm } from '@inertiajs/react';
-import { type FormEvent } from 'react';
-import InputError from '@/components/input-error';
+import { Head, useForm } from "@inertiajs/react";
+import { type FormEvent } from "react";
+import InputError from "@/components/input-error";
 import {
     OptionGroupBuilder,
     type EditableOptionGroup,
-} from '@/components/admin/option-group-builder';
+} from "@/components/admin/option-group-builder";
 import {
     PricingTierBuilder,
     type EditablePricingTier,
-} from '@/components/admin/pricing-tier-builder';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+} from "@/components/admin/pricing-tier-builder";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import { create, index, store } from '@/routes/admin/products';
-import type { Category, MeasurementUnit, StockStatus } from '@/types';
+} from "@/components/ui/select";
+import { create, index, store } from "@/routes/admin/products";
+import type { Category, MeasurementUnit, StockStatus } from "@/types";
 
 type FormData = {
     sku: string;
@@ -52,23 +52,23 @@ export default function AdminProductCreate({
     categories: Category[];
 }) {
     const form = useForm<FormData>({
-        sku: '',
-        category_id: categories[0]?.id.toString() ?? '',
-        name: '',
-        description: '',
-        price_per_sqm: '',
-        min_area_sqm: '',
-        base_price: '0',
-        tax_rate_percent: '',
-        discount_percent: '',
-        min_width_cm: '30',
-        max_width_cm: '300',
-        min_height_cm: '30',
-        max_height_cm: '300',
-        measurement_unit_default: 'cm',
+        sku: "",
+        category_id: categories[0]?.id.toString() ?? "",
+        name: "",
+        description: "",
+        price_per_sqm: "",
+        min_area_sqm: "",
+        base_price: "0",
+        tax_rate_percent: "",
+        discount_percent: "",
+        min_width_cm: "30",
+        max_width_cm: "300",
+        min_height_cm: "30",
+        max_height_cm: "300",
+        measurement_unit_default: "cm",
         is_active: true,
         is_featured: false,
-        stock_status: 'in_stock',
+        stock_status: "in_stock",
         image: null,
         option_groups: [],
         pricing_tiers: [],
@@ -92,7 +92,7 @@ export default function AdminProductCreate({
                         <Select
                             value={form.data.category_id}
                             onValueChange={(value) =>
-                                form.setData('category_id', value)
+                                form.setData("category_id", value)
                             }
                         >
                             <SelectTrigger id="category_id" className="w-full">
@@ -118,7 +118,7 @@ export default function AdminProductCreate({
                             id="sku"
                             value={form.data.sku}
                             onChange={(e) =>
-                                form.setData('sku', e.target.value)
+                                form.setData("sku", e.target.value)
                             }
                         />
                         <InputError message={form.errors.sku} />
@@ -130,7 +130,7 @@ export default function AdminProductCreate({
                             id="name"
                             value={form.data.name}
                             onChange={(e) =>
-                                form.setData('name', e.target.value)
+                                form.setData("name", e.target.value)
                             }
                             required
                         />
@@ -143,7 +143,7 @@ export default function AdminProductCreate({
                             id="description"
                             value={form.data.description}
                             onChange={(e) =>
-                                form.setData('description', e.target.value)
+                                form.setData("description", e.target.value)
                             }
                             className="border-input dark:bg-input/30 min-h-24 rounded-md border bg-transparent px-3 py-2 text-sm shadow-xs"
                         />
@@ -162,7 +162,7 @@ export default function AdminProductCreate({
                                 value={form.data.price_per_sqm}
                                 onChange={(e) =>
                                     form.setData(
-                                        'price_per_sqm',
+                                        "price_per_sqm",
                                         e.target.value,
                                     )
                                 }
@@ -181,7 +181,7 @@ export default function AdminProductCreate({
                                 step="0.01"
                                 value={form.data.base_price}
                                 onChange={(e) =>
-                                    form.setData('base_price', e.target.value)
+                                    form.setData("base_price", e.target.value)
                                 }
                                 required
                             />
@@ -201,7 +201,7 @@ export default function AdminProductCreate({
                                 placeholder="No minimum"
                                 value={form.data.min_area_sqm}
                                 onChange={(e) =>
-                                    form.setData('min_area_sqm', e.target.value)
+                                    form.setData("min_area_sqm", e.target.value)
                                 }
                             />
                             <InputError message={form.errors.min_area_sqm} />
@@ -219,7 +219,7 @@ export default function AdminProductCreate({
                                 value={form.data.tax_rate_percent}
                                 onChange={(e) =>
                                     form.setData(
-                                        'tax_rate_percent',
+                                        "tax_rate_percent",
                                         e.target.value,
                                     )
                                 }
@@ -241,7 +241,7 @@ export default function AdminProductCreate({
                                 value={form.data.discount_percent}
                                 onChange={(e) =>
                                     form.setData(
-                                        'discount_percent',
+                                        "discount_percent",
                                         e.target.value,
                                     )
                                 }
@@ -261,7 +261,7 @@ export default function AdminProductCreate({
                                 value={form.data.measurement_unit_default}
                                 onValueChange={(value) =>
                                     form.setData(
-                                        'measurement_unit_default',
+                                        "measurement_unit_default",
                                         value as MeasurementUnit,
                                     )
                                 }
@@ -287,7 +287,7 @@ export default function AdminProductCreate({
                                 value={form.data.stock_status}
                                 onValueChange={(value) =>
                                     form.setData(
-                                        'stock_status',
+                                        "stock_status",
                                         value as StockStatus,
                                     )
                                 }
@@ -319,7 +319,7 @@ export default function AdminProductCreate({
                                 type="number"
                                 value={form.data.min_width_cm}
                                 onChange={(e) =>
-                                    form.setData('min_width_cm', e.target.value)
+                                    form.setData("min_width_cm", e.target.value)
                                 }
                                 required
                             />
@@ -332,7 +332,7 @@ export default function AdminProductCreate({
                                 type="number"
                                 value={form.data.max_width_cm}
                                 onChange={(e) =>
-                                    form.setData('max_width_cm', e.target.value)
+                                    form.setData("max_width_cm", e.target.value)
                                 }
                                 required
                             />
@@ -351,7 +351,7 @@ export default function AdminProductCreate({
                                 value={form.data.min_height_cm}
                                 onChange={(e) =>
                                     form.setData(
-                                        'min_height_cm',
+                                        "min_height_cm",
                                         e.target.value,
                                     )
                                 }
@@ -369,7 +369,7 @@ export default function AdminProductCreate({
                                 value={form.data.max_height_cm}
                                 onChange={(e) =>
                                     form.setData(
-                                        'max_height_cm',
+                                        "max_height_cm",
                                         e.target.value,
                                     )
                                 }
@@ -387,7 +387,7 @@ export default function AdminProductCreate({
                             accept="image/*"
                             onChange={(e) =>
                                 form.setData(
-                                    'image',
+                                    "image",
                                     e.target.files?.[0] ?? null,
                                 )
                             }
@@ -401,7 +401,7 @@ export default function AdminProductCreate({
                                 id="is_active"
                                 checked={form.data.is_active}
                                 onCheckedChange={(checked) =>
-                                    form.setData('is_active', checked === true)
+                                    form.setData("is_active", checked === true)
                                 }
                             />
                             <Label htmlFor="is_active">Active</Label>
@@ -412,7 +412,7 @@ export default function AdminProductCreate({
                                 checked={form.data.is_featured}
                                 onCheckedChange={(checked) =>
                                     form.setData(
-                                        'is_featured',
+                                        "is_featured",
                                         checked === true,
                                     )
                                 }
@@ -427,7 +427,7 @@ export default function AdminProductCreate({
                             groups={form.data.option_groups}
                             errors={form.errors}
                             onChange={(groups) =>
-                                form.setData('option_groups', groups)
+                                form.setData("option_groups", groups)
                             }
                         />
                     </div>
@@ -438,7 +438,7 @@ export default function AdminProductCreate({
                             tiers={form.data.pricing_tiers}
                             errors={form.errors}
                             onChange={(tiers) =>
-                                form.setData('pricing_tiers', tiers)
+                                form.setData("pricing_tiers", tiers)
                             }
                         />
                     </div>
@@ -454,7 +454,7 @@ export default function AdminProductCreate({
 
 AdminProductCreate.layout = {
     breadcrumbs: [
-        { title: 'Products', href: index() },
-        { title: 'New', href: create() },
+        { title: "Products", href: index() },
+        { title: "New", href: create() },
     ],
 };

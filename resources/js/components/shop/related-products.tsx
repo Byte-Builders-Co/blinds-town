@@ -1,5 +1,5 @@
-import { ProductCard } from '@/components/shop/product-card';
-import type { Product } from '@/types';
+import { ProductCard } from "@/components/shop/product-card";
+import type { Product } from "@/types";
 
 export function RelatedProducts({ products }: { products: Product[] }) {
     if (products.length === 0) {

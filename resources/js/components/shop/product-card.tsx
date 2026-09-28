@@ -1,12 +1,12 @@
-import { Link } from '@inertiajs/react';
-import { ShoppingCart, Star } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardTitle } from '@/components/ui/card';
-import { WishlistButton } from '@/components/shop/wishlist-button';
-import { formatCurrency } from '@/lib/utils';
-import { show } from '@/routes/products';
-import type { Product } from '@/types';
+import { Link } from "@inertiajs/react";
+import { ShoppingCart, Star } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
+import { WishlistButton } from "@/components/shop/wishlist-button";
+import { formatCurrency } from "@/lib/utils";
+import { show } from "@/routes/products";
+import type { Product } from "@/types";
 
 export function ProductCard({
     product,
@@ -16,9 +16,9 @@ export function ProductCard({
     isWishlisted?: boolean;
 }) {
     const hasDiscount = product.sale_price !== null;
-    const isOutOfStock = product.stock_status === 'out_of_stock';
+    const isOutOfStock = product.stock_status === "out_of_stock";
     const colorSwatches =
-        product.option_groups?.find((group) => group.kind === 'color')
+        product.option_groups?.find((group) => group.kind === "color")
             ?.values ?? [];
     const visibleSwatches = colorSwatches.slice(0, 5);
     const extraSwatchCount = colorSwatches.length - visibleSwatches.length;
@@ -103,7 +103,7 @@ export function ProductCard({
                                 className="border-border size-4 shrink-0 rounded-full border"
                                 style={{
                                     backgroundColor:
-                                        value.hex_color ?? '#e5e5e5',
+                                        value.hex_color ?? "#e5e5e5",
                                 }}
                             />
                         ))}
@@ -119,13 +119,13 @@ export function ProductCard({
             <CardFooter className="px-3 pt-0 pb-3 sm:px-4 sm:pb-4">
                 <Button
                     asChild
-                    variant={isOutOfStock ? 'outline' : 'default'}
+                    variant={isOutOfStock ? "outline" : "default"}
                     size="sm"
                     className="w-full sm:h-9 sm:px-4 sm:py-2 sm:text-sm"
                 >
                     <Link href={show(product.slug)}>
                         <ShoppingCart className="size-4" />
-                        {isOutOfStock ? 'View Details' : 'Buy Now'}
+                        {isOutOfStock ? "View Details" : "Buy Now"}
                     </Link>
                 </Button>
             </CardFooter>

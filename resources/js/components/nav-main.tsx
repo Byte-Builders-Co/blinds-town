@@ -1,21 +1,21 @@
-import { Link } from '@inertiajs/react';
-import { ChevronRight } from 'lucide-react';
-import { useState } from 'react';
-import { Badge } from '@/components/ui/badge';
+import { Link } from "@inertiajs/react";
+import { ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import {
     Collapsible,
     CollapsibleContent,
     CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+} from "@/components/ui/collapsible";
 import {
     SidebarGroup,
     SidebarGroupLabel,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-} from '@/components/ui/sidebar';
-import { useCurrentUrl } from '@/hooks/use-current-url';
-import type { NavGroup } from '@/types';
+} from "@/components/ui/sidebar";
+import { useCurrentUrl } from "@/hooks/use-current-url";
+import type { NavGroup } from "@/types";
 
 export function NavMain({ groups }: { groups: NavGroup[] }) {
     const { isCurrentUrl } = useCurrentUrl();
@@ -46,7 +46,7 @@ export function NavMain({ groups }: { groups: NavGroup[] }) {
                                 <SidebarGroupLabel className="flex w-full cursor-pointer items-center justify-between">
                                     {group.label}
                                     <ChevronRight
-                                        className={`size-3.5 shrink-0 transition-transform ${open ? 'rotate-90' : ''}`}
+                                        className={`size-3.5 shrink-0 transition-transform ${open ? "rotate-90" : ""}`}
                                     />
                                 </SidebarGroupLabel>
                             </CollapsibleTrigger>

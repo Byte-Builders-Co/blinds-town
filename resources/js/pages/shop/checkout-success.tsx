@@ -1,15 +1,15 @@
-import { Head, Link, useForm } from '@inertiajs/react';
-import { CheckCircle2, XCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { formatCurrency } from '@/lib/utils';
-import { home } from '@/routes';
-import { retry } from '@/routes/checkout';
-import { show } from '@/routes/orders';
-import type { Order } from '@/types';
+import { Head, Link, useForm } from "@inertiajs/react";
+import { CheckCircle2, XCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/lib/utils";
+import { home } from "@/routes";
+import { retry } from "@/routes/checkout";
+import { show } from "@/routes/orders";
+import type { Order } from "@/types";
 
 export default function CheckoutSuccess({ order }: { order: Order }) {
-    const isConfirmed = order.status !== 'pending';
-    const paymentFailed = order.payment?.status === 'failed';
+    const isConfirmed = order.status !== "pending";
+    const paymentFailed = order.payment?.status === "failed";
     const retryForm = useForm({});
 
     const retryPayment = () => {

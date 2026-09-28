@@ -1,11 +1,11 @@
-import { router, usePage } from '@inertiajs/react';
-import { Heart } from 'lucide-react';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { store, destroy } from '@/routes/wishlist';
-import { login } from '@/routes';
-import type { Product } from '@/types';
-import { cn } from '@/lib/utils';
+import { router, usePage } from "@inertiajs/react";
+import { Heart } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { store, destroy } from "@/routes/wishlist";
+import { login } from "@/routes";
+import type { Product } from "@/types";
+import { cn } from "@/lib/utils";
 
 export function WishlistButton({
     product,
@@ -52,10 +52,10 @@ export function WishlistButton({
                 e.stopPropagation();
                 toggle();
             }}
-            aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+            aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
             className={cn(className)}
         >
-            <Heart className={wishlisted ? 'fill-current text-red-500' : ''} />
+            <Heart className={wishlisted ? "fill-current text-red-500" : ""} />
         </Button>
     );
 }

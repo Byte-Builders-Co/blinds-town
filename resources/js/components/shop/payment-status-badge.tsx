@@ -1,18 +1,18 @@
-import { Badge } from '@/components/ui/badge';
-import { PAYMENT_STATUS_LABELS } from '@/types';
-import type { PaymentStatus } from '@/types';
+import { Badge } from "@/components/ui/badge";
+import { PAYMENT_STATUS_LABELS } from "@/types";
+import type { PaymentStatus } from "@/types";
 
 const VARIANTS: Record<
     PaymentStatus,
-    'default' | 'secondary' | 'destructive' | 'outline'
+    "default" | "secondary" | "destructive" | "outline"
 > = {
-    pending: 'secondary',
-    processing: 'secondary',
-    paid: 'default',
-    failed: 'destructive',
-    cancelled: 'outline',
-    refunded: 'outline',
-    partially_refunded: 'outline',
+    pending: "secondary",
+    processing: "secondary",
+    paid: "default",
+    failed: "destructive",
+    cancelled: "outline",
+    refunded: "outline",
+    partially_refunded: "outline",
 };
 
 export function PaymentStatusBadge({ status }: { status: PaymentStatus }) {

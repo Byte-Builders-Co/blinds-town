@@ -1,19 +1,19 @@
-import { Head, useForm } from '@inertiajs/react';
-import InputError from '@/components/input-error';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Head, useForm } from "@inertiajs/react";
+import InputError from "@/components/input-error";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import { formatCurrency } from '@/lib/utils';
-import { index, updateStatus } from '@/routes/admin/customers';
-import { USER_STATUS_LABELS } from '@/types/auth';
-import { ORDER_STATUS_LABELS } from '@/types/shop';
-import type { Address, Order, User, UserStatus } from '@/types';
+} from "@/components/ui/select";
+import { formatCurrency } from "@/lib/utils";
+import { index, updateStatus } from "@/routes/admin/customers";
+import { USER_STATUS_LABELS } from "@/types/auth";
+import { ORDER_STATUS_LABELS } from "@/types/shop";
+import type { Address, Order, User, UserStatus } from "@/types";
 
 export default function AdminCustomerShow({
     customer,
@@ -48,7 +48,7 @@ export default function AdminCustomerShow({
                         <Select
                             value={form.data.status}
                             onValueChange={(value) =>
-                                form.setData('status', value as UserStatus)
+                                form.setData("status", value as UserStatus)
                             }
                         >
                             <SelectTrigger className="w-48">
@@ -83,7 +83,7 @@ export default function AdminCustomerShow({
                                     className="rounded-lg border p-3 text-sm"
                                 >
                                     <p className="font-medium">
-                                        {address.full_name}{' '}
+                                        {address.full_name}{" "}
                                         {address.is_default && (
                                             <Badge className="ml-1">
                                                 Default
@@ -91,7 +91,7 @@ export default function AdminCustomerShow({
                                         )}
                                     </p>
                                     <p className="text-muted-foreground">
-                                        {address.address_line1}, {address.city},{' '}
+                                        {address.address_line1}, {address.city},{" "}
                                         {address.state} {address.pincode}
                                     </p>
                                 </div>
@@ -134,5 +134,5 @@ export default function AdminCustomerShow({
 }
 
 AdminCustomerShow.layout = {
-    breadcrumbs: [{ title: 'Customers', href: index() }],
+    breadcrumbs: [{ title: "Customers", href: index() }],
 };

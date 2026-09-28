@@ -1,7 +1,7 @@
-import { Check } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { ORDER_STATUS_LABELS, ORDER_STATUS_SEQUENCE } from '@/types';
-import type { OrderStatus, OrderStatusHistory } from '@/types';
+import { Check } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { ORDER_STATUS_LABELS, ORDER_STATUS_SEQUENCE } from "@/types";
+import type { OrderStatus, OrderStatusHistory } from "@/types";
 
 export function OrderTimeline({
     status,
@@ -10,7 +10,7 @@ export function OrderTimeline({
     status: OrderStatus;
     statusHistories: OrderStatusHistory[];
 }) {
-    if (status === 'cancelled') {
+    if (status === "cancelled") {
         return (
             <div className="text-destructive flex items-center gap-2 text-sm">
                 <Check className="size-4" /> Order Cancelled
@@ -31,20 +31,20 @@ export function OrderTimeline({
                     <li key={step} className="flex items-start gap-3 text-sm">
                         <span
                             className={cn(
-                                'flex size-5 shrink-0 items-center justify-center rounded-full border text-xs',
+                                "flex size-5 shrink-0 items-center justify-center rounded-full border text-xs",
                                 isDone
-                                    ? 'border-primary bg-primary text-primary-foreground'
-                                    : 'text-muted-foreground border-muted-foreground/30',
+                                    ? "border-primary bg-primary text-primary-foreground"
+                                    : "text-muted-foreground border-muted-foreground/30",
                             )}
                         >
-                            {isDone ? <Check className="size-3" /> : '○'}
+                            {isDone ? <Check className="size-3" /> : "○"}
                         </span>
                         <div>
                             <p
                                 className={
                                     isDone
-                                        ? 'font-medium'
-                                        : 'text-muted-foreground'
+                                        ? "font-medium"
+                                        : "text-muted-foreground"
                                 }
                             >
                                 {ORDER_STATUS_LABELS[step]}

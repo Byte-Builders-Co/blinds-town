@@ -1,14 +1,14 @@
-import { Head } from '@inertiajs/react';
-import { ProductFilterBar } from '@/components/shop/product-filter-bar';
-import { ProductGrid } from '@/components/shop/product-grid';
-import { index } from '@/routes/products';
+import { Head } from "@inertiajs/react";
+import { ProductFilterBar } from "@/components/shop/product-filter-bar";
+import { ProductGrid } from "@/components/shop/product-grid";
+import { index } from "@/routes/products";
 import type {
     CategoryOption,
     ColorOption,
     Paginated,
     Product,
     ProductFilters,
-} from '@/types';
+} from "@/types";
 
 export default function ProductsIndex({
     products,
