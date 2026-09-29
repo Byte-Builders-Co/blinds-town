@@ -165,6 +165,8 @@ export type Product = {
     reviews_avg_rating?: number | null;
     option_groups?: ProductOptionGroup[];
     pricing_tiers?: ProductPricingTier[];
+    created_at?: string;
+    updated_at?: string;
 };
 
 export type PriceBreakdownLine = {

@@ -12,6 +12,98 @@ test('customers cannot access admin product management', function () {
     $response->assertForbidden();
 });
 
+test('admins can view the product list', function () {
+    $admin = User::factory()->admin()->create();
+    Product::factory()->count(3)->create();
+
+    $response = $this->actingAs($admin)->get('/admin/products');
+
+    $response->assertOk();
+    $response->assertInertia(fn ($page) => $page->component('admin/products/index')->has('products.data', 3));
+});
+
+test('admins can search products by name', function () {
+    $admin = User::factory()->admin()->create();
+    $match = Product::factory()->create(['name' => 'Classic Roller Blind']);
+    Product::factory()->create(['name' => 'Zebra Shade']);
+
+    $response = $this->actingAs($admin)->get('/admin/products?search=Roller');
+
+    $response->assertOk();
+    $response->assertInertia(fn ($page) => $page
+        ->component('admin/products/index')
+        ->has('products.data', 1)
+        ->where('products.data.0.id', $match->id)
+    );
+});
+
+test('admins can sort products by price', function () {
+    $admin = User::factory()->admin()->create();
+    $cheap = Product::factory()->create(['base_price' => 10]);
+    $expensive = Product::factory()->create(['base_price' => 500]);
+
+    $response = $this->actingAs($admin)->get('/admin/products?sort=price&direction=desc');
+
+    $response->assertOk();
+    $response->assertInertia(fn ($page) => $page
+        ->component('admin/products/index')
+        ->where('products.data.0.id', $expensive->id)
+        ->where('products.data.1.id', $cheap->id)
+    );
+});
+
+test('admins can filter products by stock status', function () {
+    $admin = User::factory()->admin()->create();
+    $inStock = Product::factory()->create(['stock_status' => 'in_stock']);
+    Product::factory()->create(['stock_status' => 'out_of_stock']);
+
+    $response = $this->actingAs($admin)->get('/admin/products?stock_status=in_stock');
+
+    $response->assertOk();
+    $response->assertInertia(fn ($page) => $page
+        ->component('admin/products/index')
+        ->has('products.data', 1)
+        ->where('products.data.0.id', $inStock->id)
+    );
+});
+
+test('admins can filter products by active status', function () {
+    $admin = User::factory()->admin()->create();
+    $active = Product::factory()->create(['is_active' => true]);
+    Product::factory()->create(['is_active' => false]);
+
+    $response = $this->actingAs($admin)->get('/admin/products?status=active');
+
+    $response->assertOk();
+    $response->assertInertia(fn ($page) => $page
+        ->component('admin/products/index')
+        ->has('products.data', 1)
+        ->where('products.data.0.id', $active->id)
+    );
+});
+
+test('admins can view a product detail page', function () {
+    $admin = User::factory()->admin()->create();
+    $product = Product::factory()->create();
+
+    $response = $this->actingAs($admin)->get("/admin/products/{$product->id}");
+
+    $response->assertOk();
+    $response->assertInertia(fn ($page) => $page
+        ->component('admin/products/show')
+        ->where('product.id', $product->id)
+    );
+});
+
+test('customers cannot view a product detail page', function () {
+    $customer = User::factory()->create();
+    $product = Product::factory()->create();
+
+    $response = $this->actingAs($customer)->get("/admin/products/{$product->id}");
+
+    $response->assertForbidden();
+});
+
 test('admins can create a product with option groups', function () {
     $admin = User::factory()->admin()->create();
     $category = Category::factory()->create();
@@ -149,5 +241,19 @@ test('admins can delete a product', function () {
     $response = $this->actingAs($admin)->delete("/admin/products/{$product->id}");
 
     $response->assertRedirect(route('admin.products.index'));
-    $this->assertDatabaseMissing('products', ['id' => $product->id]);
+    $this->assertSoftDeleted('products', ['id' => $product->id]);
+});
+
+test('a deleted product no longer appears in the product list', function () {
+    $admin = User::factory()->admin()->create();
+    $product = Product::factory()->create();
+
+    $this->actingAs($admin)->delete("/admin/products/{$product->id}");
+
+    $response = $this->actingAs($admin)->get('/admin/products');
+
+    $response->assertInertia(fn ($page) => $page
+        ->component('admin/products/index')
+        ->has('products.data', 0)
+    );
 });

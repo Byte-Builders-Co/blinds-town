@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\StockStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -17,10 +19,51 @@ use Inertia\Response;
 
 class ProductController extends Controller
 {
-    public function index(): Response
+    /**
+     * Columns the index table can be sorted by, mapped to their
+     * fully-qualified column (category name lives on `categories`).
+     *
+     * @var array<string, string>
+     */
+    private const SORTABLE_COLUMNS = [
+        'id' => 'products.id',
+        'name' => 'products.name',
+        'category' => 'categories.name',
+        'price' => 'products.base_price',
+        'stock' => 'products.stock_status',
+        'status' => 'products.is_active',
+        'updated_at' => 'products.updated_at',
+    ];
+
+    public function index(Request $request): Response
     {
+        $sort = $request->string('sort')->toString();
+        $sortColumn = self::SORTABLE_COLUMNS[$sort] ?? self::SORTABLE_COLUMNS['name'];
+        $direction = $request->string('direction')->toString() === 'desc' ? 'desc' : 'asc';
+
         return Inertia::render('admin/products/index', [
-            'products' => Product::query()->with('category')->orderBy('name')->paginate(15),
+            'products' => Product::query()
+                ->select('products.*')
+                ->join('categories', 'categories.id', '=', 'products.category_id')
+                ->with('category')
+                ->search($request->string('search')->toString())
+                ->when($request->string('stock_status')->toString(), fn ($query, $stockStatus) => $query->where('products.stock_status', $stockStatus))
+                ->when($request->string('status')->toString(), fn ($query, $status) => $query->where('products.is_active', $status === 'active'))
+                ->orderBy($sortColumn, $direction)
+                ->paginate(15)
+                ->withQueryString(),
+            'stockStatuses' => StockStatus::cases(),
+            'filters' => [
+                ...$request->only(['search', 'sort', 'stock_status', 'status']),
+                'direction' => $direction,
+            ],
+        ]);
+    }
+
+    public function show(Product $product): Response
+    {
+        return Inertia::render('admin/products/show', [
+            'product' => $product->load('category', 'optionGroups.values', 'pricingTiers'),
         ]);
     }
 
@@ -213,11 +256,9 @@ class ProductController extends Controller
 
     public function destroy(Product $product): RedirectResponse
     {
-        if ($product->image_path) {
-            Storage::disk('public')->delete($product->image_path);
-        }
-
         $product->delete();
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => "{$product->name} deleted."]);
 
         return redirect()->route('admin.products.index');
     }

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
@@ -38,6 +39,7 @@ use Illuminate\Support\Carbon;
  * @property StockStatus $stock_status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
  * @property-read Category $category
  * @property-read Collection<int, ProductOptionGroup> $optionGroups
  * @property-read Collection<int, ProductReview> $reviews
@@ -71,6 +73,8 @@ class Product extends Model
 {
     /** @use HasFactory<ProductFactory> */
     use HasFactory;
+
+    use SoftDeletes;
 
     /** @var list<string> */
     protected $appends = ['sale_price'];
@@ -157,9 +161,9 @@ class Product extends Model
         }
 
         return $query->where(function (Builder $query) use ($term) {
-            $query->where('name', 'like', "%{$term}%")
-                ->orWhere('description', 'like', "%{$term}%")
-                ->orWhere('sku', 'like', "%{$term}%")
+            $query->where('products.name', 'like', "%{$term}%")
+                ->orWhere('products.description', 'like', "%{$term}%")
+                ->orWhere('products.sku', 'like', "%{$term}%")
                 ->orWhereHas('category', fn (Builder $query) => $query->where('name', 'like', "%{$term}%"));
         });
     }

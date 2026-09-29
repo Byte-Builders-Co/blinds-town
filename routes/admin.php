@@ -26,7 +26,7 @@ Route::middleware(['auth', 'verified', 'role:admin|staff|super-admin'])->prefix(
         ->middlewareFor(['edit', 'update'], 'can:categories.edit')
         ->middlewareFor('destroy', 'can:categories.delete');
 
-    Route::resource('products', ProductController::class)->except('show');
+    Route::resource('products', ProductController::class);
 
     // Offer & Discount Management (reuses the existing Coupon backend as-is).
     Route::resource('coupons', CouponController::class)->except('show')

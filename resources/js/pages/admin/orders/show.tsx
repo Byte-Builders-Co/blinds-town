@@ -1,4 +1,5 @@
 import { Head, useForm } from "@inertiajs/react";
+import { useState } from "react";
 import InputError from "@/components/input-error";
 import { OrderStatusBadge } from "@/components/shop/order-status-badge";
 import { OrderTimeline } from "@/components/shop/order-timeline";
@@ -59,21 +60,22 @@ export default function AdminOrderShow({
     };
 
     const canRefund = order.payment?.status === "paid";
+    const [showRefundForm, setShowRefundForm] = useState(false);
 
     return (
         <>
             <Head title={`Order ${order.order_number}`} />
 
             <div className="p-4 md:p-6">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div>
+                <div className="flex flex-wrap items-baseline justify-between gap-3">
+                    <div className="flex flex-wrap items-baseline gap-2">
                         <h1 className="text-2xl font-semibold">
                             {order.order_number}
                         </h1>
-                        <p className="text-muted-foreground text-sm">
+                        <span className="text-muted-foreground text-sm">
                             Placed{" "}
                             {new Date(order.created_at).toLocaleDateString()}
-                        </p>
+                        </span>
                     </div>
                     <div className="flex items-center gap-2">
                         <OrderStatusBadge status={order.status} />
@@ -83,7 +85,7 @@ export default function AdminOrderShow({
                     </div>
                 </div>
 
-                <div className="mt-6 grid gap-6 lg:grid-cols-3">
+                <div className="mt-3 grid gap-6 lg:grid-cols-3">
                     <div className="space-y-6 lg:col-span-2">
                         <Card>
                             <CardHeader>
@@ -409,62 +411,90 @@ export default function AdminOrderShow({
                                             </div>
                                         )}
 
-                                    {canRefund && (
-                                        <div className="grid gap-3 rounded-lg border p-3">
-                                            <p className="text-sm font-medium">
-                                                Process Refund
-                                            </p>
-                                            <div className="grid gap-2">
-                                                <Label className="text-xs">
-                                                    Amount
-                                                </Label>
-                                                <Input
-                                                    type="number"
-                                                    step="0.01"
-                                                    value={
-                                                        refundForm.data.amount
-                                                    }
-                                                    onChange={(e) =>
-                                                        refundForm.setData(
-                                                            "amount",
-                                                            e.target.value,
-                                                        )
+                                    {canRefund &&
+                                        (showRefundForm ? (
+                                            <div className="grid gap-3 rounded-lg border p-3">
+                                                <div className="flex items-center justify-between">
+                                                    <p className="text-sm font-medium">
+                                                        Process Refund
+                                                    </p>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            setShowRefundForm(
+                                                                false,
+                                                            )
+                                                        }
+                                                        className="text-muted-foreground text-xs hover:underline"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </div>
+                                                <div className="grid gap-2">
+                                                    <Label className="text-xs">
+                                                        Amount
+                                                    </Label>
+                                                    <Input
+                                                        type="number"
+                                                        step="0.01"
+                                                        value={
+                                                            refundForm.data
+                                                                .amount
+                                                        }
+                                                        onChange={(e) =>
+                                                            refundForm.setData(
+                                                                "amount",
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                    />
+                                                </div>
+                                                <div className="grid gap-2">
+                                                    <Label className="text-xs">
+                                                        Reason
+                                                    </Label>
+                                                    <Input
+                                                        value={
+                                                            refundForm.data
+                                                                .reason
+                                                        }
+                                                        onChange={(e) =>
+                                                            refundForm.setData(
+                                                                "reason",
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                    />
+                                                </div>
+                                                <InputError
+                                                    message={
+                                                        refundForm.errors
+                                                            .amount
                                                     }
                                                 />
-                                            </div>
-                                            <div className="grid gap-2">
-                                                <Label className="text-xs">
-                                                    Reason
-                                                </Label>
-                                                <Input
-                                                    value={
-                                                        refundForm.data.reason
+                                                <Button
+                                                    size="sm"
+                                                    variant="destructive"
+                                                    onClick={submitRefund}
+                                                    disabled={
+                                                        refundForm.processing
                                                     }
-                                                    onChange={(e) =>
-                                                        refundForm.setData(
-                                                            "reason",
-                                                            e.target.value,
-                                                        )
-                                                    }
-                                                />
+                                                >
+                                                    Refund
+                                                </Button>
                                             </div>
-                                            <InputError
-                                                message={
-                                                    refundForm.errors.amount
-                                                }
-                                            />
+                                        ) : (
                                             <Button
                                                 size="sm"
-                                                variant="destructive"
-                                                onClick={submitRefund}
-                                                disabled={
-                                                    refundForm.processing
+                                                variant="outline"
+                                                className="w-full"
+                                                onClick={() =>
+                                                    setShowRefundForm(true)
                                                 }
                                             >
-                                                Refund
+                                                Process Refund
                                             </Button>
-                                        </div>
-                                    )}
+                                        ))}
                                 </CardContent>
                             </Card>
                         )}

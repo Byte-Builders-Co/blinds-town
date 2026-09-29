@@ -1,4 +1,4 @@
-import { Head, useForm } from "@inertiajs/react";
+import { Head, Link, useForm } from "@inertiajs/react";
 import { type FormEvent } from "react";
 import InputError from "@/components/input-error";
 import {
@@ -125,9 +125,9 @@ export default function AdminProductEdit({
             <Head title={`Edit ${product.name}`} />
 
             <div className="p-4 md:p-6">
-                <h1 className="text-2xl font-semibold">Edit {product.name}</h1>
+                <h1 className="text-2xl font-semibold">{product.name}</h1>
 
-                <form onSubmit={submit} className="mt-6">
+                <form onSubmit={submit} className="mt-3">
                     <div className="grid gap-6 lg:grid-cols-2">
                         <Card className="lg:col-span-2">
                             <CardHeader>
@@ -589,9 +589,12 @@ export default function AdminProductEdit({
                         </Card>
                     </div>
 
-                    <div className="mt-6 flex justify-end">
+                    <div className="bg-background sticky bottom-0 -mx-4 mt-6 flex justify-end gap-2 border-t px-4 py-4 md:-mx-6 md:px-6">
+                        <Button type="button" variant="outline" asChild>
+                            <Link href={index()}>Cancel</Link>
+                        </Button>
                         <Button type="submit" disabled={form.processing}>
-                            Save Changes
+                            Save 
                         </Button>
                     </div>
                 </form>

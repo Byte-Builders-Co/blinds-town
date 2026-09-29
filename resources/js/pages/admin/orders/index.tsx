@@ -1,6 +1,6 @@
 import { Head, Link, router } from "@inertiajs/react";
 import { Eye, Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PaginationLinks } from "@/components/pagination-links";
 import { OrderStatusBadge } from "@/components/shop/order-status-badge";
 import { Input } from "@/components/ui/input";
@@ -62,6 +62,20 @@ export default function AdminOrdersIndex({
         );
     };
 
+    useEffect(() => {
+        if (search === (filters.search ?? "")) return;
+
+        const timeout = setTimeout(() => {
+            router.get(
+                index().url,
+                { ...filters, search },
+                { preserveState: true, preserveScroll: true },
+            );
+        }, 400);
+
+        return () => clearTimeout(timeout);
+    }, [search, filters]);
+
     const toggleSort = (column: SortColumn) => {
         const direction =
             filters.sort === column && filters.direction === "asc"
@@ -83,10 +97,6 @@ export default function AdminOrdersIndex({
                                 placeholder="Search order number..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") applyFilters({});
-                                }}
-                                onBlur={() => applyFilters({})}
                                 className="pl-8"
                             />
                         </div>
