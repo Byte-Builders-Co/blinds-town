@@ -289,29 +289,44 @@ export default function AdminOrderShow({
                     {order.items?.map((item) => (
                         <div
                             key={item.id}
-                            className="flex items-center justify-between py-4"
+                            className="flex items-center justify-between gap-4 py-4"
                         >
-                            <div>
-                                <p className="font-medium">
-                                    {item.product_name} &times; {item.quantity}
-                                </p>
-                                <p className="text-muted-foreground text-sm">
-                                    {item.width_cm}cm &times; {item.height_cm}
-                                    cm
-                                    {item.selected_options &&
-                                        item.selected_options.length > 0 &&
-                                        ` · ${item.selected_options.map((o) => o.label).join(", ")}`}
-                                </p>
-                                {item.measurement_photo_path && (
-                                    <a
-                                        href={`/storage/${item.measurement_photo_path}`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="text-primary text-xs underline"
-                                    >
-                                        View measurement photo
-                                    </a>
+                            <div className="flex items-center gap-4">
+                                {item.product?.image_path ? (
+                                    <img
+                                        src={`/storage/${item.product.image_path}`}
+                                        alt={item.product_name}
+                                        className="size-16 shrink-0 rounded-md border object-cover"
+                                    />
+                                ) : (
+                                    <div className="bg-muted text-muted-foreground flex size-16 shrink-0 items-center justify-center rounded-md border text-xs">
+                                        No image
+                                    </div>
                                 )}
+                                <div>
+                                    <p className="font-medium">
+                                        {item.product_name} &times;{" "}
+                                        {item.quantity}
+                                    </p>
+                                    <p className="text-muted-foreground text-sm">
+                                        {item.width_cm}cm &times;{" "}
+                                        {item.height_cm}cm
+                                        {item.selected_options &&
+                                            item.selected_options.length >
+                                                0 &&
+                                            ` · ${item.selected_options.map((o) => o.label).join(", ")}`}
+                                    </p>
+                                    {item.measurement_photo_path && (
+                                        <a
+                                            href={`/storage/${item.measurement_photo_path}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="text-primary text-xs underline"
+                                        >
+                                            View measurement photo
+                                        </a>
+                                    )}
+                                </div>
                             </div>
                             <p className="font-medium">
                                 {formatCurrency(

@@ -357,6 +357,7 @@ export type OrderItem = {
     id: number;
     order_id: number;
     product_id: number | null;
+    product?: Product | null;
     product_name: string;
     width_cm: number;
     height_cm: number;

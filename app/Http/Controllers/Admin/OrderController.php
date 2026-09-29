@@ -38,7 +38,7 @@ class OrderController extends Controller
     public function show(Order $order): Response
     {
         return Inertia::render('admin/orders/show', [
-            'order' => $order->load(['items', 'user', 'payment.refunds', 'statusHistories']),
+            'order' => $order->load(['items.product', 'user', 'payment.refunds', 'statusHistories']),
             'statuses' => OrderStatus::cases(),
         ]);
     }
