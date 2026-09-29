@@ -9,15 +9,23 @@ import {
 } from "@/components/ui/collapsible";
 import {
     SidebarGroup,
-    SidebarGroupLabel,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubButton,
+    SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { useCurrentUrl } from "@/hooks/use-current-url";
-import type { NavGroup } from "@/types";
+import type { NavGroup, NavItem } from "@/types";
 
-export function NavMain({ groups }: { groups: NavGroup[] }) {
+export function NavMain({
+    items = [],
+    groups,
+}: {
+    items?: NavItem[];
+    groups: NavGroup[];
+}) {
     const { isCurrentUrl } = useCurrentUrl();
     const [openGroup, setOpenGroup] = useState<string | null>(() => {
         const activeGroup = groups.find((group) =>
@@ -32,58 +40,92 @@ export function NavMain({ groups }: { groups: NavGroup[] }) {
     };
 
     return (
-        <>
-            {groups.map((group) => {
-                const open = openGroup === group.label;
+        <SidebarGroup className="px-2 py-0">
+            <SidebarMenu>
+                {items.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                        <SidebarMenuButton
+                            asChild
+                            isActive={isCurrentUrl(item.href)}
+                            tooltip={{ children: item.title }}
+                        >
+                            <Link href={item.href} prefetch>
+                                {item.icon && <item.icon />}
+                                <span>{item.title}</span>
+                                {!!item.badge && (
+                                    <Badge
+                                        variant="destructive"
+                                        className="ml-auto"
+                                    >
+                                        {item.badge}
+                                    </Badge>
+                                )}
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                ))}
 
-                return (
-                    <SidebarGroup key={group.label} className="px-2 py-0">
-                        <Collapsible open={open}>
-                            <CollapsibleTrigger
-                                asChild
-                                onClick={() => toggle(group.label)}
-                            >
-                                <SidebarGroupLabel className="flex w-full cursor-pointer items-center justify-between">
-                                    {group.label}
-                                    <ChevronRight
-                                        className={`size-3.5 shrink-0 transition-transform ${open ? "rotate-90" : ""}`}
-                                    />
-                                </SidebarGroupLabel>
-                            </CollapsibleTrigger>
-                            <CollapsibleContent>
-                                <SidebarMenu>
-                                    {group.items.map((item) => (
-                                        <SidebarMenuItem key={item.title}>
-                                            <SidebarMenuButton
-                                                asChild
-                                                isActive={isCurrentUrl(
-                                                    item.href,
-                                                )}
-                                                tooltip={{
-                                                    children: item.title,
-                                                }}
+                {groups.map((group) => {
+                    const open = openGroup === group.label;
+
+                    return (
+                        <Collapsible key={group.label} open={open} asChild>
+                            <SidebarMenuItem>
+                                <CollapsibleTrigger
+                                    asChild
+                                    onClick={() => toggle(group.label)}
+                                >
+                                    <SidebarMenuButton
+                                        tooltip={{ children: group.label }}
+                                    >
+                                        {group.icon && <group.icon />}
+                                        <span>{group.label}</span>
+                                        <ChevronRight
+                                            className={`ml-auto size-3.5 shrink-0 transition-transform ${open ? "rotate-90" : ""}`}
+                                        />
+                                    </SidebarMenuButton>
+                                </CollapsibleTrigger>
+                                <CollapsibleContent>
+                                    <SidebarMenuSub>
+                                        {group.items.map((item) => (
+                                            <SidebarMenuSubItem
+                                                key={item.title}
                                             >
-                                                <Link href={item.href} prefetch>
-                                                    {item.icon && <item.icon />}
-                                                    <span>{item.title}</span>
-                                                    {!!item.badge && (
-                                                        <Badge
-                                                            variant="destructive"
-                                                            className="ml-auto"
-                                                        >
-                                                            {item.badge}
-                                                        </Badge>
+                                                <SidebarMenuSubButton
+                                                    asChild
+                                                    isActive={isCurrentUrl(
+                                                        item.href,
                                                     )}
-                                                </Link>
-                                            </SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    ))}
-                                </SidebarMenu>
-                            </CollapsibleContent>
+                                                >
+                                                    <Link
+                                                        href={item.href}
+                                                        prefetch
+                                                    >
+                                                        {item.icon && (
+                                                            <item.icon />
+                                                        )}
+                                                        <span>
+                                                            {item.title}
+                                                        </span>
+                                                        {!!item.badge && (
+                                                            <Badge
+                                                                variant="destructive"
+                                                                className="ml-auto"
+                                                            >
+                                                                {item.badge}
+                                                            </Badge>
+                                                        )}
+                                                    </Link>
+                                                </SidebarMenuSubButton>
+                                            </SidebarMenuSubItem>
+                                        ))}
+                                    </SidebarMenuSub>
+                                </CollapsibleContent>
+                            </SidebarMenuItem>
                         </Collapsible>
-                    </SidebarGroup>
-                );
-            })}
-        </>
+                    );
+                })}
+            </SidebarMenu>
+        </SidebarGroup>
     );
 }

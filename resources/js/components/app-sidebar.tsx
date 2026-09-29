@@ -1,10 +1,13 @@
 import { Link, usePage } from "@inertiajs/react";
 import {
     BarChart3,
+    LayoutDashboard,
+    Mail,
+    Megaphone,
     Package,
     ReceiptText,
     Settings as SettingsIcon,
-    ShieldCheck,
+    SlidersHorizontal,
     Star,
     Store,
     Tag,
@@ -35,60 +38,59 @@ import { edit as adminSettingsEdit } from "@/routes/admin/settings";
 import type { NavGroup, NavItem } from "@/types";
 
 /**
- * The admin panel is scoped to exactly 9 modules: Dashboard, Product
- * Management, Category Management, Order Management, Customer Management,
- * Offer & Discount Management, Product Reviews, Reports, and System
- * Settings. Nothing else is added here.
+ * Flat, top-level sidebar links that are always visible without needing to
+ * expand a submenu: Dashboard, Product Management, Category Management,
+ * Order Management, Customer Management, and (permission-gated) Reports.
  */
-function buildAdminNavGroups(permissions: string[]): NavGroup[] {
-    const groups: NavGroup[] = [
+function buildAdminNavItems(permissions: string[]): NavItem[] {
+    const items: NavItem[] = [
         {
-            label: "Overview",
-            items: [
-                {
-                    title: "Dashboard",
-                    href: adminDashboard(),
-                    icon: ShieldCheck,
-                },
-            ],
+            title: "Dashboard",
+            href: adminDashboard(),
+            icon: LayoutDashboard,
         },
         {
-            label: "Catalog",
-            items: [
-                {
-                    title: "Product Management",
-                    href: adminProductsIndex(),
-                    icon: Package,
-                },
-                {
-                    title: "Category Management",
-                    href: adminCategoriesIndex(),
-                    icon: Tag,
-                },
-            ],
+            title: "Products",
+            href: adminProductsIndex(),
+            icon: Package,
+        },
+          {
+            title: "Orders",
+            href: adminOrdersIndex(),
+            icon: ReceiptText,
         },
         {
-            label: "Sales",
-            items: [
-                {
-                    title: "Order Management",
-                    href: adminOrdersIndex(),
-                    icon: ReceiptText,
-                },
-                {
-                    title: "Customer Management",
-                    href: adminCustomersIndex(),
-                    icon: Users,
-                },
-            ],
+            title: "Categories",
+            href: adminCategoriesIndex(),
+            icon: Tag,
+        },
+      
+        {
+            title: "Customer",
+            href: adminCustomersIndex(),
+            icon: Users,
         },
     ];
+
+    if (permissions.includes("reports.view")) {
+        items.push({
+            title: "Reports",
+            href: adminReportsIndex(),
+            icon: BarChart3,
+        });
+    }
+
+    return items;
+}
+
+function buildAdminNavGroups(permissions: string[]): NavGroup[] {
+    const groups: NavGroup[] = [];
 
     const marketingItems: NavItem[] = [];
 
     if (permissions.includes("coupons.view")) {
         marketingItems.push({
-            title: "Offer & Discount Management",
+            title: "Offer & Discount",
             href: adminCouponsIndex(),
             icon: Ticket,
         });
@@ -103,25 +105,17 @@ function buildAdminNavGroups(permissions: string[]): NavGroup[] {
     }
 
     if (marketingItems.length > 0) {
-        groups.push({ label: "Marketing", items: marketingItems });
-    }
-
-    if (permissions.includes("reports.view")) {
         groups.push({
-            label: "Reports",
-            items: [
-                {
-                    title: "Reports",
-                    href: adminReportsIndex(),
-                    icon: BarChart3,
-                },
-            ],
+            label: "Marketing",
+            icon: Megaphone,
+            items: marketingItems,
         });
     }
 
     if (permissions.includes("settings.view")) {
         groups.push({
             label: "System Settings",
+            icon: SettingsIcon,
             items: [
                 {
                     title: "Website Configuration",
@@ -129,14 +123,14 @@ function buildAdminNavGroups(permissions: string[]): NavGroup[] {
                     icon: Store,
                 },
                 {
-                    title: "Basic Store Settings",
-                    href: adminSettingsEdit("business"),
-                    icon: SettingsIcon,
-                },
-                {
                     title: "Email Notifications",
                     href: adminSettingsEdit("notifications"),
-                    icon: SettingsIcon,
+                    icon: Mail,
+                },
+                {
+                    title: "Basic Store Settings",
+                    href: adminSettingsEdit("business"),
+                    icon: SlidersHorizontal,
                 },
             ],
         });
@@ -151,6 +145,7 @@ function buildAdminNavGroups(permissions: string[]): NavGroup[] {
  */
 export function AppSidebar() {
     const { auth } = usePage().props;
+    const navItems = buildAdminNavItems(auth.permissions);
     const navGroups = buildAdminNavGroups(auth.permissions);
 
     return (
@@ -168,7 +163,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain groups={navGroups} />
+                <NavMain items={navItems} groups={navGroups} />
             </SidebarContent>
 
             <SidebarFooter>

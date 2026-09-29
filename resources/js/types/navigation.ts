@@ -16,5 +16,6 @@ export type NavItem = {
 
 export type NavGroup = {
     label: string;
+    icon?: LucideIcon | null;
     items: NavItem[];
 };
