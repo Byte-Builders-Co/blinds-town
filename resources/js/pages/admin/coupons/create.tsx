@@ -16,12 +16,12 @@ export default function AdminCouponCreate({
         <>
             <Head title="New Coupon" />
 
-            <div className="max-w-xl p-4">
+            <div className="p-4 md:p-6">
                 <h1 className="text-2xl font-semibold">New Coupon</h1>
 
                 <Form
                     {...AdminCouponController.store.form()}
-                    className="mt-6 space-y-4"
+                    className="mt-6"
                 >
                     {({ processing, errors }) => (
                         <>
@@ -30,9 +30,11 @@ export default function AdminCouponCreate({
                                 categories={categories}
                                 errors={errors}
                             />
-                            <Button type="submit" disabled={processing}>
-                                Create Coupon
-                            </Button>
+                            <div className="mt-6 flex justify-end">
+                                <Button type="submit" disabled={processing}>
+                                    Create Coupon
+                                </Button>
+                            </div>
                         </>
                     )}
                 </Form>

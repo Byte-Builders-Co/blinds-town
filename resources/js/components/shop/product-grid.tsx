@@ -26,7 +26,7 @@ export function ProductGrid({
             </div>
 
             <div className="mt-8">
-                <PaginationLinks paginated={products} />
+                <PaginationLinks paginated={products} label="products" />
             </div>
         </div>
     );

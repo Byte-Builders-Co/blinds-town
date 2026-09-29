@@ -1,3 +1,5 @@
+import type { User } from "./auth";
+
 export type Category = {
     id: number;
     parent_id: number | null;
@@ -396,6 +398,7 @@ export type Order = {
     shipped_at: string | null;
     delivered_at: string | null;
     created_at: string;
+    user?: User;
     items?: OrderItem[];
     items_count?: number;
     payment?: Payment | null;
@@ -407,5 +410,7 @@ export type Paginated<T> = {
     links: { url: string | null; label: string; active: boolean }[];
     current_page: number;
     last_page: number;
+    from: number | null;
+    to: number | null;
     total: number;
 };

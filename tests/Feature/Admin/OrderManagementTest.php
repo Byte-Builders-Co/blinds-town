@@ -148,3 +148,33 @@ test('a refund cannot exceed the paid amount', function () {
 
     $response->assertSessionHasErrors(['amount']);
 });
+
+test('admins can search orders by order number', function () {
+    $admin = User::factory()->admin()->create();
+    $match = Order::factory()->create(['order_number' => 'BT-20260101-ABCDEF']);
+    Order::factory()->create(['order_number' => 'BT-20260101-ZZZZZZ']);
+
+    $response = $this->actingAs($admin)->get('/admin/orders?search=ABCDEF');
+
+    $response->assertOk();
+    $response->assertInertia(fn ($page) => $page
+        ->component('admin/orders/index')
+        ->has('orders.data', 1)
+        ->where('orders.data.0.id', $match->id)
+    );
+});
+
+test('admins can sort orders by total', function () {
+    $admin = User::factory()->admin()->create();
+    $cheap = Order::factory()->create(['total' => 10]);
+    $expensive = Order::factory()->create(['total' => 500]);
+
+    $response = $this->actingAs($admin)->get('/admin/orders?sort=total&direction=asc');
+
+    $response->assertOk();
+    $response->assertInertia(fn ($page) => $page
+        ->component('admin/orders/index')
+        ->where('orders.data.0.id', $cheap->id)
+        ->where('orders.data.1.id', $expensive->id)
+    );
+});

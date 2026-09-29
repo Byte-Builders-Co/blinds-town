@@ -181,7 +181,7 @@ export default function AdminCouponsIndex({
                 </div>
 
                 <div className="mt-6">
-                    <PaginationLinks paginated={coupons} />
+                    <PaginationLinks paginated={coupons} label="coupons" />
                 </div>
             </div>
         </>

@@ -19,19 +19,44 @@ use Inertia\Response;
 
 class OrderController extends Controller
 {
+    /**
+     * Columns the index table can be sorted by, mapped to their
+     * fully-qualified column (customer name/email live on `users`).
+     *
+     * @var array<string, string>
+     */
+    private const SORTABLE_COLUMNS = [
+        'id' => 'orders.id',
+        'customer_name' => 'users.name',
+        'customer_email' => 'users.email',
+        'status' => 'orders.status',
+        'total' => 'orders.total',
+        'created_at' => 'orders.created_at',
+    ];
+
     public function index(Request $request): Response
     {
+        $sort = $request->string('sort')->toString();
+        $sortColumn = self::SORTABLE_COLUMNS[$sort] ?? self::SORTABLE_COLUMNS['created_at'];
+        $direction = $request->string('direction')->toString() === 'asc' ? 'asc' : 'desc';
+
         return Inertia::render('admin/orders/index', [
             'orders' => Order::query()
+                ->select('orders.*')
+                ->join('users', 'users.id', '=', 'orders.user_id')
                 ->with(['user', 'payment'])
-                ->when($request->string('status')->toString(), fn ($query, $status) => $query->where('status', $status))
+                ->when($request->string('search')->toString(), fn ($query, $search) => $query->where('orders.order_number', 'like', "%{$search}%"))
+                ->when($request->string('status')->toString(), fn ($query, $status) => $query->where('orders.status', $status))
                 ->when($request->string('payment_status')->toString(), fn ($query, $status) => $query->whereHas('payment', fn ($q) => $q->where('status', $status)))
-                ->latest()
-                ->paginate(15)
+                ->orderBy($sortColumn, $direction)
+                ->paginate(20)
                 ->withQueryString(),
             'statuses' => OrderStatus::cases(),
             'paymentStatuses' => PaymentStatus::cases(),
-            'filters' => $request->only(['status', 'payment_status']),
+            'filters' => [
+                ...$request->only(['status', 'payment_status', 'search', 'sort']),
+                'direction' => $direction,
+            ],
         ]);
     }
 

@@ -73,7 +73,7 @@ export default function AdminProductsIndex({
                 </div>
 
                 <div className="mt-6">
-                    <PaginationLinks paginated={products} />
+                    <PaginationLinks paginated={products} label="products" />
                 </div>
             </div>
         </>

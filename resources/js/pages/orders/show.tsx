@@ -1,12 +1,12 @@
 import { Head, Link, useForm } from "@inertiajs/react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { OrderStatusBadge } from "@/components/shop/order-status-badge";
 import { OrderTimeline } from "@/components/shop/order-timeline";
 import { PaymentStatusBadge } from "@/components/shop/payment-status-badge";
 import { formatCurrency } from "@/lib/utils";
 import { retry } from "@/routes/checkout";
 import { invoice } from "@/routes/orders";
-import { ORDER_STATUS_LABELS, PAYMENT_METHOD_LABELS } from "@/types";
+import { PAYMENT_METHOD_LABELS } from "@/types";
 import type { Order } from "@/types";
 
 export default function OrderShow({ order }: { order: Order }) {
@@ -26,9 +26,7 @@ export default function OrderShow({ order }: { order: Order }) {
                         {order.order_number}
                     </h1>
                     <div className="flex items-center gap-2">
-                        <Badge variant="secondary">
-                            {ORDER_STATUS_LABELS[order.status]}
-                        </Badge>
+                        <OrderStatusBadge status={order.status} />
                         {order.payment && (
                             <PaymentStatusBadge status={order.payment.status} />
                         )}

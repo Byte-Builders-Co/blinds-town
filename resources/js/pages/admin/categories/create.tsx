@@ -14,13 +14,13 @@ export default function AdminCategoryCreate({
         <>
             <Head title="New Category" />
 
-            <div className="max-w-xl p-4">
+            <div className="p-4 md:p-6">
                 <h1 className="text-2xl font-semibold">New Category</h1>
 
                 <Form
                     {...AdminCategoryController.store.form()}
                     encType="multipart/form-data"
-                    className="mt-6 space-y-4"
+                    className="mt-6"
                 >
                     {({ processing, errors }) => (
                         <>
@@ -28,9 +28,11 @@ export default function AdminCategoryCreate({
                                 parentOptions={parentOptions}
                                 errors={errors}
                             />
-                            <Button type="submit" disabled={processing}>
-                                Create Category
-                            </Button>
+                            <div className="mt-6 flex justify-end">
+                                <Button type="submit" disabled={processing}>
+                                    Create Category
+                                </Button>
+                            </div>
                         </>
                     )}
                 </Form>

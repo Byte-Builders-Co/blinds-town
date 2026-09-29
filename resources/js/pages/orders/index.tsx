@@ -1,10 +1,9 @@
 import { Head, Link } from "@inertiajs/react";
-import { Badge } from "@/components/ui/badge";
 import { PaginationLinks } from "@/components/pagination-links";
+import { OrderStatusBadge } from "@/components/shop/order-status-badge";
 import { PaymentStatusBadge } from "@/components/shop/payment-status-badge";
 import { formatCurrency } from "@/lib/utils";
 import { show } from "@/routes/orders";
-import { ORDER_STATUS_LABELS } from "@/types";
 import type { Order, Paginated } from "@/types";
 
 export default function OrdersIndex({ orders }: { orders: Paginated<Order> }) {
@@ -40,9 +39,7 @@ export default function OrdersIndex({ orders }: { orders: Paginated<Order> }) {
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Badge variant="secondary">
-                                        {ORDER_STATUS_LABELS[order.status]}
-                                    </Badge>
+                                    <OrderStatusBadge status={order.status} />
                                     {order.payment && (
                                         <PaymentStatusBadge
                                             status={order.payment.status}
@@ -61,7 +58,7 @@ export default function OrdersIndex({ orders }: { orders: Paginated<Order> }) {
                 )}
 
                 <div className="mt-8">
-                    <PaginationLinks paginated={orders} />
+                    <PaginationLinks paginated={orders} label="orders" />
                 </div>
             </div>
         </>

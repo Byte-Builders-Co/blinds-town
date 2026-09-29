@@ -242,7 +242,7 @@ export default function AdminReviewsIndex({
                 </div>
 
                 <div className="mt-6">
-                    <PaginationLinks paginated={reviews} />
+                    <PaginationLinks paginated={reviews} label="reviews" />
                 </div>
             </div>
         </>

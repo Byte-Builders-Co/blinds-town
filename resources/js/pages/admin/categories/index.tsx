@@ -200,7 +200,7 @@ export default function AdminCategoriesIndex({
                 </div>
 
                 <div className="mt-6">
-                    <PaginationLinks paginated={categories} />
+                    <PaginationLinks paginated={categories} label="categories" />
                 </div>
             </div>
         </>

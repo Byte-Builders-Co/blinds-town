@@ -105,7 +105,7 @@ export default function AdminCustomersIndex({
                 </div>
 
                 <div className="mt-6">
-                    <PaginationLinks paginated={customers} />
+                    <PaginationLinks paginated={customers} label="customers" />
                 </div>
             </div>
         </>

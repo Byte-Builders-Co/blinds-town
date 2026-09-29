@@ -1,5 +1,6 @@
 import { Head, useForm } from "@inertiajs/react";
 import InputError from "@/components/input-error";
+import { OrderStatusBadge } from "@/components/shop/order-status-badge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,7 +13,6 @@ import {
 import { formatCurrency } from "@/lib/utils";
 import { index, updateStatus } from "@/routes/admin/customers";
 import { USER_STATUS_LABELS } from "@/types/auth";
-import { ORDER_STATUS_LABELS } from "@/types/shop";
 import type { Address, Order, User, UserStatus } from "@/types";
 
 export default function AdminCustomerShow({
@@ -114,9 +114,7 @@ export default function AdminCustomerShow({
                                     className="flex items-center justify-between px-4 py-3 text-sm"
                                 >
                                     <span>{order.order_number}</span>
-                                    <Badge variant="secondary">
-                                        {ORDER_STATUS_LABELS[order.status]}
-                                    </Badge>
+                                    <OrderStatusBadge status={order.status} />
                                     <span>
                                         {formatCurrency(
                                             order.total,

@@ -18,7 +18,7 @@ export default function AdminCouponEdit({
         <>
             <Head title={`Edit ${coupon.code}`} />
 
-            <div className="max-w-xl p-4">
+            <div className="p-4 md:p-6">
                 <h1 className="text-2xl font-semibold">Edit {coupon.code}</h1>
                 <p className="text-muted-foreground mt-1 text-sm">
                     Used {coupon.usages_count ?? 0} time
@@ -28,7 +28,7 @@ export default function AdminCouponEdit({
 
                 <Form
                     {...AdminCouponController.update.form(coupon)}
-                    className="mt-6 space-y-4"
+                    className="mt-6"
                 >
                     {({ processing, errors }) => (
                         <>
@@ -38,9 +38,11 @@ export default function AdminCouponEdit({
                                 categories={categories}
                                 errors={errors}
                             />
-                            <Button type="submit" disabled={processing}>
-                                Save Changes
-                            </Button>
+                            <div className="mt-6 flex justify-end">
+                                <Button type="submit" disabled={processing}>
+                                    Save Changes
+                                </Button>
+                            </div>
                         </>
                     )}
                 </Form>

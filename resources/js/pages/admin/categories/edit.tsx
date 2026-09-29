@@ -16,13 +16,13 @@ export default function AdminCategoryEdit({
         <>
             <Head title={`Edit ${category.name}`} />
 
-            <div className="max-w-xl p-4">
+            <div className="p-4 md:p-6">
                 <h1 className="text-2xl font-semibold">Edit {category.name}</h1>
 
                 <Form
                     {...AdminCategoryController.update.form(category)}
                     encType="multipart/form-data"
-                    className="mt-6 space-y-4"
+                    className="mt-6"
                 >
                     {({ processing, errors }) => (
                         <>
@@ -31,9 +31,11 @@ export default function AdminCategoryEdit({
                                 parentOptions={parentOptions}
                                 errors={errors}
                             />
-                            <Button type="submit" disabled={processing}>
-                                Save Changes
-                            </Button>
+                            <div className="mt-6 flex justify-end">
+                                <Button type="submit" disabled={processing}>
+                                    Save Changes
+                                </Button>
+                            </div>
                         </>
                     )}
                 </Form>
