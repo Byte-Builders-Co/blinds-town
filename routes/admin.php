@@ -54,9 +54,21 @@ Route::middleware(['auth', 'verified', 'role:admin|staff|super-admin'])->prefix(
 
     Route::middleware('can:users.view')->group(function () {
         Route::get('customers', [CustomerController::class, 'index'])->name('customers.index');
+        Route::get('customers/export', [CustomerController::class, 'export'])->name('customers.export');
+    });
+    Route::middleware('can:users.create')->group(function () {
+        Route::get('customers/create', [CustomerController::class, 'create'])->name('customers.create');
+        Route::post('customers', [CustomerController::class, 'store'])->name('customers.store');
+    });
+    Route::middleware('can:users.edit')->group(function () {
+        Route::get('customers/{customer}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
+        Route::put('customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
+        Route::patch('customers/{customer}/status', [CustomerController::class, 'updateStatus'])->name('customers.update-status');
+    });
+    Route::middleware('can:users.view')->group(function () {
         Route::get('customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
     });
-    Route::patch('customers/{customer}/status', [CustomerController::class, 'updateStatus'])
-        ->name('customers.update-status')
-        ->middleware('can:users.edit');
+    Route::delete('customers/{customer}', [CustomerController::class, 'destroy'])
+        ->name('customers.destroy')
+        ->middleware('can:users.delete');
 });

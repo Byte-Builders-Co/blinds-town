@@ -229,6 +229,32 @@ export default function AdminOrderShow({
                                 />
                             </CardContent>
                         </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Shipping to</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-muted-foreground text-sm">
+                                    {order.shipping_name}
+                                    <br />
+                                    {order.shipping_line1}
+                                    {order.shipping_line2 && (
+                                        <>
+                                            <br />
+                                            {order.shipping_line2}
+                                        </>
+                                    )}
+                                    <br />
+                                    {order.shipping_city},{" "}
+                                    {order.shipping_postal_code}
+                                    <br />
+                                    {order.shipping_country}
+                                    <br />
+                                    {order.shipping_phone}
+                                </p>
+                            </CardContent>
+                        </Card>
                     </div>
 
                     <div className="space-y-6">
@@ -272,7 +298,7 @@ export default function AdminOrderShow({
                                         message={statusForm.errors.status}
                                     />
                                 </div>
-                                <div className="grid gap-2">
+                                {/* <div className="grid gap-2">
                                     <Label className="text-sm font-medium">
                                         Note (optional)
                                     </Label>
@@ -285,7 +311,7 @@ export default function AdminOrderShow({
                                             )
                                         }
                                     />
-                                </div>
+                                </div> */}
                                 <Button
                                     onClick={submitStatus}
                                     disabled={statusForm.processing}
@@ -498,32 +524,6 @@ export default function AdminOrderShow({
                                 </CardContent>
                             </Card>
                         )}
-
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Shipping to</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-muted-foreground text-sm">
-                                    {order.shipping_name}
-                                    <br />
-                                    {order.shipping_line1}
-                                    {order.shipping_line2 && (
-                                        <>
-                                            <br />
-                                            {order.shipping_line2}
-                                        </>
-                                    )}
-                                    <br />
-                                    {order.shipping_city},{" "}
-                                    {order.shipping_postal_code}
-                                    <br />
-                                    {order.shipping_country}
-                                    <br />
-                                    {order.shipping_phone}
-                                </p>
-                            </CardContent>
-                        </Card>
                     </div>
                 </div>
             </div>
