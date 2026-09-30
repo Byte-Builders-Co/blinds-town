@@ -15,9 +15,13 @@ type Errors = Partial<Record<keyof Address, string>>;
 
 export function AddressFormFields({
     address,
+    defaultFullName,
+    defaultMobileNumber,
     errors,
 }: {
     address?: Address;
+    defaultFullName?: string;
+    defaultMobileNumber?: string;
     errors: Errors;
 }) {
     return (
@@ -27,7 +31,7 @@ export function AddressFormFields({
                 <Input
                     id="full_name"
                     name="full_name"
-                    defaultValue={address?.full_name}
+                    defaultValue={address?.full_name ?? defaultFullName}
                     required
                 />
                 <InputError message={errors.full_name} />
@@ -38,7 +42,7 @@ export function AddressFormFields({
                 <Input
                     id="mobile_number"
                     name="mobile_number"
-                    defaultValue={address?.mobile_number}
+                    defaultValue={address?.mobile_number ?? defaultMobileNumber}
                     required
                 />
                 <InputError message={errors.mobile_number} />

@@ -68,9 +68,7 @@ export default function AdminCustomersIndex({
     statuses: UserStatus[];
 }) {
     const [search, setSearch] = useState(filters.search ?? "");
-    const [customerToDelete, setCustomerToDelete] = useState<User | null>(
-        null,
-    );
+    const [customerToDelete, setCustomerToDelete] = useState<User | null>(null);
 
     const applyFilters = (patch: Partial<Filters>) => {
         router.get(
@@ -108,8 +106,6 @@ export default function AdminCustomersIndex({
 
             <div className="p-4 md:p-4">
                 <div className="flex flex-wrap items-center justify-end gap-3">
-                    
-
                     <div className="flex flex-wrap items-center gap-2">
                         <div className="relative w-full sm:w-64">
                             <Search className="text-muted-foreground pointer-events-none absolute top-2.5 left-2.5 size-4" />
@@ -125,8 +121,7 @@ export default function AdminCustomersIndex({
                             value={filters.status ?? "all"}
                             onValueChange={(value) =>
                                 applyFilters({
-                                    status:
-                                        value === "all" ? undefined : value,
+                                    status: value === "all" ? undefined : value,
                                 })
                             }
                         >
@@ -302,10 +297,7 @@ export default function AdminCustomersIndex({
                 </div>
 
                 <div className="mt-4">
-                    <PaginationLinks
-                        paginated={customers}
-                        label="customers"
-                    />
+                    <PaginationLinks paginated={customers} label="customers" />
                 </div>
             </div>
 

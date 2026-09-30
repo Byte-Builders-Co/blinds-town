@@ -5,12 +5,7 @@ import { ConfirmDialog } from "@/components/confirm-dialog";
 import { StockStatusBadge } from "@/components/shop/stock-status-badge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn, formatCurrency, formatRelativeTime } from "@/lib/utils";
 import { destroy, edit, index } from "@/routes/admin/products";
 import { OPTION_GROUP_KIND_LABELS, PRICING_TIER_TYPE_LABELS } from "@/types";
@@ -209,9 +204,7 @@ export default function AdminProductShow({ product }: { product: Product }) {
                                                     }
                                                 </span>
                                                 <span className="font-medium">
-                                                    {formatCurrency(
-                                                        tier.price,
-                                                    )}
+                                                    {formatCurrency(tier.price)}
                                                 </span>
                                             </div>
                                         ))}
@@ -255,9 +248,7 @@ export default function AdminProductShow({ product }: { product: Product }) {
                                         Price per m²
                                     </span>
                                     <span>
-                                        {formatCurrency(
-                                            product.price_per_sqm,
-                                        )}
+                                        {formatCurrency(product.price_per_sqm)}
                                     </span>
                                 </div>
                                 <div className="flex justify-between">
@@ -274,9 +265,7 @@ export default function AdminProductShow({ product }: { product: Product }) {
                                             Sale price
                                         </span>
                                         <span className="font-medium">
-                                            {formatCurrency(
-                                                product.sale_price,
-                                            )}
+                                            {formatCurrency(product.sale_price)}
                                         </span>
                                     </div>
                                 )}
@@ -285,9 +274,7 @@ export default function AdminProductShow({ product }: { product: Product }) {
                                         <span className="text-muted-foreground">
                                             Discount
                                         </span>
-                                        <span>
-                                            {product.discount_percent}%
-                                        </span>
+                                        <span>{product.discount_percent}%</span>
                                     </div>
                                 )}
                                 {product.tax_rate_percent && (
@@ -295,9 +282,7 @@ export default function AdminProductShow({ product }: { product: Product }) {
                                         <span className="text-muted-foreground">
                                             Tax rate
                                         </span>
-                                        <span>
-                                            {product.tax_rate_percent}%
-                                        </span>
+                                        <span>{product.tax_rate_percent}%</span>
                                     </div>
                                 )}
                                 {product.min_area_sqm && (
@@ -305,9 +290,7 @@ export default function AdminProductShow({ product }: { product: Product }) {
                                         <span className="text-muted-foreground">
                                             Minimum billable area
                                         </span>
-                                        <span>
-                                            {product.min_area_sqm} m²
-                                        </span>
+                                        <span>{product.min_area_sqm} m²</span>
                                     </div>
                                 )}
                             </CardContent>

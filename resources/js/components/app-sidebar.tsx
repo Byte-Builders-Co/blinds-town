@@ -54,7 +54,7 @@ function buildAdminNavItems(permissions: string[]): NavItem[] {
             href: adminProductsIndex(),
             icon: Package,
         },
-          {
+        {
             title: "Orders",
             href: adminOrdersIndex(),
             icon: ReceiptText,
@@ -64,7 +64,7 @@ function buildAdminNavItems(permissions: string[]): NavItem[] {
             href: adminCategoriesIndex(),
             icon: Tag,
         },
-      
+
         {
             title: "Customer",
             href: adminCustomersIndex(),

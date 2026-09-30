@@ -10,12 +10,7 @@ import {
     type EditablePricingTier,
 } from "@/components/admin/pricing-tier-builder";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -141,10 +136,7 @@ export default function AdminProductEdit({
                                     <Select
                                         value={form.data.category_id}
                                         onValueChange={(value) =>
-                                            form.setData(
-                                                "category_id",
-                                                value,
-                                            )
+                                            form.setData("category_id", value)
                                         }
                                     >
                                         <SelectTrigger
@@ -187,10 +179,7 @@ export default function AdminProductEdit({
                                         id="name"
                                         value={form.data.name}
                                         onChange={(e) =>
-                                            form.setData(
-                                                "name",
-                                                e.target.value,
-                                            )
+                                            form.setData("name", e.target.value)
                                         }
                                         required
                                     />
@@ -330,9 +319,7 @@ export default function AdminProductEdit({
                                         }
                                     />
                                     <InputError
-                                        message={
-                                            form.errors.discount_percent
-                                        }
+                                        message={form.errors.discount_percent}
                                     />
                                 </div>
                             </CardContent>
@@ -372,8 +359,7 @@ export default function AdminProductEdit({
                                     </Select>
                                     <InputError
                                         message={
-                                            form.errors
-                                                .measurement_unit_default
+                                            form.errors.measurement_unit_default
                                         }
                                     />
                                 </div>
@@ -594,7 +580,7 @@ export default function AdminProductEdit({
                             <Link href={index()}>Cancel</Link>
                         </Button>
                         <Button type="submit" disabled={form.processing}>
-                            Save 
+                            Save
                         </Button>
                     </div>
                 </form>

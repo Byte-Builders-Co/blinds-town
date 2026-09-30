@@ -5,12 +5,7 @@ import { OrderStatusBadge } from "@/components/shop/order-status-badge";
 import { OrderTimeline } from "@/components/shop/order-timeline";
 import { PaymentStatusBadge } from "@/components/shop/payment-status-badge";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -111,8 +106,8 @@ export default function AdminOrderShow({
                                             )}
                                             <div>
                                                 <p className="font-medium">
-                                                    {item.product_name}{" "}
-                                                    &times; {item.quantity}
+                                                    {item.product_name} &times;{" "}
+                                                    {item.quantity}
                                                 </p>
                                                 <p className="text-muted-foreground text-sm">
                                                     {item.width_cm}cm &times;{" "}
@@ -360,8 +355,7 @@ export default function AdminOrderShow({
                                     />
                                     <InputError
                                         message={
-                                            trackingForm.errors
-                                                .tracking_number
+                                            trackingForm.errors.tracking_number
                                         }
                                     />
                                 </div>
@@ -494,8 +488,7 @@ export default function AdminOrderShow({
                                                 </div>
                                                 <InputError
                                                     message={
-                                                        refundForm.errors
-                                                            .amount
+                                                        refundForm.errors.amount
                                                     }
                                                 />
                                                 <Button

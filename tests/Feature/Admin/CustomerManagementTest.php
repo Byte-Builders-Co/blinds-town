@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\UserStatus;
+use App\Models\Order;
 use App\Models\User;
 
 test('customers cannot access admin customer management', function () {
@@ -19,6 +20,21 @@ test('admins can view the customer list', function () {
 
     $response->assertOk();
     $response->assertInertia(fn ($page) => $page->component('admin/customers/index'));
+});
+
+test('a customer\'s orders are paginated on the show page', function () {
+    $admin = User::factory()->admin()->create();
+    $customer = User::factory()->create();
+    Order::factory()->count(12)->create(['user_id' => $customer->id]);
+
+    $response = $this->actingAs($admin)->get("/admin/customers/{$customer->id}");
+
+    $response->assertOk();
+    $response->assertInertia(fn ($page) => $page
+        ->component('admin/customers/show')
+        ->has('orders.data', 10)
+        ->where('orders.total', 12)
+    );
 });
 
 test('admins can export customers to csv', function () {

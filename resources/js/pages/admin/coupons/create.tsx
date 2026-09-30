@@ -19,10 +19,7 @@ export default function AdminCouponCreate({
             <div className="p-4 md:p-6">
                 <h1 className="text-2xl font-semibold">New Coupon</h1>
 
-                <Form
-                    {...AdminCouponController.store.form()}
-                    className="mt-6"
-                >
+                <Form {...AdminCouponController.store.form()} className="mt-6">
                     {({ processing, errors }) => (
                         <>
                             <CouponFormFields

@@ -105,8 +105,7 @@ export default function AdminOrdersIndex({
                             value={filters.status ?? "all"}
                             onValueChange={(value) =>
                                 applyFilters({
-                                    status:
-                                        value === "all" ? undefined : value,
+                                    status: value === "all" ? undefined : value,
                                 })
                             }
                         >
@@ -114,9 +113,7 @@ export default function AdminOrdersIndex({
                                 <SelectValue placeholder="Status" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="all">
-                                    All Status
-                                </SelectItem>
+                                <SelectItem value="all">All Status</SelectItem>
                                 {statuses.map((status) => (
                                     <SelectItem key={status} value={status}>
                                         {ORDER_STATUS_LABELS[status]}

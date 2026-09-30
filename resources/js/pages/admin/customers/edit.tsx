@@ -2,12 +2,7 @@ import { Head, Link, useForm } from "@inertiajs/react";
 import { type FormEvent } from "react";
 import InputError from "@/components/input-error";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -54,9 +49,7 @@ export default function AdminCustomerEdit({
             <Head title={`Edit ${customer.name}`} />
 
             <div className="p-4 md:p-6">
-                <h1 className="text-2xl font-semibold">
-                    Edit {customer.name}
-                </h1>
+                <h1 className="text-2xl font-semibold">Edit {customer.name}</h1>
 
                 <form onSubmit={submit} className="mt-6">
                     <Card>
@@ -77,9 +70,7 @@ export default function AdminCustomerEdit({
                                     }
                                     required
                                 />
-                                <InputError
-                                    message={form.errors.first_name}
-                                />
+                                <InputError message={form.errors.first_name} />
                             </div>
 
                             <div className="grid gap-2">

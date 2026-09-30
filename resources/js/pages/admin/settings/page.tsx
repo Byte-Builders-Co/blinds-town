@@ -2,12 +2,7 @@ import { Form, Head, Link } from "@inertiajs/react";
 import AdminSettingsController from "@/actions/App/Http/Controllers/Admin/SettingsController";
 import InputError from "@/components/input-error";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -163,9 +158,7 @@ export default function AdminSettingsPage({
                                                     defaultValue={
                                                         values.store_address
                                                     }
-                                                    error={
-                                                        errors.store_address
-                                                    }
+                                                    error={errors.store_address}
                                                 />
                                                 <Field
                                                     name="currency"
@@ -232,9 +225,7 @@ export default function AdminSettingsPage({
                                                         accept="image/*"
                                                     />
                                                     <InputError
-                                                        message={
-                                                            errors.favicon
-                                                        }
+                                                        message={errors.favicon}
                                                     />
                                                 </div>
                                             </CardContent>
@@ -266,9 +257,7 @@ export default function AdminSettingsPage({
                                                 defaultValue={
                                                     values.business_address
                                                 }
-                                                error={
-                                                    errors.business_address
-                                                }
+                                                error={errors.business_address}
                                             />
                                             <Field
                                                 name="business_phone"
@@ -333,9 +322,7 @@ export default function AdminSettingsPage({
                                                 name="gst_rate"
                                                 label="GST rate (%)"
                                                 type="number"
-                                                defaultValue={
-                                                    values.gst_rate
-                                                }
+                                                defaultValue={values.gst_rate}
                                                 required
                                                 error={errors.gst_rate}
                                             />
@@ -355,9 +342,7 @@ export default function AdminSettingsPage({
                                                 defaultChecked={
                                                     values.shipping_enabled
                                                 }
-                                                error={
-                                                    errors.shipping_enabled
-                                                }
+                                                error={errors.shipping_enabled}
                                             />
                                             <div />
                                             <Field
@@ -412,9 +397,7 @@ export default function AdminSettingsPage({
                                                     values.payment_gateway
                                                 }
                                                 required
-                                                error={
-                                                    errors.payment_gateway
-                                                }
+                                                error={errors.payment_gateway}
                                             />
                                             <SettingCheckbox
                                                 name="test_mode"
@@ -425,10 +408,9 @@ export default function AdminSettingsPage({
                                                 error={errors.test_mode}
                                             />
                                             <p className="text-muted-foreground text-xs sm:col-span-2">
-                                                Gateway API keys are
-                                                configured via the server
-                                                environment and are never
-                                                exposed here.
+                                                Gateway API keys are configured
+                                                via the server environment and
+                                                are never exposed here.
                                             </p>
                                         </CardContent>
                                     </Card>
@@ -447,9 +429,7 @@ export default function AdminSettingsPage({
                                                     defaultChecked={
                                                         values.channel_email
                                                     }
-                                                    error={
-                                                        errors.channel_email
-                                                    }
+                                                    error={errors.channel_email}
                                                 />
                                                 <SettingCheckbox
                                                     name="channel_sms"

@@ -1,8 +1,9 @@
-import { Form, Head, router } from "@inertiajs/react";
+import { Form, Head, router, usePage } from "@inertiajs/react";
 import { useState } from "react";
-import { Plus, Star, Trash2 } from "lucide-react";
+import { Pencil, Plus, Star, Trash2 } from "lucide-react";
 import AddressController from "@/actions/App/Http/Controllers/Customer/AddressController";
 import { AddressFormFields } from "@/components/account/address-form-fields";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import Heading from "@/components/heading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,11 +14,13 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { setDefault } from "@/routes/addresses";
-import type { Address } from "@/types";
+import type { Address, Auth } from "@/types";
 
 export default function Addresses({ addresses }: { addresses: Address[] }) {
+    const { auth } = usePage<{ auth: Auth }>().props;
     const [creating, setCreating] = useState(false);
     const [editing, setEditing] = useState<Address | null>(null);
+    const [deleting, setDeleting] = useState<Address | null>(null);
 
     return (
         <>
@@ -46,10 +49,7 @@ export default function Addresses({ addresses }: { addresses: Address[] }) {
                                 key={address.id}
                                 className="rounded-lg border p-4"
                             >
-                                <div className="flex items-center justify-between">
-                                    <p className="font-medium">
-                                        {address.full_name}
-                                    </p>
+                                <div className="flex items-center justify-between gap-2">
                                     <div className="flex items-center gap-2">
                                         <Badge variant="outline">
                                             {address.type}
@@ -58,8 +58,26 @@ export default function Addresses({ addresses }: { addresses: Address[] }) {
                                             <Badge>Default</Badge>
                                         )}
                                     </div>
+                                    <div className="flex items-center gap-1">
+                                        <Button
+                                            variant="outline"
+                                            size="icon"
+                                            onClick={() => setEditing(address)}
+                                            aria-label="Edit address"
+                                        >
+                                            <Pencil className="size-4" />
+                                        </Button>
+                                        <Button
+                                            variant="outline"
+                                            size="icon"
+                                            onClick={() => setDeleting(address)}
+                                            aria-label="Delete address"
+                                        >
+                                            <Trash2 className="size-4" />
+                                        </Button>
+                                    </div>
                                 </div>
-                                <p className="text-muted-foreground mt-1 text-sm">
+                                <p className="text-muted-foreground mt-2 text-sm">
                                     {address.address_line1}
                                     {address.address_line2 &&
                                         `, ${address.address_line2}`}
@@ -67,51 +85,24 @@ export default function Addresses({ addresses }: { addresses: Address[] }) {
                                     {address.city}, {address.state}{" "}
                                     {address.pincode}
                                     <br />
-                                    {address.country} &middot;{" "}
-                                    {address.mobile_number}
+                                    {address.country}
                                 </p>
-                                <div className="mt-3 flex gap-2">
+                                {!address.is_default && (
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        onClick={() => setEditing(address)}
+                                        className="mt-3"
+                                        onClick={() =>
+                                            router.patch(
+                                                setDefault(address).url,
+                                                {},
+                                                { preserveScroll: true },
+                                            )
+                                        }
                                     >
-                                        Edit
+                                        <Star /> Set default
                                     </Button>
-                                    {!address.is_default && (
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() =>
-                                                router.patch(
-                                                    setDefault(address).url,
-                                                    {},
-                                                    { preserveScroll: true },
-                                                )
-                                            }
-                                        >
-                                            <Star /> Set default
-                                        </Button>
-                                    )}
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => {
-                                            if (
-                                                confirm("Delete this address?")
-                                            ) {
-                                                router.delete(
-                                                    AddressController.destroy(
-                                                        address,
-                                                    ).url,
-                                                    { preserveScroll: true },
-                                                );
-                                            }
-                                        }}
-                                    >
-                                        <Trash2 />
-                                    </Button>
-                                </div>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -130,7 +121,13 @@ export default function Addresses({ addresses }: { addresses: Address[] }) {
                     >
                         {({ processing, errors }) => (
                             <>
-                                <AddressFormFields errors={errors} />
+                                <AddressFormFields
+                                    defaultFullName={auth.user.name}
+                                    defaultMobileNumber={
+                                        auth.user.mobile_number ?? undefined
+                                    }
+                                    errors={errors}
+                                />
                                 <Button type="submit" disabled={processing}>
                                     Save address
                                 </Button>
@@ -169,6 +166,21 @@ export default function Addresses({ addresses }: { addresses: Address[] }) {
                     )}
                 </DialogContent>
             </Dialog>
+
+            <ConfirmDialog
+                open={deleting !== null}
+                onOpenChange={(open) => !open && setDeleting(null)}
+                title="Delete this address?"
+                description="This address will be permanently removed from your account."
+                confirmLabel="Delete"
+                onConfirm={() => {
+                    if (deleting) {
+                        router.delete(AddressController.destroy(deleting).url, {
+                            preserveScroll: true,
+                        });
+                    }
+                }}
+            />
         </>
     );
 }

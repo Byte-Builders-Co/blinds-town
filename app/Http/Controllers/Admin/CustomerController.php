@@ -121,7 +121,11 @@ class CustomerController extends Controller
         abort_unless($customer->isCustomer(), 404);
 
         return Inertia::render('admin/customers/show', [
-            'customer' => $customer->load(['addresses', 'orders']),
+            'customer' => $customer->load('addresses'),
+            'orders' => $customer->orders()
+                ->latest()
+                ->paginate(10)
+                ->withQueryString(),
             'statuses' => UserStatus::cases(),
         ]);
     }

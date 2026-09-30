@@ -20,13 +20,7 @@ import { STOCK_STATUS_LABELS } from "@/types";
 import type { Paginated, Product, StockStatus } from "@/types";
 
 type SortColumn =
-    | "id"
-    | "name"
-    | "category"
-    | "price"
-    | "stock"
-    | "status"
-    | "updated_at";
+    "id" | "name" | "category" | "price" | "stock" | "status" | "updated_at";
 
 type Filters = {
     search?: string;
@@ -133,8 +127,7 @@ export default function AdminProductsIndex({
                             value={filters.status ?? "all"}
                             onValueChange={(value) =>
                                 applyFilters({
-                                    status:
-                                        value === "all" ? undefined : value,
+                                    status: value === "all" ? undefined : value,
                                 })
                             }
                         >
@@ -142,9 +135,7 @@ export default function AdminProductsIndex({
                                 <SelectValue placeholder="Status" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="all">
-                                    All Status
-                                </SelectItem>
+                                <SelectItem value="all">All Status</SelectItem>
                                 <SelectItem value="active">Active</SelectItem>
                                 <SelectItem value="inactive">
                                     Inactive
