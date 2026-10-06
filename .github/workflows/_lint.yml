@@ -1,0 +1,85 @@
+name: Lint and Format
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        type: string
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ inputs.branch || github.ref }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: '8.4'
+
+      - name: Install Dependencies
+        run: |
+          composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+          npm install
+
+      - name: Copy Environment File
+        run: cp .env.example .env
+
+      - name: Generate Application Key
+        run: php artisan key:generate
+
+      # Wayfinder infers route-model-binding parameter types (e.g. number vs
+      # string) from the database schema. Without a migrated database it can't
+      # see that IDs are integers and silently falls back to `string`,
+      # producing generated types that don't match the app code and break
+      # the check below. Migrate a throwaway sqlite database first so the
+      # inferred types match production.
+      - name: Prepare Database
+        run: |
+          touch database/database.sqlite
+          php artisan migrate --force
+
+      # Wayfinder modules (@/actions, @/routes) are gitignored and normally
+      # emitted by the Vite plugin during a build, but this job doesn't build.
+      # Generate them directly instead, and do it before linting: ESLint's
+      # import/order rule resolves these aliases to categorize them, and an
+      # unresolved import is sorted inconsistently relative to sibling
+      # imports, which made the lint step flaky.
+      - name: Generate Wayfinder Routes
+        run: php artisan wayfinder:generate --with-form --no-interaction
+
+      - name: Run Pint
+        run: composer lint
+
+      - name: Format Frontend
+        run: npm run format
+
+      - name: Lint Frontend
+        run: npm run lint
+
+      - name: Frontend TypeScript check
+        run: npm run types:check
+
+      # This step needs `contents: write` and persisted git credentials to
+      # push a style-fix commit back to the branch, but the job intentionally
+      # runs read-only (checkout uses persist-credentials: false, and the
+      # workflow only grants contents: read) to limit what this job can do to
+      # the repo. Given that, this step can never authenticate to push, and
+      # was unconditionally failing the whole deploy gate — even when Pint/
+      # Prettier/ESLint made no changes above. Don't block deploys on it;
+      # style fixes it would have made are already caught as failures by the
+      # lint/format steps earlier in this job.
+      - name: Commit Changes
+        uses: stefanzweifel/git-auto-commit-action@v7
+        continue-on-error: true
+        with:
+          commit_message: fix code style
+          commit_options: '--no-verify'

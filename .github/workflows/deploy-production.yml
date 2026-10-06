@@ -1,0 +1,25 @@
+name: Deploy to Production Server
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git ref to deploy (defaults to main)"
+        required: false
+        default: "main"
+
+jobs:
+  deploy:
+    name: Deploy to Production Server
+    uses: ./.github/workflows/_deploy.yml
+    secrets:
+      SSH_HOST: ${{ secrets.SERVER_IP_PRODUCTION }}
+      SSH_USER: ${{ secrets.SERVER_USER_PRODUCTION }}
+      SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY_PRODUCTION }}
+      APP_PATH: ${{ secrets.APP_PATH_PRODUCTION }}
+    with:
+      environment_name: production
+      branch: ${{ inputs.ref || 'main' }}
+      composer_flags: "--no-interaction --no-progress --prefer-dist --optimize-autoloader --no-dev"

@@ -1,0 +1,28 @@
+name: Deploy to Dev Server
+
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches:
+      - dev
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git ref to deploy (defaults to dev)"
+        required: false
+        default: "dev"
+
+jobs:
+  deploy:
+    name: Deploy to Dev Server
+    uses: ./.github/workflows/_deploy.yml
+    secrets:
+      SSH_HOST: ${{ secrets.SERVER_IP_DEV }}
+      SSH_USER: ${{ secrets.SERVER_USER_DEV }}
+      SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY_DEV }}
+      APP_PATH: ${{ secrets.APP_PATH_DEV }}
+    with:
+      environment_name: dev
+      branch: ${{ inputs.ref || 'dev' }}
+      run_optimize: false
