@@ -34,7 +34,7 @@ class OrderConfirmationNotification extends Notification implements ShouldQueue
             ->greeting("Thanks for your order, {$this->order->shipping_name}!")
             ->line("Your order {$this->order->order_number} has been confirmed and payment received.")
             ->line('Total: '.strtoupper($this->order->currency).' '.number_format((float) $this->order->total, 2))
-            ->action('View your order', route('orders.show', $this->order))
+            ->action('View your order', $this->order->viewUrl())
             ->line('We will let you know once your blinds have shipped.');
     }
 

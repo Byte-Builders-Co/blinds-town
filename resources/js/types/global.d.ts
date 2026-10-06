@@ -19,6 +19,7 @@ declare module "@inertiajs/core" {
             sidebarOpen: boolean;
             cart: { count: number };
             navCategories: CategoryOption[];
+            footerPages: { title: string; url: string }[];
             contactInfo: ContactSections | null;
             [key: string]: unknown;
         };

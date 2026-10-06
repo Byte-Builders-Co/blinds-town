@@ -11,21 +11,21 @@ export default function AuthSimpleLayout({
 }: AuthLayoutProps) {
     const header = (
         <div className="mb-4 space-y-1">
-            <h1 className="text-2xl font-normal text-[#0F1111]">{title}</h1>
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">{title}</h1>
             <p className="text-muted-foreground text-sm">{description}</p>
         </div>
     );
 
     return (
-        <div className="flex min-h-svh flex-col items-center gap-6 bg-white p-6 pt-10 md:p-10 md:pt-16">
-            <div className="w-full max-w-87.5">
+        <div className="flex min-h-svh flex-col items-center gap-6 bg-background p-6 pt-10 md:p-10 md:pt-16">
+            <div className="w-full max-w-sm">
                 <div className="flex flex-col gap-6">
                     <Link href={home()} className="flex justify-center">
-                        <AppLogo />
+                        <span className="rounded-md dark:bg-white dark:px-2 dark:py-1"><AppLogo /></span>
                     </Link>
 
                     {card ? (
-                        <div className="rounded-lg border border-[#ddd] bg-white p-6 shadow-[0_2px_5px_rgba(15,17,17,0.15)]">
+                        <div className="rounded-xl border bg-card p-6 shadow-sm sm:p-8">
                             {header}
                             {children}
                         </div>

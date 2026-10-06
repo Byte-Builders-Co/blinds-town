@@ -81,9 +81,12 @@
     --border: oklch(0.89 0.014 75);
     --input: oklch(0.89 0.014 75);
     --ring: oklch(0.657 0.192 24.1);
-    --chart-1: oklch(0.657 0.192 24.1);
-    --chart-2: oklch(0.389 0.049 249.2);
-    --chart-3: oklch(0.62 0.16 25);
+    /* Categorical chart series, in fixed order. Slots 1-3 are validated for
+       colour-blind separation and 3:1 contrast against --card (all-pairs, so
+       safe for donuts); a fourth series should fold into "Other". */
+    --chart-1: #2863ab;
+    --chart-2: #f05454;
+    --chart-3: #0f9b89;
     --chart-4: oklch(0.55 0.07 200);
     --chart-5: oklch(0.45 0.03 100);
     --radius: 0.5rem;
@@ -98,38 +101,41 @@
 }
 
 .dark {
-    --background: oklch(0.17 0.014 155);
-    --foreground: oklch(0.96 0.01 75);
-    --card: oklch(0.21 0.016 155);
-    --card-foreground: oklch(0.96 0.01 75);
-    --popover: oklch(0.21 0.016 155);
-    --popover-foreground: oklch(0.96 0.01 75);
-    --primary: oklch(0.657 0.192 24.1);
-    --primary-foreground: oklch(1 0 0);
+    color-scheme: dark;
+
+    /* Layered surfaces: background < sidebar < card < popover < muted < accent */
+    --background: oklch(0.14 0.005 250);
+    --foreground: oklch(0.965 0.004 250);
+    --card: oklch(0.18 0.006 250);
+    --card-foreground: oklch(0.965 0.004 250);
+    --popover: oklch(0.205 0.007 250);
+    --popover-foreground: oklch(0.965 0.004 250);
+    --primary: oklch(0.69 0.185 24.1);
+    --primary-foreground: oklch(0.16 0.01 24);
     --secondary: oklch(0.46 0.049 249.2);
     --secondary-foreground: oklch(0.98 0.005 90);
-    --muted: oklch(0.27 0.016 155);
-    --muted-foreground: oklch(0.68 0.02 90);
-    --accent: oklch(0.33 0.04 65);
-    --accent-foreground: oklch(0.96 0.01 75);
-    --destructive: oklch(0.577 0.215 27.3);
-    --destructive-foreground: oklch(0.96 0.01 75);
-    --border: oklch(0.3 0.016 155);
-    --input: oklch(0.3 0.016 155);
-    --ring: oklch(0.657 0.192 24.1);
-    --chart-1: oklch(0.657 0.192 24.1);
-    --chart-2: oklch(0.46 0.049 249.2);
-    --chart-3: oklch(0.65 0.17 25);
-    --chart-4: oklch(0.6 0.08 200);
-    --chart-5: oklch(0.6 0.02 90);
-    --sidebar: oklch(0.15 0.014 155);
-    --sidebar-foreground: oklch(0.96 0.01 75);
-    --sidebar-primary: oklch(0.657 0.192 24.1);
-    --sidebar-primary-foreground: oklch(1 0 0);
-    --sidebar-accent: oklch(0.26 0.02 155);
-    --sidebar-accent-foreground: oklch(0.96 0.01 75);
-    --sidebar-border: oklch(0.28 0.02 155);
-    --sidebar-ring: oklch(0.657 0.192 24.1);
+    --muted: oklch(0.225 0.007 250);
+    --muted-foreground: oklch(0.72 0.012 250);
+    --accent: oklch(0.255 0.009 250);
+    --accent-foreground: oklch(0.965 0.004 250);
+    --destructive: oklch(0.62 0.205 25);
+    --destructive-foreground: oklch(0.98 0.004 25);
+    --border: oklch(1 0 0 / 8%);
+    --input: oklch(1 0 0 / 12%);
+    --ring: oklch(0.69 0.185 24.1);
+    --chart-1: #4c80cd;
+    --chart-2: #ee5d5b;
+    --chart-3: #31aa8c;
+    --chart-4: oklch(0.68 0.08 200);
+    --chart-5: oklch(0.65 0.02 250);
+    --sidebar: oklch(0.16 0.005 250);
+    --sidebar-foreground: oklch(0.93 0.005 250);
+    --sidebar-primary: oklch(0.69 0.185 24.1);
+    --sidebar-primary-foreground: oklch(0.16 0.01 24);
+    --sidebar-accent: oklch(0.235 0.008 250);
+    --sidebar-accent-foreground: oklch(0.965 0.004 250);
+    --sidebar-border: oklch(1 0 0 / 7%);
+    --sidebar-ring: oklch(0.69 0.185 24.1);
 }
 
 @layer base {
@@ -139,5 +145,128 @@
 
     body {
         @apply bg-background text-foreground;
+    }
+
+    .dark ::selection {
+        background: oklch(0.69 0.185 24.1 / 35%);
+        color: inherit;
+    }
+
+    .dark * {
+        scrollbar-width: thin;
+        scrollbar-color: oklch(1 0 0 / 16%) transparent;
+    }
+
+    .dark [data-slot="card"] {
+        box-shadow: inset 0 1px 0 oklch(1 0 0 / 4%);
+    }
+
+    .dark [data-slot="dialog-content"],
+    .dark [data-slot="dropdown-menu-content"],
+    .dark [data-slot="select-content"] {
+        box-shadow:
+            inset 0 1px 0 oklch(1 0 0 / 4%),
+            0 8px 30px oklch(0 0 0 / 35%);
+    }
+
+    .dark input::placeholder,
+    .dark textarea::placeholder {
+        color: oklch(0.58 0.012 250);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}
+
+/* Rich-text content authored in the admin editor (CMS pages). Shared by the
+   storefront page and the editor so both look the same. */
+@layer components {
+    .cms-content {
+        color: var(--muted-foreground);
+        line-height: 1.75;
+        overflow-wrap: anywhere;
+    }
+
+    .cms-content > * + * {
+        margin-top: 1rem;
+    }
+
+    .cms-content h2,
+    .cms-content h3,
+    .cms-content h4 {
+        color: var(--foreground);
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+    }
+
+    .cms-content h2 {
+        font-size: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .cms-content h3 {
+        font-size: 1.25rem;
+        margin-top: 1.5rem;
+    }
+
+    .cms-content h4 {
+        font-size: 1.05rem;
+        margin-top: 1.25rem;
+    }
+
+    .cms-content strong {
+        color: var(--foreground);
+        font-weight: 600;
+    }
+
+    .cms-content a {
+        color: var(--primary);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    .cms-content ul {
+        list-style: disc;
+        padding-left: 1.5rem;
+    }
+
+    .cms-content ol {
+        list-style: decimal;
+        padding-left: 1.5rem;
+    }
+
+    .cms-content li + li {
+        margin-top: 0.375rem;
+    }
+
+    .cms-content li > p {
+        margin: 0;
+    }
+
+    .cms-content blockquote {
+        border-left: 3px solid var(--border);
+        color: var(--foreground);
+        padding-left: 1rem;
+    }
+
+    .cms-content hr {
+        border: 0;
+        border-top: 1px solid var(--border);
+        margin: 1.5rem 0;
+    }
+
+    .cms-content code {
+        background: var(--muted);
+        border-radius: 0.25rem;
+        font-size: 0.9em;
+        padding: 0.1rem 0.35rem;
     }
 }

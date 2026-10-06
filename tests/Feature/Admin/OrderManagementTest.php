@@ -178,3 +178,31 @@ test('admins can sort orders by total', function () {
         ->where('orders.data.1.id', $expensive->id)
     );
 });
+
+test('guest orders appear in the admin order list and can be sorted by customer', function () {
+    $admin = User::factory()->admin()->create();
+    $guestOrder = Order::factory()->create(['user_id' => null, 'guest_email' => 'guest@example.com', 'shipping_name' => 'Guest Buyer']);
+    $memberOrder = Order::factory()->create();
+
+    foreach (['customer_name', 'customer_email', 'created_at'] as $sort) {
+        $this->actingAs($admin)
+            ->get(route('admin.orders.index', ['sort' => $sort]))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('admin/orders/index')
+                ->where('orders.total', 2));
+    }
+
+    $this->actingAs($admin)->get(route('admin.orders.show', $guestOrder))->assertOk();
+});
+
+test('admin status updates email a guest customer', function () {
+    Notification::fake();
+
+    $admin = User::factory()->admin()->create();
+    $order = Order::factory()->create(['user_id' => null, 'guest_email' => 'guest@example.com']);
+
+    $this->actingAs($admin)->patch(route('admin.orders.update-status', $order), ['status' => 'shipped']);
+
+    Notification::assertSentOnDemand(OrderStatusUpdatedNotification::class);
+});

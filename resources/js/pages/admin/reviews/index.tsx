@@ -1,10 +1,12 @@
 import { Head, router, usePage } from "@inertiajs/react";
-import { Star } from "lucide-react";
+import { Check, EyeOff, MessageSquareOff, Star, Trash2, X } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useState } from "react";
 import { ReviewImageViewer } from "@/components/admin/review-image-viewer";
+import { StatusDot } from "@/components/admin/status-dot";
+import { TableEmptyRow } from "@/components/admin/table-empty-row";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { PaginationLinks } from "@/components/pagination-links";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
     Select,
@@ -31,15 +33,22 @@ function Stars({ rating }: { rating: number }) {
     );
 }
 
-const statusVariant: Record<
-    string,
-    "default" | "secondary" | "destructive" | "outline"
-> = {
-    pending: "outline",
-    approved: "default",
-    rejected: "destructive",
-    hidden: "secondary",
+const STATUS_DOT: Record<string, string> = {
+    pending: "bg-amber-500",
+    approved: "bg-emerald-500",
+    rejected: "bg-red-500",
+    hidden: "bg-slate-400",
 };
+
+const moderationActions: {
+    status: ProductReview["status"];
+    label: string;
+    icon: LucideIcon;
+}[] = [
+    { status: "approved", label: "Approve", icon: Check },
+    { status: "rejected", label: "Reject", icon: X },
+    { status: "hidden", label: "Hide", icon: EyeOff },
+];
 
 export default function AdminReviewsIndex({
     reviews,
@@ -50,6 +59,7 @@ export default function AdminReviewsIndex({
 }) {
     const [search, setSearch] = useState(filters.search ?? "");
     const { errors } = usePage().props;
+    const [deleting, setDeleting] = useState<ProductReview | null>(null);
 
     const applyFilters = (patch: Partial<Filters>) => {
         router.get(
@@ -68,15 +78,13 @@ export default function AdminReviewsIndex({
             <Head title="Reviews" />
 
             <div className="p-4">
-                <h1 className="text-2xl font-semibold">Reviews</h1>
-
                 {errors.review && (
                     <p className="text-destructive mt-4 text-sm">
                         {errors.review}
                     </p>
                 )}
 
-                <div className="mt-4 flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-3">
                     <Input
                         placeholder="Search customer, product, or title..."
                         value={search}
@@ -128,123 +136,155 @@ export default function AdminReviewsIndex({
                     </Select>
                 </div>
 
-                <div className="mt-6 divide-y rounded-lg border">
-                    {reviews.data.map((review) => (
-                        <div key={review.id} className="px-4 py-3">
-                            <div className="flex items-start justify-between gap-4">
-                                <div>
-                                    <p className="font-medium">
-                                        {review.user
-                                            ? `${review.user.first_name} ${review.user.last_name}`
-                                            : "Customer"}
-                                        <span className="text-muted-foreground font-normal">
-                                            {" "}
-                                            &middot;{" "}
-                                            {review.product?.name ?? "Product"}
-                                        </span>
-                                    </p>
-                                    <div className="mt-1">
-                                        <Stars rating={review.rating} />
-                                    </div>
-                                    <p className="mt-1 text-sm font-medium">
-                                        {review.title}
-                                    </p>
-                                    <p className="text-muted-foreground text-sm">
-                                        {review.comment}
-                                    </p>
-                                    {review.images && (
-                                        <ReviewImageViewer
-                                            reviewId={review.id}
-                                            images={review.images}
+                {/* Open table: no outer box, just hairline dividers. The negative
+                    margin lets row hover backgrounds bleed past the text edge so
+                    content still lines up with the toolbar above. */}
+                <div className="-mx-3 mt-4 overflow-x-auto">
+                    <table className="w-full text-left text-sm">
+                        <thead>
+                            <tr className="text-muted-foreground border-b text-xs tracking-wider uppercase">
+                                <th
+                                    scope="col"
+                                    className="px-3 py-3 font-medium"
+                                >
+                                    Review
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="px-3 py-3 font-medium"
+                                >
+                                    Status
+                                </th>
+                                <th scope="col" className="w-0 px-3 py-3">
+                                    <span className="sr-only">Actions</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {reviews.data.map((review) => (
+                                <tr
+                                    key={review.id}
+                                    className="group hover:bg-muted/40 border-border/60 border-b transition-colors"
+                                >
+                                    <td className="px-3 py-4 align-top">
+                                        <p className="font-medium">
+                                            {review.user
+                                                ? `${review.user.first_name} ${review.user.last_name}`
+                                                : "Customer"}
+                                            <span className="text-muted-foreground font-normal">
+                                                {" "}
+                                                &middot;{" "}
+                                                {review.product?.name ??
+                                                    "Product"}
+                                            </span>
+                                        </p>
+                                        <div className="mt-1">
+                                            <Stars rating={review.rating} />
+                                        </div>
+                                        <p className="mt-1 text-sm font-medium">
+                                            {review.title}
+                                        </p>
+                                        <p className="text-muted-foreground text-sm">
+                                            {review.comment}
+                                        </p>
+                                        {review.images && (
+                                            <ReviewImageViewer
+                                                reviewId={review.id}
+                                                images={review.images}
+                                            />
+                                        )}
+                                        <p className="text-muted-foreground mt-2 text-xs">
+                                            {new Date(
+                                                review.created_at,
+                                            ).toLocaleString()}
+                                        </p>
+                                    </td>
+                                    <td className="px-3 py-4 align-top">
+                                        <StatusDot
+                                            label={review.status}
+                                            dotClassName={
+                                                STATUS_DOT[review.status] ??
+                                                "bg-slate-400"
+                                            }
+                                            className="capitalize"
                                         />
-                                    )}
-                                    <p className="text-muted-foreground mt-2 text-xs">
-                                        {new Date(
-                                            review.created_at,
-                                        ).toLocaleString()}
-                                    </p>
-                                </div>
-                                <div className="flex shrink-0 flex-col items-end gap-2">
-                                    <Badge
-                                        variant={statusVariant[review.status]}
-                                        className="capitalize"
-                                    >
-                                        {review.status}
-                                    </Badge>
-                                    <div className="flex gap-2">
-                                        {review.status !== "approved" && (
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
+                                    </td>
+                                    <td className="px-3 py-3 align-top">
+                                        {/* Revealed on hover for pointer devices;
+                                            always visible on touch and when a
+                                            control inside has keyboard focus. */}
+                                        <div className="flex items-center justify-end gap-0.5 transition-opacity focus-within:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100">
+                                            {moderationActions.map((action) =>
+                                                action.status ===
+                                                review.status ? (
+                                                    <span
+                                                        key={action.status}
+                                                        className="size-8"
+                                                        aria-hidden="true"
+                                                    />
+                                                ) : (
+                                                    <button
+                                                        key={action.status}
+                                                        type="button"
+                                                        onClick={() =>
+                                                            setStatus(
+                                                                review,
+                                                                action.status,
+                                                            )
+                                                        }
+                                                        className="text-muted-foreground hover:text-foreground hover:bg-accent inline-flex size-8 items-center justify-center rounded-md transition-colors"
+                                                        aria-label={`${action.label} review`}
+                                                        title={action.label}
+                                                    >
+                                                        <action.icon className="size-4" />
+                                                    </button>
+                                                ),
+                                            )}
+                                            <button
+                                                type="button"
                                                 onClick={() =>
-                                                    setStatus(
-                                                        review,
-                                                        "approved",
-                                                    )
+                                                    setDeleting(review)
                                                 }
+                                                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 inline-flex size-8 items-center justify-center rounded-md transition-colors"
+                                                aria-label="Delete review"
+                                                title="Delete"
                                             >
-                                                Approve
-                                            </Button>
-                                        )}
-                                        {review.status !== "rejected" && (
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                onClick={() =>
-                                                    setStatus(
-                                                        review,
-                                                        "rejected",
-                                                    )
-                                                }
-                                            >
-                                                Reject
-                                            </Button>
-                                        )}
-                                        {review.status !== "hidden" && (
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                onClick={() =>
-                                                    setStatus(review, "hidden")
-                                                }
-                                            >
-                                                Hide
-                                            </Button>
-                                        )}
-                                        <Button
-                                            size="sm"
-                                            variant="destructive"
-                                            onClick={() => {
-                                                if (
-                                                    confirm(
-                                                        "Delete this review?",
-                                                    )
-                                                ) {
-                                                    router.delete(
-                                                        destroy(review.id).url,
-                                                    );
-                                                }
-                                            }}
-                                        >
-                                            Delete
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-
-                    {reviews.data.length === 0 && (
-                        <p className="text-muted-foreground px-4 py-8 text-center text-sm">
-                            No reviews found.
-                        </p>
-                    )}
+                                                <Trash2 className="size-4" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                            {reviews.data.length === 0 && (
+                                <TableEmptyRow
+                                    colSpan={3}
+                                    icon={MessageSquareOff}
+                                    title="No reviews found"
+                                />
+                            )}
+                        </tbody>
+                    </table>
                 </div>
 
-                <div className="mt-6">
+                <div className="mt-4">
                     <PaginationLinks paginated={reviews} label="reviews" />
                 </div>
             </div>
+
+            <ConfirmDialog
+                open={deleting !== null}
+                onOpenChange={(open) => !open && setDeleting(null)}
+                title="Delete this review?"
+                description="This cannot be undone."
+                confirmLabel="Delete"
+                onConfirm={() => {
+                    if (deleting) {
+                        router.delete(destroy(deleting.id).url);
+                    }
+
+                    setDeleting(null);
+                }}
+            />
         </>
     );
 }

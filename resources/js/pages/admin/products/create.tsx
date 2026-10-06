@@ -22,6 +22,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { create, index, store } from "@/routes/admin/products";
+import { categoryChoices } from "@/lib/categories";
 import type { Category, MeasurementUnit, StockStatus } from "@/types";
 
 type FormData = {
@@ -54,7 +55,7 @@ export default function AdminProductCreate({
 }) {
     const form = useForm<FormData>({
         sku: "",
-        category_id: categories[0]?.id.toString() ?? "",
+        category_id: categoryChoices(categories)[0]?.id.toString() ?? "",
         name: "",
         description: "",
         price_per_sqm: "",
@@ -109,14 +110,22 @@ export default function AdminProductCreate({
                                             <SelectValue placeholder="Select a category" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {categories.map((category) => (
-                                                <SelectItem
-                                                    key={category.id}
-                                                    value={category.id.toString()}
-                                                >
-                                                    {category.name}
-                                                </SelectItem>
-                                            ))}
+                                            {categoryChoices(categories).map(
+                                                (category) => (
+                                                    <SelectItem
+                                                        key={category.id}
+                                                        value={category.id.toString()}
+                                                    >
+                                                        {category.depth ===
+                                                            1 && (
+                                                            <span className="text-muted-foreground">
+                                                                &mdash;
+                                                            </span>
+                                                        )}
+                                                        {category.name}
+                                                    </SelectItem>
+                                                ),
+                                            )}
                                         </SelectContent>
                                     </Select>
                                     <InputError

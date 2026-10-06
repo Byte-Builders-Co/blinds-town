@@ -11,7 +11,7 @@ class FaqController extends Controller
     public function index(): Response
     {
         return Inertia::render('shop/faqs', [
-            'faqs' => Faq::query()->active()->orderBy('category')->orderBy('sort_order')->get(),
+            'faqs' => Faq::query()->active()->orderBy('sort_order')->orderBy('id')->get(),
         ]);
     }
 }

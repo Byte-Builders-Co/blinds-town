@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureCanCheckout;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Services\AdminAlertService;
@@ -27,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
+            'checkout.access' => EnsureCanCheckout::class,
             'role' => RoleMiddleware::class,
         ]);
 

@@ -27,8 +27,8 @@ class OrderController extends Controller
      */
     private const SORTABLE_COLUMNS = [
         'id' => 'orders.id',
-        'customer_name' => 'users.name',
-        'customer_email' => 'users.email',
+        'customer_name' => 'COALESCE(users.first_name, orders.shipping_name)',
+        'customer_email' => 'COALESCE(users.email, orders.guest_email)',
         'status' => 'orders.status',
         'total' => 'orders.total',
         'created_at' => 'orders.created_at',
@@ -43,12 +43,12 @@ class OrderController extends Controller
         return Inertia::render('admin/orders/index', [
             'orders' => Order::query()
                 ->select('orders.*')
-                ->join('users', 'users.id', '=', 'orders.user_id')
+                ->leftJoin('users', 'users.id', '=', 'orders.user_id')
                 ->with(['user', 'payment'])
                 ->when($request->string('search')->toString(), fn ($query, $search) => $query->where('orders.order_number', 'like', "%{$search}%"))
                 ->when($request->string('status')->toString(), fn ($query, $status) => $query->where('orders.status', $status))
                 ->when($request->string('payment_status')->toString(), fn ($query, $status) => $query->whereHas('payment', fn ($q) => $q->where('status', $status)))
-                ->orderBy($sortColumn, $direction)
+                ->orderByRaw("{$sortColumn} {$direction}")
                 ->paginate(20)
                 ->withQueryString(),
             'statuses' => OrderStatus::cases(),
@@ -80,7 +80,7 @@ class OrderController extends Controller
         };
 
         if ($event === null || $notifications->isEventEnabled($event)) {
-            $order->user->notify(new OrderStatusUpdatedNotification($order));
+            $order->notifyCustomer(new OrderStatusUpdatedNotification($order));
         }
 
         return redirect()->route('admin.orders.show', $order);

@@ -1,8 +1,9 @@
 import { Head, Link, router } from "@inertiajs/react";
-import { Eye, Search } from "lucide-react";
+import { Eye, PackageSearch, Search } from "lucide-react";
 import { useEffect, useState } from "react";
+import { StatusDot } from "@/components/admin/status-dot";
+import { TableEmptyRow } from "@/components/admin/table-empty-row";
 import { PaginationLinks } from "@/components/pagination-links";
-import { OrderStatusBadge } from "@/components/shop/order-status-badge";
 import { Input } from "@/components/ui/input";
 import {
     Select,
@@ -11,7 +12,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { formatCurrency, formatRelativeTime } from "@/lib/utils";
+import { cn, formatCurrency, formatRelativeTime } from "@/lib/utils";
 import { index, show } from "@/routes/admin/orders";
 import { ORDER_STATUS_LABELS, PAYMENT_STATUS_LABELS } from "@/types";
 import type { Order, OrderStatus, PaymentStatus, Paginated } from "@/types";
@@ -32,14 +33,25 @@ type Filters = {
     direction?: string;
 };
 
-const COLUMNS: { key: SortColumn; label: string }[] = [
+const COLUMNS: { key: SortColumn; label: string; align?: "right" }[] = [
     { key: "id", label: "ID" },
     { key: "customer_name", label: "Customer Name" },
-    { key: "customer_email", label: " Email" },
+    { key: "customer_email", label: "Email" },
     { key: "status", label: "Status" },
-    { key: "total", label: "Total" },
+    { key: "total", label: "Total", align: "right" },
     { key: "created_at", label: "Created" },
 ];
+
+const ORDER_STATUS_DOT: Record<OrderStatus, string> = {
+    pending: "bg-slate-400",
+    confirmed: "bg-blue-500",
+    measurement_pending: "bg-amber-500",
+    manufacturing: "bg-purple-500",
+    ready_to_ship: "bg-indigo-500",
+    shipped: "bg-cyan-500",
+    delivered: "bg-emerald-500",
+    cancelled: "bg-red-500",
+};
 
 export default function AdminOrdersIndex({
     orders,
@@ -148,101 +160,115 @@ export default function AdminOrdersIndex({
                     </div>
                 </div>
 
-                <div className="mt-4 rounded-lg border">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                            <thead>
-                                <tr className="bg-muted/40 text-muted-foreground border-b text-left">
-                                    {COLUMNS.map((column) => (
-                                        <th
-                                            key={column.key}
-                                            className="px-4 py-3 font-medium whitespace-nowrap"
-                                        >
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    toggleSort(column.key)
-                                                }
-                                                className="hover:text-foreground"
-                                            >
-                                                {column.label}
-                                            </button>
-                                        </th>
-                                    ))}
-                                    <th className="px-4 py-3 font-medium whitespace-nowrap">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y">
-                                {orders.data.map((order) => (
-                                    <tr
-                                        key={order.id}
-                                        onClick={() =>
-                                            router.visit(show(order).url)
-                                        }
-                                        className="hover:bg-accent/50 cursor-pointer"
+                {/* Open table: no outer box, just hairline dividers. The negative
+                    margin lets row hover backgrounds bleed past the text edge so
+                    content still lines up with the toolbar above. */}
+                <div className="-mx-3 mt-4 overflow-x-auto">
+                    <table className="w-full text-sm">
+                        <thead>
+                            <tr className="text-muted-foreground border-b text-left text-xs tracking-wider uppercase">
+                                {COLUMNS.map((column) => (
+                                    <th
+                                        key={column.key}
+                                        scope="col"
+                                        className={cn(
+                                            "px-3 py-3 font-medium whitespace-nowrap",
+                                            column.align === "right" &&
+                                                "text-right",
+                                        )}
                                     >
-                                        <td className="px-4 py-3">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                toggleSort(column.key)
+                                            }
+                                            className="hover:text-foreground focus-visible:ring-ring/50 -mx-1.5 rounded px-1.5 py-0.5 uppercase transition-colors outline-none focus-visible:ring-2"
+                                        >
+                                            {column.label}
+                                        </button>
+                                    </th>
+                                ))}
+                                <th scope="col" className="w-0 px-3 py-3">
+                                    <span className="sr-only">Actions</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {orders.data.map((order) => (
+                                <tr
+                                    key={order.id}
+                                    onClick={() =>
+                                        router.visit(show(order).url)
+                                    }
+                                    className="group hover:bg-muted/40 border-border/60 cursor-pointer border-b transition-colors"
+                                >
+                                    <td className="px-3 py-4 whitespace-nowrap">
+                                        <Link
+                                            href={show(order)}
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="font-medium hover:underline"
+                                        >
+                                            {order.order_number}
+                                        </Link>
+                                    </td>
+                                    <td className="px-3 py-4 whitespace-nowrap">
+                                        {order.user?.name ??
+                                            order.shipping_name}
+                                    </td>
+                                    <td className="text-muted-foreground px-3 py-4 whitespace-nowrap">
+                                        {order.user?.email ??
+                                            order.guest_email ??
+                                            "—"}
+                                    </td>
+                                    <td className="px-3 py-4">
+                                        <StatusDot
+                                            label={
+                                                ORDER_STATUS_LABELS[
+                                                    order.status
+                                                ]
+                                            }
+                                            dotClassName={
+                                                ORDER_STATUS_DOT[order.status]
+                                            }
+                                        />
+                                    </td>
+                                    <td className="px-3 py-4 text-right font-semibold whitespace-nowrap tabular-nums">
+                                        {formatCurrency(
+                                            order.total,
+                                            order.currency,
+                                        )}
+                                    </td>
+                                    <td className="text-muted-foreground px-3 py-4 whitespace-nowrap">
+                                        {formatRelativeTime(order.created_at)}
+                                    </td>
+                                    <td className="px-3 py-4">
+                                        {/* Revealed on hover for pointer devices;
+                                            always visible on touch and when the
+                                            link has keyboard focus. */}
+                                        <div className="flex items-center justify-end transition-opacity focus-within:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100">
                                             <Link
                                                 href={show(order)}
                                                 onClick={(e) =>
                                                     e.stopPropagation()
                                                 }
-                                                className="font-medium hover:underline"
-                                            >
-                                                {order.order_number}
-                                            </Link>
-                                        </td>
-                                        <td className="px-4 py-3 whitespace-nowrap">
-                                            {order.user?.name ?? "—"}
-                                        </td>
-                                        <td className="text-muted-foreground px-4 py-3 whitespace-nowrap">
-                                            {order.user?.email ?? "—"}
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <OrderStatusBadge
-                                                status={order.status}
-                                            />
-                                        </td>
-                                        <td className="px-4 py-3 font-medium whitespace-nowrap">
-                                            {formatCurrency(
-                                                order.total,
-                                                order.currency,
-                                            )}
-                                        </td>
-                                        <td className="text-muted-foreground px-4 py-3 whitespace-nowrap">
-                                            {formatRelativeTime(
-                                                order.created_at,
-                                            )}
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <Link
-                                                href={show(order)}
-                                                onClick={(e) =>
-                                                    e.stopPropagation()
-                                                }
-                                                className="text-muted-foreground hover:text-foreground hover:bg-accent inline-flex size-8 items-center justify-center rounded-md"
+                                                className="text-muted-foreground hover:text-foreground hover:bg-accent inline-flex size-8 items-center justify-center rounded-md transition-colors"
                                                 aria-label={`View order ${order.order_number}`}
                                             >
                                                 <Eye className="size-4" />
                                             </Link>
-                                        </td>
-                                    </tr>
-                                ))}
-                                {orders.data.length === 0 && (
-                                    <tr>
-                                        <td
-                                            colSpan={COLUMNS.length + 1}
-                                            className="text-muted-foreground px-4 py-10 text-center"
-                                        >
-                                            No orders found.
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                            {orders.data.length === 0 && (
+                                <TableEmptyRow
+                                    colSpan={COLUMNS.length + 1}
+                                    icon={PackageSearch}
+                                    title="No orders found"
+                                />
+                            )}
+                        </tbody>
+                    </table>
                 </div>
 
                 <div className="mt-4">

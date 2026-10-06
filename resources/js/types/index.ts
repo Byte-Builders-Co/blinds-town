@@ -1,3 +1,4 @@
+export * from "./access";
 export type * from "./account";
 export type * from "./admin";
 export * from "./auth";

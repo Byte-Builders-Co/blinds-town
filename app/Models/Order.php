@@ -11,11 +11,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Notifications\AnonymousNotifiable;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Notification as NotificationFacade;
+use Illuminate\Support\Facades\URL;
 
 /**
  * @property int $id
- * @property int $user_id
+ * @property int|null $user_id
+ * @property string|null $guest_email
  * @property string $order_number
  * @property OrderStatus $status
  * @property string $subtotal
@@ -40,13 +45,14 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $delivered_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read User $user
+ * @property-read User|null $user
  * @property-read Collection<int, OrderItem> $items
  * @property-read Payment|null $payment
  * @property-read Collection<int, OrderStatusHistory> $statusHistories
  */
 #[Fillable([
     'user_id',
+    'guest_email',
     'order_number',
     'status',
     'subtotal',
@@ -121,6 +127,46 @@ class Order extends Model
     public function statusHistories(): HasMany
     {
         return $this->hasMany(OrderStatusHistory::class)->oldest();
+    }
+
+    public function isGuest(): bool
+    {
+        return $this->user_id === null;
+    }
+
+    public function customerEmail(): ?string
+    {
+        return $this->user?->email ?? $this->guest_email;
+    }
+
+    /**
+     * Send a notification to the customer, whether they have an account or
+     * checked out as a guest.
+     */
+    public function notifyCustomer(Notification $notification): void
+    {
+        if ($this->user) {
+            $this->user->notify($notification);
+
+            return;
+        }
+
+        if ($this->guest_email) {
+            /** @var AnonymousNotifiable $recipient */
+            $recipient = NotificationFacade::route('mail', $this->guest_email);
+            $recipient->notify($notification);
+        }
+    }
+
+    /**
+     * Where the customer can view this order: their account page, or a signed
+     * link for guest orders.
+     */
+    public function viewUrl(): string
+    {
+        return $this->isGuest()
+            ? URL::signedRoute('orders.track', $this)
+            : route('orders.show', $this);
     }
 
     public function recordStatus(OrderStatus $status, ?string $note = null): void

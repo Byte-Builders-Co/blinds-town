@@ -3,13 +3,12 @@ import { Link } from "@inertiajs/react";
 import ProfileController from "@/actions/App/Http/Controllers/Settings/ProfileController";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import DeleteUser from "@/components/delete-user";
-import Heading from "@/components/heading";
+import { AccountLayout } from "@/components/account/account-layout";
 import InputError from "@/components/input-error";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useInitials } from "@/hooks/use-initials";
-import { edit } from "@/routes/profile";
 import type { Auth } from "@/types";
 import { send } from "@/routes/verification";
 
@@ -18,9 +17,11 @@ type PageProps = {
 };
 
 export default function Profile({
+    stats,
     mustVerifyEmail,
     status,
 }: {
+    stats: { orders: number; wishlist: number };
     mustVerifyEmail: boolean;
     status?: string;
 }) {
@@ -28,18 +29,19 @@ export default function Profile({
     const getInitials = useInitials();
 
     return (
-        <>
-            <Head title="Profile settings" />
+        <AccountLayout stats={stats}>
+            <Head title="Profile Settings" />
 
-            <h1 className="sr-only">Profile settings</h1>
+            <div>
+                <h1 className="text-3xl font-semibold tracking-tight">
+                    Profile Settings
+                </h1>
+                <p className="text-muted-foreground mt-1.5 text-sm">
+                    Update your name, contact details, and photo.
+                </p>
+            </div>
 
-            <div className="space-y-6">
-                <Heading
-                    variant="small"
-                    title="Profile"
-                    description="Update your name, contact details, and photo"
-                />
-
+            <section>
                 <Form
                     {...ProfileController.update.form()}
                     encType="multipart/form-data"
@@ -51,7 +53,7 @@ export default function Profile({
                     {({ processing, errors }) => (
                         <>
                             <div className="flex items-center gap-4">
-                                <Avatar className="h-16 w-16">
+                                <Avatar className="size-20 shrink-0">
                                     <AvatarImage
                                         src={
                                             auth.user.profile_image_path
@@ -60,11 +62,11 @@ export default function Profile({
                                         }
                                         alt={auth.user.name}
                                     />
-                                    <AvatarFallback className="text-lg">
+                                    <AvatarFallback className="bg-secondary text-secondary-foreground text-xl font-semibold">
                                         {getInitials(auth.user.name)}
                                     </AvatarFallback>
                                 </Avatar>
-                                <div className="grid gap-2">
+                                <div className="grid min-w-0 gap-1.5">
                                     <Label htmlFor="avatar">
                                         Profile photo
                                     </Label>
@@ -73,13 +75,16 @@ export default function Profile({
                                         type="file"
                                         name="avatar"
                                         accept="image/*"
-                                        className="max-w-xs"
+                                        className="file:bg-muted file:text-foreground max-w-xs cursor-pointer file:mr-3 file:h-full file:rounded file:px-2 file:text-xs"
                                     />
+                                    <p className="text-muted-foreground text-xs">
+                                        JPG, PNG or WebP. Square images work best.
+                                    </p>
                                     <InputError message={errors.avatar} />
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="grid gap-2">
                                     <Label htmlFor="first_name">
                                         First name
@@ -127,7 +132,7 @@ export default function Profile({
                                 />
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="grid gap-2">
                                     <Label htmlFor="mobile_number">
                                         Mobile number
@@ -180,7 +185,7 @@ export default function Profile({
 
                                         {status ===
                                             "verification-link-sent" && (
-                                            <div className="mt-2 text-sm font-medium text-green-600">
+                                            <div className="mt-2 text-sm font-medium text-green-600 dark:text-green-400">
                                                 A new verification link has been
                                                 sent to your email address.
                                             </div>
@@ -199,18 +204,11 @@ export default function Profile({
                         </>
                     )}
                 </Form>
-            </div>
+            </section>
 
-            <DeleteUser />
-        </>
+            <section className="border-t pt-8">
+                <DeleteUser />
+            </section>
+        </AccountLayout>
     );
 }
-
-Profile.layout = {
-    breadcrumbs: [
-        {
-            title: "Profile settings",
-            href: edit(),
-        },
-    ],
-};

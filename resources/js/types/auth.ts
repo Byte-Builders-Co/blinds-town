@@ -25,10 +25,22 @@ export type User = {
     [key: string]: unknown;
 };
 
+export type UserRoleName = "super-admin" | "admin" | "staff" | "customer";
+
+/** The signed-in user's highest role, as the interface should name it. */
+export type AuthRole = {
+    value: UserRoleName;
+    /** e.g. "Super Admin" */
+    label: string;
+    /** e.g. "Super Admin Panel" */
+    panel: string;
+};
+
 export type Auth = {
     user: User;
     roles: string[];
     permissions: string[];
+    role: AuthRole | null;
 };
 
 export type Passkey = {

@@ -45,6 +45,7 @@ class UpdateCategoryRequest extends FormRequest
             'meta_keywords' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['integer', 'min:0'],
             'is_featured' => ['boolean'],
+            'show_in_menu' => ['boolean'],
             'is_active' => ['boolean'],
         ];
     }

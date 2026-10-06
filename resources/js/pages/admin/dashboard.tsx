@@ -1,88 +1,122 @@
-import { Head } from "@inertiajs/react";
-import {
-    Package,
-    ReceiptText,
-    Tag,
-    TrendingUp,
-    Users,
-    Wallet,
-} from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/utils";
+import { Head, router, usePage } from "@inertiajs/react";
+import { useState } from "react";
+import { CategorySales } from "@/components/admin/dashboard/category-sales";
+import { DashboardFormatProvider } from "@/components/admin/dashboard/dashboard-format";
+import { KpiCards } from "@/components/admin/dashboard/kpi-cards";
+import { PeriodFilter } from "@/components/admin/dashboard/period-filter";
+import type { PeriodChange } from "@/components/admin/dashboard/period-filter";
+import { RecentActivity } from "@/components/admin/dashboard/recent-activity";
+import { RecentOrders } from "@/components/admin/dashboard/recent-orders";
+import { SalesOverview } from "@/components/admin/dashboard/sales-overview";
+import { TopProducts } from "@/components/admin/dashboard/top-products";
+import { cn } from "@/lib/utils";
 import { dashboard } from "@/routes/admin";
-import type { DashboardStats } from "@/types";
+import type {
+    DashboardActivity,
+    DashboardCategorySale,
+    DashboardKpis,
+    DashboardOrder,
+    DashboardRange,
+    DashboardRangeKey,
+    DashboardSales,
+    DashboardTopProduct,
+} from "@/types";
 
-function StatCard({
-    label,
-    value,
-    icon: Icon,
-}: {
-    label: string;
-    value: string | number;
-    icon: typeof Users;
-}) {
-    return (
-        <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-muted-foreground text-sm font-medium">
-                    {label}
-                </CardTitle>
-                <Icon className="text-muted-foreground size-4" />
-            </CardHeader>
-            <CardContent>
-                <p className="text-2xl font-semibold">{value}</p>
-            </CardContent>
-        </Card>
+type Props = {
+    range: DashboardRange;
+    currency: string;
+    kpis: DashboardKpis;
+    sales: DashboardSales;
+    topProducts: DashboardTopProduct[];
+    categories: DashboardCategorySale[];
+    recentOrders: DashboardOrder[];
+    activity: DashboardActivity[];
+};
+
+/** The props that depend on the selected period; the rest never change with it. */
+const RANGE_PROPS = ["range", "kpis", "sales", "topProducts", "categories"];
+
+export default function AdminDashboard({
+    range,
+    currency,
+    kpis,
+    sales,
+    topProducts,
+    categories,
+    recentOrders,
+    activity,
+}: Props) {
+    const { auth } = usePage().props;
+    const [pendingKey, setPendingKey] = useState<DashboardRangeKey | null>(
+        null,
     );
-}
+    const [loading, setLoading] = useState(false);
 
-export default function AdminDashboard({ stats }: { stats: DashboardStats }) {
+    const changePeriod = (change: PeriodChange) => {
+        setPendingKey(change.key);
+
+        router.get(
+            dashboard().url,
+            change.key === "custom"
+                ? { range: "custom", from: change.from, to: change.to }
+                : { range: change.key },
+            {
+                only: RANGE_PROPS,
+                preserveScroll: true,
+                preserveState: true,
+                replace: true,
+                onStart: () => setLoading(true),
+                onFinish: () => {
+                    setLoading(false);
+                    setPendingKey(null);
+                },
+            },
+        );
+    };
+
     return (
-        <>
-            <Head title="Dashboard" />
+        <DashboardFormatProvider currency={currency}>
+            <Head title={`${auth.role?.label ?? "Admin"} Dashboard`} />
 
-            <div className="space-y-6 p-4">
-                <h1 className="text-2xl font-semibold">Dashboard</h1>
+            <div className="mx-auto w-full max-w-[1600px] space-y-6 p-4 md:p-6">
+                <header className="flex justify-end">
+                    <PeriodFilter
+                        range={range}
+                        pendingKey={pendingKey}
+                        onChange={changePeriod}
+                    />
+                </header>
 
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                    <StatCard
-                        label="Total Orders"
-                        value={stats.total_orders}
-                        icon={ReceiptText}
-                    />
-                    <StatCard
-                        label="Total Revenue"
-                        value={formatCurrency(stats.total_revenue)}
-                        icon={Wallet}
-                    />
-                    <StatCard
-                        label="Orders Today"
-                        value={stats.orders_today}
-                        icon={TrendingUp}
-                    />
-                    <StatCard
-                        label="Revenue Today"
-                        value={formatCurrency(stats.revenue_today)}
-                        icon={TrendingUp}
-                    />
-                    <StatCard
-                        label="Total Customers"
-                        value={stats.total_customers}
-                        icon={Users}
-                    />
-                    <StatCard
-                        label="Total Products"
-                        value={stats.total_products}
-                        icon={Package}
-                    />
-                    <StatCard
-                        label="Total Categories"
-                        value={stats.total_categories}
-                        icon={Tag}
-                    />
+                {/* Everything the period filter scopes holds its previous render, dimmed, while it reloads. */}
+                <div
+                    className={cn(
+                        "space-y-6 transition-opacity duration-200",
+                        loading && "pointer-events-none opacity-60",
+                    )}
+                    aria-busy={loading}
+                >
+                    <KpiCards kpis={kpis} range={range} />
+
+                    <SalesOverview sales={sales} range={range} />
+
+                    <div className="grid gap-6 xl:grid-cols-3">
+                        <div className="min-w-0 *:h-full xl:col-span-2">
+                            <TopProducts products={topProducts} range={range} />
+                        </div>
+                        <div className="min-w-0 *:h-full">
+                            <CategorySales
+                                categories={categories}
+                                range={range}
+                            />
+                        </div>
+                    </div>
                 </div>
+
+                <RecentOrders orders={recentOrders} />
+
+                <RecentActivity activity={activity} />
             </div>
-        </>
+        </DashboardFormatProvider>
     );
 }
 

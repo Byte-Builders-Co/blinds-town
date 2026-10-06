@@ -12,7 +12,8 @@ use Illuminate\Support\Carbon;
 /**
  * @property int $id
  * @property int $coupon_id
- * @property int $user_id
+ * @property int|null $user_id
+ * @property string|null $guest_email
  * @property int $order_id
  * @property string $discount_amount
  * @property Carbon|null $created_at
@@ -21,7 +22,7 @@ use Illuminate\Support\Carbon;
  * @property-read User $user
  * @property-read Order $order
  */
-#[Fillable(['coupon_id', 'user_id', 'order_id', 'discount_amount'])]
+#[Fillable(['coupon_id', 'user_id', 'guest_email', 'order_id', 'discount_amount'])]
 class CouponUsage extends Model
 {
     /** @use HasFactory<CouponUsageFactory> */

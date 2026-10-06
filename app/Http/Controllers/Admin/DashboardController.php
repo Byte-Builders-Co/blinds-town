@@ -2,31 +2,33 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
-use App\Models\Category;
-use App\Models\Order;
-use App\Models\Product;
-use App\Models\User;
+use App\Services\Dashboard\ActivityFeed;
+use App\Services\Dashboard\DashboardRange;
+use App\Services\Dashboard\DashboardService;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class DashboardController extends Controller
 {
-    public function index(): Response
+    /**
+     * Every prop except the range itself is a closure, so changing the date
+     * range can reload just the range-dependent panels as a partial visit.
+     */
+    public function index(Request $request, DashboardService $dashboard, ActivityFeed $activity): Response
     {
-        $notCancelled = fn () => Order::query()->where('status', '!=', OrderStatus::Cancelled->value);
+        $range = DashboardRange::fromRequest($request);
 
         return Inertia::render('admin/dashboard', [
-            'stats' => [
-                'total_orders' => Order::query()->count(),
-                'total_revenue' => (float) $notCancelled()->sum('total'),
-                'orders_today' => $notCancelled()->whereDate('created_at', now()->toDateString())->count(),
-                'revenue_today' => (float) $notCancelled()->whereDate('created_at', now()->toDateString())->sum('total'),
-                'total_customers' => User::role('customer')->count(),
-                'total_products' => Product::query()->count(),
-                'total_categories' => Category::query()->count(),
-            ],
+            'range' => $range->toArray(),
+            'currency' => $dashboard->currency(),
+            'kpis' => fn () => $dashboard->kpis($range),
+            'sales' => fn () => $dashboard->sales($range),
+            'topProducts' => fn () => $dashboard->topProducts($range),
+            'categories' => fn () => $dashboard->categorySales($range),
+            'recentOrders' => fn () => $dashboard->recentOrders(),
+            'activity' => fn () => $activity->recent(),
         ]);
     }
 }

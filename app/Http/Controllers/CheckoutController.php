@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CouponType;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
@@ -44,7 +45,7 @@ class CheckoutController extends Controller
 
         return Inertia::render('shop/checkout', [
             'cart' => $cart,
-            'addresses' => $request->user()->addresses()->orderByDesc('is_default')->get(),
+            'addresses' => $request->user()?->addresses()->orderByDesc('is_default')->get() ?? [],
             'installationCharge' => (float) Setting::get('shipping.installation_charge', 0),
             'shippingCharge' => (float) Setting::get('shipping.default_shipping_charge', 0),
             'freeShippingThreshold' => Setting::get('shipping.free_shipping_threshold') !== null
@@ -65,6 +66,7 @@ class CheckoutController extends Controller
                 $request->user(),
                 $request->validated('coupon_code'),
                 (bool) $request->validated('installation_requested', false),
+                null,
             );
         } catch (ValidationException $exception) {
             return response()->json(['errors' => $exception->errors()], 422);
@@ -82,11 +84,13 @@ class CheckoutController extends Controller
         abort_if($cart->items->isEmpty(), 422, 'Your cart is empty.');
 
         $installationRequested = (bool) $request->validated('installation_requested', false);
-        $totals = $this->calculateTotals($cart, $request->user(), $request->validated('coupon_code'), $installationRequested);
+        $guestEmail = $request->user() ? null : (string) $request->validated('email');
+        $totals = $this->calculateTotals($cart, $request->user(), $request->validated('coupon_code'), $installationRequested, $guestEmail);
 
-        $order = DB::transaction(function () use ($request, $cart, $totals, $installationRequested) {
+        $order = DB::transaction(function () use ($request, $cart, $totals, $installationRequested, $guestEmail) {
             $order = Order::query()->create([
-                'user_id' => $request->user()->id,
+                'user_id' => $request->user()?->id,
+                'guest_email' => $guestEmail,
                 'order_number' => Order::generateOrderNumber(),
                 'status' => OrderStatus::Pending,
                 'subtotal' => $totals['subtotal'],
@@ -138,7 +142,8 @@ class CheckoutController extends Controller
 
             if ($totals['coupon']) {
                 $totals['coupon']->usages()->create([
-                    'user_id' => $request->user()->id,
+                    'user_id' => $request->user()?->id,
+                    'guest_email' => $guestEmail,
                     'order_id' => $order->id,
                     'discount_amount' => $totals['couponDiscount'],
                 ]);
@@ -148,6 +153,10 @@ class CheckoutController extends Controller
         });
 
         $payments->createPending($order, PaymentMethod::Online);
+
+        if ($order->isGuest()) {
+            $request->session()->push('guest_orders', $order->id);
+        }
 
         return redirect()->route('checkout.pay', $order);
     }
@@ -160,7 +169,7 @@ class CheckoutController extends Controller
      */
     public function pay(Request $request, Order $order, PaymentService $payments): Response|RedirectResponse
     {
-        abort_unless($order->user_id === $request->user()->id, 403);
+        $this->authorizeOrder($request, $order);
         abort_unless($order->status === OrderStatus::Pending, 422, 'This order can no longer be paid for.');
 
         $payment = $order->payment;
@@ -190,7 +199,7 @@ class CheckoutController extends Controller
         $intent = $gateway->createPaymentIntent(
             amount: (int) round((float) $order->total * 100),
             currency: $order->currency,
-            customerEmail: $request->user()->email,
+            customerEmail: (string) $order->customerEmail(),
             metadata: ['order_id' => (string) $order->id, 'order_number' => $order->order_number],
         );
 
@@ -209,7 +218,7 @@ class CheckoutController extends Controller
 
     public function retryPayment(Request $request, Order $order): RedirectResponse
     {
-        abort_unless($order->user_id === $request->user()->id, 403);
+        $this->authorizeOrder($request, $order);
         abort_unless($order->status === OrderStatus::Pending, 422, 'This order can no longer be paid for.');
 
         $payment = $order->payment;
@@ -220,7 +229,7 @@ class CheckoutController extends Controller
 
     public function success(Request $request, Order $order, PaymentService $payments): Response
     {
-        abort_unless($order->user_id === $request->user()->id, 403);
+        $this->authorizeOrder($request, $order);
 
         $payment = $order->payment;
 
@@ -238,12 +247,13 @@ class CheckoutController extends Controller
 
         return Inertia::render('shop/checkout-success', [
             'order' => $order->fresh(['items', 'payment']),
+            'orderUrl' => $order->viewUrl(),
         ]);
     }
 
     public function cancel(Request $request, Order $order): Response
     {
-        abort_unless($order->user_id === $request->user()->id, 403);
+        $this->authorizeOrder($request, $order);
 
         return Inertia::render('shop/checkout-cancel', [
             'order' => $order->load('payment'),
@@ -253,7 +263,7 @@ class CheckoutController extends Controller
     /**
      * @return array{subtotal: float, discountAmount: float, taxAmount: float, shippingCharge: float, installationCharge: float, total: float, coupon: ?Coupon, couponDiscount: float}
      */
-    private function calculateTotals(Cart $cart, User $user, ?string $couponCode, bool $installationRequested): array
+    private function calculateTotals(Cart $cart, ?User $user, ?string $couponCode, bool $installationRequested, ?string $guestEmail = null): array
     {
         $itemSubtotal = 0.0;
         $itemProductDiscount = 0.0;
@@ -274,12 +284,14 @@ class CheckoutController extends Controller
         $couponDiscount = 0.0;
 
         if ($couponCode !== null && $couponCode !== '') {
-            $coupon = $this->coupons->validate($couponCode, $user, $subtotal - $productDiscount, $cart->items);
+            $coupon = $this->coupons->validate($couponCode, $user, $subtotal - $productDiscount, $cart->items, $guestEmail);
             $couponDiscount = $this->coupons->calculateDiscount($coupon, $cart->items);
         }
 
         $discountAmount = round($productDiscount + $couponDiscount, 2);
-        $shippingCharge = $this->shippingCharge($subtotal - $discountAmount);
+        $shippingCharge = $coupon?->type === CouponType::FreeShipping
+            ? 0.0
+            : $this->shippingCharge($subtotal - $discountAmount);
         $installationCharge = $installationRequested ? round((float) Setting::get('shipping.installation_charge', 0), 2) : 0.0;
 
         $total = max(0.0, round($subtotal - $discountAmount + $shippingCharge + $installationCharge + $taxAmount, 2));
@@ -294,6 +306,26 @@ class CheckoutController extends Controller
             'coupon' => $coupon,
             'couponDiscount' => $couponDiscount,
         ];
+    }
+
+    /**
+     * A signed-in customer may only touch their own orders; a guest may only
+     * touch orders they placed in this browser session.
+     */
+    private function authorizeOrder(Request $request, Order $order): void
+    {
+        $user = $request->user();
+
+        if ($user !== null) {
+            abort_unless($order->user_id === $user->id, 403);
+
+            return;
+        }
+
+        abort_unless(
+            $order->user_id === null && in_array($order->id, $request->session()->get('guest_orders', []), true),
+            403,
+        );
     }
 
     private function shippingCharge(float $netSubtotal): float

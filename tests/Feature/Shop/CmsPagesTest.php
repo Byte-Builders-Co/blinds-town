@@ -3,6 +3,7 @@
 use App\Enums\AdminAlertType;
 use App\Models\CmsPage;
 use App\Models\Faq;
+use Database\Seeders\FaqSeeder;
 
 test('the about page renders seeded content', function () {
     $response = $this->get('/about');
@@ -79,4 +80,19 @@ test('the faq page only shows active faqs', function () {
 
     $response->assertOk();
     $response->assertInertia(fn ($page) => $page->has('faqs', 1));
+});
+
+test('the default faqs are seeded in authored order and never overwrite existing faqs', function () {
+    $this->seed(FaqSeeder::class);
+
+    expect(Faq::query()->count())->toBeGreaterThan(30);
+
+    $this->get('/faq')->assertInertia(fn ($page) => $page
+        ->where('faqs.0.category', 'General Questions')
+        ->where('faqs.0.question', 'What types of blinds do you offer?'));
+
+    $count = Faq::query()->count();
+    $this->seed(FaqSeeder::class);
+
+    expect(Faq::query()->count())->toBe($count);
 });

@@ -108,3 +108,51 @@ test('staff without the categories.delete permission cannot delete a category', 
 
     $response->assertForbidden();
 });
+
+test('admins can toggle a category between active and inactive', function () {
+    $admin = User::factory()->admin()->create();
+    $category = Category::factory()->create(['is_active' => true]);
+
+    $this->actingAs($admin)->patch("/admin/categories/{$category->id}/toggle")->assertRedirect();
+    expect($category->fresh()->is_active)->toBeFalse();
+
+    $this->actingAs($admin)->patch("/admin/categories/{$category->id}/toggle")->assertRedirect();
+    expect($category->fresh()->is_active)->toBeTrue();
+});
+
+test('admins can duplicate a category as an inactive copy', function () {
+    $admin = User::factory()->admin()->create();
+    $parent = Category::factory()->create();
+    $category = Category::factory()->create(['name' => 'Zebra Blinds', 'parent_id' => $parent->id]);
+
+    $this->actingAs($admin)->post("/admin/categories/{$category->id}/duplicate")->assertRedirect();
+
+    $copy = Category::query()->where('name', 'Zebra Blinds (Copy)')->first();
+
+    expect($copy)->not->toBeNull()
+        ->and($copy->is_active)->toBeFalse()
+        ->and($copy->parent_id)->toBe($parent->id)
+        ->and($copy->slug)->not->toBe($category->slug);
+});
+
+test('a category can be hidden from the storefront menu', function () {
+    $admin = User::factory()->admin()->create();
+
+    $this->actingAs($admin)->post('/admin/categories', [
+        'name' => 'Hidden From Menu',
+        'show_in_menu' => false,
+        'is_active' => true,
+    ])->assertRedirect(route('admin.categories.index'));
+
+    $this->assertDatabaseHas('categories', ['name' => 'Hidden From Menu', 'show_in_menu' => false]);
+});
+
+test('the category list page receives every category', function () {
+    $admin = User::factory()->admin()->create();
+    $parent = Category::factory()->create();
+    Category::factory()->count(2)->create(['parent_id' => $parent->id]);
+
+    $this->actingAs($admin)->get('/admin/categories')
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page->component('admin/categories/index')->has('categories', 3));
+});

@@ -4,10 +4,15 @@ import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
 import { home } from "@/routes";
 import { retry } from "@/routes/checkout";
-import { show } from "@/routes/orders";
 import type { Order } from "@/types";
 
-export default function CheckoutSuccess({ order }: { order: Order }) {
+export default function CheckoutSuccess({
+    order,
+    orderUrl,
+}: {
+    order: Order;
+    orderUrl: string;
+}) {
     const isConfirmed = order.status !== "pending";
     const paymentFailed = order.payment?.status === "failed";
     const retryForm = useForm({});
@@ -66,7 +71,7 @@ export default function CheckoutSuccess({ order }: { order: Order }) {
                         <Link href={home()}>Continue shopping</Link>
                     </Button>
                     <Button asChild>
-                        <Link href={show(order.order_number)}>View order</Link>
+                        <a href={orderUrl}>View order</a>
                     </Button>
                 </div>
             </div>

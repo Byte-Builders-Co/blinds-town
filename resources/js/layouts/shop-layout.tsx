@@ -6,25 +6,18 @@ import { ShopHeader } from "@/components/shop/shop-header";
 import { faq, home } from "@/routes";
 import { index as ordersIndex } from "@/routes/orders";
 import { show as categoryShow } from "@/routes/categories";
-import {
-    about,
-    privacyPolicy,
-    returnRefundPolicy,
-    shippingPolicy,
-    terms,
-} from "@/routes/cms";
 import { show as contactShow } from "@/routes/contact";
 import { index as productsIndex } from "@/routes/products";
 
 export default function ShopLayout({ children }: { children: ReactNode }) {
-    const { auth, navCategories, contactInfo } = usePage().props;
+    const { auth, navCategories, contactInfo, footerPages } = usePage().props;
 
     return (
         <div className="bg-background flex min-h-screen flex-col">
             <ShopHeader />
             <main className="flex-1">{children}</main>
 
-            <footer className="bg-[#1A1E1B] text-white/70">
+            <footer className="bg-[#1A1E1B] text-white/70 dark:border-t dark:bg-[oklch(0.115_0.005_250)]">
                 <div className="border-b border-white/10">
                     <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 py-8 sm:grid-cols-3 sm:px-6 lg:px-8">
                         <div className="flex items-center gap-3">
@@ -173,46 +166,16 @@ export default function ShopLayout({ children }: { children: ReactNode }) {
                             Information
                         </h3>
                         <ul className="mt-4 space-y-2 text-sm">
-                            <li>
-                                <Link
-                                    href={about()}
-                                    className="hover:text-white"
-                                >
-                                    About Us
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href={privacyPolicy()}
-                                    className="hover:text-white"
-                                >
-                                    Privacy Policy
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href={terms()}
-                                    className="hover:text-white"
-                                >
-                                    Terms &amp; Conditions
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href={shippingPolicy()}
-                                    className="hover:text-white"
-                                >
-                                    Shipping Policy
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href={returnRefundPolicy()}
-                                    className="hover:text-white"
-                                >
-                                    Return &amp; Refund Policy
-                                </Link>
-                            </li>
+                            {footerPages.map((page) => (
+                                <li key={page.url}>
+                                    <Link
+                                        href={page.url}
+                                        className="hover:text-white"
+                                    >
+                                        {page.title}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                 </div>

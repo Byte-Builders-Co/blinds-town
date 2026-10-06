@@ -7,7 +7,7 @@ import AuthLayout from "@/layouts/auth-layout";
 import ShopLayout from "@/layouts/shop-layout";
 import SettingsLayout from "@/layouts/settings/layout";
 
-const appName = import.meta.env.VITE_APP_NAME || "Laravel";
+const appName = import.meta.env.VITE_APP_NAME || "Blinds Town";
 
 void createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
@@ -16,6 +16,7 @@ void createInertiaApp({
             case name === "welcome":
             case name.startsWith("shop/"):
             case name.startsWith("orders/"):
+            case name.startsWith("account/"):
                 return ShopLayout;
             case name.startsWith("auth/"):
                 return AuthLayout;

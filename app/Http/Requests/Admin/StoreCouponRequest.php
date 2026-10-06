@@ -16,6 +16,14 @@ class StoreCouponRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        // A free-shipping coupon has no amount, so the (hidden) value is stored as 0.
+        if ($this->input('type') === CouponType::FreeShipping->value) {
+            $this->merge(['value' => 0, 'max_discount' => null]);
+        }
+    }
+
     /**
      * @return array<string, ValidationRule|array<mixed>|string>
      */

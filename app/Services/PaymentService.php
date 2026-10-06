@@ -61,7 +61,7 @@ class PaymentService
         $order->recordStatus(OrderStatus::Confirmed, 'Payment received');
 
         if ($this->notifications->isEventEnabled('payment_success')) {
-            $order->user->notify(new OrderConfirmationNotification($order));
+            $order->notifyCustomer(new OrderConfirmationNotification($order));
         }
 
         return true;
@@ -84,7 +84,7 @@ class PaymentService
         );
 
         if ($this->notifications->isEventEnabled('payment_failed')) {
-            $order->user->notify(new PaymentFailedNotification($payment));
+            $order->notifyCustomer(new PaymentFailedNotification($payment));
         }
     }
 
@@ -116,7 +116,7 @@ class PaymentService
                     : PaymentStatus::PartiallyRefunded,
             ]);
 
-            $payment->order->user->notify(new RefundCompletedNotification($refund));
+            $payment->order->notifyCustomer(new RefundCompletedNotification($refund));
         }
 
         return $refund;

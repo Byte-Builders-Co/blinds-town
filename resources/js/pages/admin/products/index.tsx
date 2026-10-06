@@ -1,10 +1,19 @@
 import { Head, Link, router } from "@inertiajs/react";
-import { Eye, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import {
+    Eye,
+    ImageOff,
+    PackageSearch,
+    Pencil,
+    Plus,
+    Search,
+    Star,
+    Trash2,
+} from "lucide-react";
 import { useEffect, useState } from "react";
+import { StatusDot } from "@/components/admin/status-dot";
+import { TableEmptyRow } from "@/components/admin/table-empty-row";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { PaginationLinks } from "@/components/pagination-links";
-import { StockStatusBadge } from "@/components/shop/stock-status-badge";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -30,15 +39,24 @@ type Filters = {
     status?: string;
 };
 
-const COLUMNS: { key: SortColumn; label: string }[] = [
+const COLUMNS: { key: SortColumn; label: string; align?: "right" }[] = [
     { key: "id", label: "ID" },
-    { key: "name", label: "Name" },
+    { key: "name", label: "Product" },
     { key: "category", label: "Category" },
-    { key: "price", label: "Price" },
+    { key: "price", label: "Price", align: "right" },
     { key: "stock", label: "Stock" },
     { key: "status", label: "Status" },
     { key: "updated_at", label: "Updated" },
 ];
+
+// The controller sorts by name ascending when no sort is requested.
+const DEFAULT_SORT: SortColumn = "name";
+
+const STOCK_DOT: Record<StockStatus, string> = {
+    in_stock: "bg-blue-500",
+    out_of_stock: "bg-red-500",
+    made_to_order: "bg-amber-500",
+};
 
 export default function AdminProductsIndex({
     products,
@@ -76,11 +94,12 @@ export default function AdminProductsIndex({
         return () => clearTimeout(timeout);
     }, [search, filters]);
 
+    const activeSort = filters.sort ?? DEFAULT_SORT;
+    const activeDirection = filters.direction === "desc" ? "desc" : "asc";
+
     const toggleSort = (column: SortColumn) => {
         const direction =
-            filters.sort === column && filters.direction === "asc"
-                ? "desc"
-                : "asc";
+            activeSort === column && activeDirection === "asc" ? "desc" : "asc";
         applyFilters({ sort: column, direction });
     };
 
@@ -89,18 +108,18 @@ export default function AdminProductsIndex({
             <Head title="Products" />
 
             <div className="p-4 md:p-4">
-                <div className="flex flex-wrap items-center justify-end gap-3">
-                    <div className="flex flex-wrap items-center gap-2">
-                        <div className="relative w-full sm:w-64">
-                            <Search className="text-muted-foreground pointer-events-none absolute top-2.5 left-2.5 size-4" />
-                            <Input
-                                placeholder="Search products..."
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                className="pl-8"
-                            />
-                        </div>
+                <div className="flex flex-wrap items-center gap-2">
+                    <div className="relative w-full sm:w-72">
+                        <Search className="text-muted-foreground pointer-events-none absolute top-2.5 left-2.5 size-4" />
+                        <Input
+                            placeholder="Search products..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="pl-8"
+                        />
+                    </div>
 
+                    <div className="flex flex-wrap items-center gap-2">
                         <Select
                             value={filters.stock_status ?? "all"}
                             onValueChange={(value) =>
@@ -142,187 +161,218 @@ export default function AdminProductsIndex({
                                 </SelectItem>
                             </SelectContent>
                         </Select>
-
-                        <Button asChild>
-                            <Link href={create()}>
-                                <Plus /> Add Product
-                            </Link>
-                        </Button>
                     </div>
+
+                    <Button asChild className="sm:ml-auto">
+                        <Link href={create()}>
+                            <Plus /> Add Product
+                        </Link>
+                    </Button>
                 </div>
 
-                <div className="mt-4 rounded-lg border">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                            <thead>
-                                <tr className="bg-muted/40 text-muted-foreground border-b text-left">
-                                    <th className="px-4 py-3 font-medium">
-                                        Thumbnail
-                                    </th>
-                                    {COLUMNS.map((column) => (
+                {/* Open table: no outer box, just hairline dividers. The negative
+                    margin lets row hover backgrounds bleed past the text edge so
+                    content still lines up with the toolbar above. */}
+                <div className="-mx-3 mt-4 overflow-x-auto">
+                    <table className="w-full text-sm">
+                        <thead>
+                            <tr className="text-muted-foreground border-b text-left text-xs tracking-wider uppercase">
+                                {COLUMNS.map((column) => {
+                                    const isActive = activeSort === column.key;
+
+                                    return (
                                         <th
                                             key={column.key}
-                                            className="px-4 py-3 font-medium whitespace-nowrap"
+                                            scope="col"
+                                            aria-sort={
+                                                isActive
+                                                    ? activeDirection === "desc"
+                                                        ? "descending"
+                                                        : "ascending"
+                                                    : "none"
+                                            }
+                                            className={cn(
+                                                "px-3 py-3 font-medium whitespace-nowrap",
+                                                column.align === "right" &&
+                                                    "text-right",
+                                            )}
                                         >
                                             <button
                                                 type="button"
                                                 onClick={() =>
                                                     toggleSort(column.key)
                                                 }
-                                                className="hover:text-foreground"
+                                                className={cn(
+                                                    "hover:text-foreground focus-visible:ring-ring/50 -mx-1.5 rounded px-1.5 py-0.5 uppercase transition-colors outline-none focus-visible:ring-2",
+                                                    isActive &&
+                                                        "text-foreground",
+                                                )}
                                             >
                                                 {column.label}
                                             </button>
                                         </th>
-                                    ))}
-                                    <th className="px-4 py-3 font-medium whitespace-nowrap">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y">
-                                {products.data.map((product) => (
-                                    <tr
-                                        key={product.id}
-                                        onClick={() =>
-                                            router.visit(show(product).url)
-                                        }
-                                        className="hover:bg-accent/50 cursor-pointer"
-                                    >
-                                        <td className="px-4 py-3">
+                                    );
+                                })}
+                                <th scope="col" className="w-0 px-3 py-3">
+                                    <span className="sr-only">Actions</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {products.data.map((product) => (
+                                <tr
+                                    key={product.id}
+                                    onClick={() =>
+                                        router.visit(show(product).url)
+                                    }
+                                    className="group hover:bg-muted/40 border-border/60 cursor-pointer border-b transition-colors"
+                                >
+                                    <td className="text-muted-foreground px-3 py-3 whitespace-nowrap tabular-nums">
+                                        {product.id}
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <div className="flex items-center gap-3">
                                             {product.image_path ? (
                                                 <img
                                                     src={`/storage/${product.image_path}`}
-                                                    alt={product.name}
-                                                    className="size-10 rounded-md border object-cover"
+                                                    alt=""
+                                                    loading="lazy"
+                                                    className="ring-border size-11 shrink-0 rounded-lg object-cover ring-1"
                                                 />
                                             ) : (
-                                                <div className="bg-muted text-muted-foreground flex size-10 items-center justify-center rounded-md border text-[10px]">
-                                                    No image
+                                                <div className="bg-muted text-muted-foreground/60 flex size-11 shrink-0 items-center justify-center rounded-lg">
+                                                    <ImageOff className="size-4" />
                                                 </div>
                                             )}
-                                        </td>
-                                        <td className="px-4 py-3 whitespace-nowrap">
-                                            {product.id}
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <div className="flex items-center gap-2">
-                                                <span className="font-medium">
+                                            <div className="flex min-w-0 items-center gap-1.5">
+                                                <span
+                                                    className="max-w-80 truncate font-medium"
+                                                    title={product.name}
+                                                >
                                                     {product.name}
                                                 </span>
                                                 {product.is_featured && (
-                                                    <Badge
-                                                        variant="outline"
-                                                        className="text-xs"
-                                                    >
-                                                        Featured
-                                                    </Badge>
+                                                    <span title="Featured">
+                                                        <Star
+                                                            className="size-3.5 shrink-0 fill-amber-400 text-amber-400"
+                                                            aria-hidden="true"
+                                                        />
+                                                        <span className="sr-only">
+                                                            Featured
+                                                        </span>
+                                                    </span>
                                                 )}
                                             </div>
-                                        </td>
-                                        <td className="text-muted-foreground px-4 py-3 whitespace-nowrap">
-                                            {product.category?.name ?? "—"}
-                                        </td>
-                                        <td className="px-4 py-3 whitespace-nowrap">
-                                            {product.sale_price !== null ? (
-                                                <span className="flex items-center gap-1.5">
-                                                    <span className="font-medium">
-                                                        {formatCurrency(
-                                                            product.sale_price,
-                                                        )}
-                                                    </span>
-                                                    <span className="text-muted-foreground text-xs line-through">
-                                                        {formatCurrency(
-                                                            product.base_price,
-                                                        )}
-                                                    </span>
-                                                </span>
-                                            ) : (
-                                                <span className="font-medium">
+                                        </div>
+                                    </td>
+                                    <td className="text-muted-foreground px-3 py-3 whitespace-nowrap">
+                                        {product.category?.name ?? "—"}
+                                    </td>
+                                    <td className="px-3 py-3 text-right whitespace-nowrap tabular-nums">
+                                        {product.sale_price !== null ? (
+                                            <span className="inline-flex items-baseline justify-end gap-1.5">
+                                                <span className="text-muted-foreground text-xs line-through">
                                                     {formatCurrency(
                                                         product.base_price,
                                                     )}
                                                 </span>
-                                            )}
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <StockStatusBadge
-                                                status={product.stock_status}
-                                            />
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <Badge
-                                                className={cn(
-                                                    "border-transparent",
-                                                    product.is_active
-                                                        ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
-                                                        : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
+                                                <span className="font-semibold">
+                                                    {formatCurrency(
+                                                        product.sale_price,
+                                                    )}
+                                                </span>
+                                            </span>
+                                        ) : (
+                                            <span className="font-semibold">
+                                                {formatCurrency(
+                                                    product.base_price,
                                                 )}
-                                            >
-                                                {product.is_active
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <StatusDot
+                                            label={
+                                                STOCK_STATUS_LABELS[
+                                                    product.stock_status
+                                                ]
+                                            }
+                                            dotClassName={
+                                                STOCK_DOT[product.stock_status]
+                                            }
+                                        />
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        <StatusDot
+                                            label={
+                                                product.is_active
                                                     ? "Active"
-                                                    : "Inactive"}
-                                            </Badge>
-                                        </td>
-                                        <td className="text-muted-foreground px-4 py-3 whitespace-nowrap">
-                                            {product.updated_at
-                                                ? formatRelativeTime(
-                                                      product.updated_at,
-                                                  )
-                                                : "—"}
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <div className="flex items-center gap-1">
-                                                <Link
-                                                    href={show(product)}
-                                                    onClick={(e) =>
-                                                        e.stopPropagation()
-                                                    }
-                                                    className="text-muted-foreground hover:text-foreground hover:bg-accent inline-flex size-8 items-center justify-center rounded-md"
-                                                    aria-label={`View ${product.name}`}
-                                                >
-                                                    <Eye className="size-4" />
-                                                </Link>
-                                                <Link
-                                                    href={edit(product)}
-                                                    onClick={(e) =>
-                                                        e.stopPropagation()
-                                                    }
-                                                    className="text-muted-foreground hover:text-foreground hover:bg-accent inline-flex size-8 items-center justify-center rounded-md"
-                                                    aria-label={`Edit ${product.name}`}
-                                                >
-                                                    <Pencil className="size-4" />
-                                                </Link>
-                                                <button
-                                                    type="button"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setProductToDelete(
-                                                            product,
-                                                        );
-                                                    }}
-                                                    className="text-muted-foreground hover:text-destructive hover:bg-accent inline-flex size-8 items-center justify-center rounded-md"
-                                                    aria-label={`Delete ${product.name}`}
-                                                >
-                                                    <Trash2 className="size-4" />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                                {products.data.length === 0 && (
-                                    <tr>
-                                        <td
-                                            colSpan={COLUMNS.length + 2}
-                                            className="text-muted-foreground px-4 py-10 text-center"
-                                        >
-                                            No products found.
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
+                                                    : "Inactive"
+                                            }
+                                            dotClassName={
+                                                product.is_active
+                                                    ? "bg-emerald-500"
+                                                    : "bg-slate-400"
+                                            }
+                                            muted={!product.is_active}
+                                        />
+                                    </td>
+                                    <td className="text-muted-foreground px-3 py-3 whitespace-nowrap">
+                                        {product.updated_at
+                                            ? formatRelativeTime(
+                                                  product.updated_at,
+                                              )
+                                            : "—"}
+                                    </td>
+                                    <td className="px-3 py-3">
+                                        {/* Revealed on hover for pointer devices;
+                                            always visible on touch and when a
+                                            control inside has keyboard focus. */}
+                                        <div className="flex items-center justify-end gap-0.5 transition-opacity focus-within:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100">
+                                            <Link
+                                                href={show(product)}
+                                                onClick={(e) =>
+                                                    e.stopPropagation()
+                                                }
+                                                className="text-muted-foreground hover:text-foreground hover:bg-accent inline-flex size-8 items-center justify-center rounded-md transition-colors"
+                                                aria-label={`View ${product.name}`}
+                                            >
+                                                <Eye className="size-4" />
+                                            </Link>
+                                            <Link
+                                                href={edit(product)}
+                                                onClick={(e) =>
+                                                    e.stopPropagation()
+                                                }
+                                                className="text-muted-foreground hover:text-foreground hover:bg-accent inline-flex size-8 items-center justify-center rounded-md transition-colors"
+                                                aria-label={`Edit ${product.name}`}
+                                            >
+                                                <Pencil className="size-4" />
+                                            </Link>
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setProductToDelete(product);
+                                                }}
+                                                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 inline-flex size-8 items-center justify-center rounded-md transition-colors"
+                                                aria-label={`Delete ${product.name}`}
+                                            >
+                                                <Trash2 className="size-4" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                            {products.data.length === 0 && (
+                                <TableEmptyRow
+                                    colSpan={COLUMNS.length + 1}
+                                    icon={PackageSearch}
+                                    title="No products found"
+                                />
+                            )}
+                        </tbody>
+                    </table>
                 </div>
 
                 <div className="mt-4">

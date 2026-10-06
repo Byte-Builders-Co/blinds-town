@@ -15,7 +15,6 @@ export default function AdminCouponCreate({
     return (
         <>
             <Head title="New Coupon" />
-
             <div className="p-4 md:p-6">
                 <h1 className="text-2xl font-semibold">New Coupon</h1>
 

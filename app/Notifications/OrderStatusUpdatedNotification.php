@@ -33,7 +33,7 @@ class OrderStatusUpdatedNotification extends Notification implements ShouldQueue
             ->subject("Order Update — {$this->order->order_number}")
             ->greeting("Hi {$this->order->shipping_name},")
             ->line("Your order {$this->order->order_number} is now: {$this->order->status->label()}.")
-            ->action('View your order', route('orders.show', $this->order));
+            ->action('View your order', $this->order->viewUrl());
     }
 
     public function toSms(object $notifiable): SmsMessage

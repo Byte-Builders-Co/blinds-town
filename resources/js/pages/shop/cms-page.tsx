@@ -1,5 +1,4 @@
 import { Head } from "@inertiajs/react";
-import { RichText } from "@/components/shop/rich-text";
 import type { CmsPage } from "@/types";
 
 export default function ShopCmsPage({ page }: { page: CmsPage }) {
@@ -11,11 +10,18 @@ export default function ShopCmsPage({ page }: { page: CmsPage }) {
                 )}
             </Head>
 
-            <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
                 <h1 className="text-3xl font-semibold">{page.title}</h1>
-                <div className="mt-6">
-                    <RichText text={page.content ?? ""} />
-                </div>
+                {page.content ? (
+                    <div
+                        className="cms-content mt-6"
+                        dangerouslySetInnerHTML={{ __html: page.content }}
+                    />
+                ) : (
+                    <p className="text-muted-foreground mt-6">
+                        This page doesn&apos;t have any content yet.
+                    </p>
+                )}
             </div>
         </>
     );

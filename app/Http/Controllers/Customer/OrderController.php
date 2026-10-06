@@ -15,6 +15,7 @@ class OrderController extends Controller
         $this->authorize('viewAny', Order::class);
 
         return Inertia::render('orders/index', [
+            'stats' => AccountController::stats($request->user()),
             'orders' => $request->user()->orders()
                 ->with('payment')
                 ->withCount('items')
@@ -29,6 +30,17 @@ class OrderController extends Controller
 
         return Inertia::render('orders/show', [
             'order' => $order->load(['items', 'payment.refunds', 'statusHistories']),
+        ]);
+    }
+
+    /**
+     * Signed, login-free link to an order (used for guest checkouts).
+     */
+    public function track(Order $order): Response
+    {
+        return Inertia::render('orders/show', [
+            'order' => $order->load(['items', 'payment.refunds', 'statusHistories']),
+            'guestView' => true,
         ]);
     }
 

@@ -68,8 +68,8 @@ export default function AdminProductShow({ product }: { product: Product }) {
                                             className={cn(
                                                 "border-transparent",
                                                 product.is_active
-                                                    ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
-                                                    : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
+                                                    ? "bg-green-100 text-green-700 dark:bg-green-400/10 dark:text-green-300"
+                                                    : "bg-slate-100 text-slate-700 dark:bg-slate-400/10 dark:text-slate-300",
                                             )}
                                         >
                                             {product.is_active

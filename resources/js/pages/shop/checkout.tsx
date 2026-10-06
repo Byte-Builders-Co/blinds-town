@@ -1,4 +1,4 @@
-import { Head, useForm } from "@inertiajs/react";
+import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { type FormEvent, useEffect, useState } from "react";
 import InputError from "@/components/input-error";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { resolveSelectedOptionLabels } from "@/lib/shop";
 import { formatCurrency } from "@/lib/utils";
+import { login } from "@/routes";
 import { quote, store as storeCheckout } from "@/routes/checkout";
 import type { Address, Cart } from "@/types";
 
@@ -30,6 +31,7 @@ export default function Checkout({
     installationCharge: number;
     shippingCharge: number;
 }) {
+    const { auth } = usePage().props;
     const defaultAddress = addresses.find((a) => a.is_default) ?? addresses[0];
     const [selectedAddressId, setSelectedAddressId] = useState<number | "new">(
         defaultAddress ? defaultAddress.id : "new",
@@ -42,6 +44,7 @@ export default function Checkout({
     const [quoting, setQuoting] = useState(false);
 
     const form = useForm({
+        email: "",
         shipping_name: defaultAddress?.full_name ?? "",
         shipping_line1: defaultAddress?.address_line1 ?? "",
         shipping_line2: defaultAddress?.address_line2 ?? "",
@@ -117,6 +120,42 @@ export default function Checkout({
             <div className="mx-auto grid max-w-5xl grid-cols-1 gap-10 px-4 py-12 sm:px-6 lg:grid-cols-3 lg:px-8">
                 <form onSubmit={submit} className="space-y-8 lg:col-span-2">
                     <div>
+                        {!auth.user && (
+                            <div className="mb-8">
+                                <h2 className="text-lg font-semibold">
+                                    Contact
+                                </h2>
+                                <div className="mt-3 grid gap-2">
+                                    <Label htmlFor="email">Email address</Label>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        autoComplete="email"
+                                        value={form.data.email}
+                                        onChange={(e) =>
+                                            form.setData(
+                                                "email",
+                                                e.target.value,
+                                            )
+                                        }
+                                        required
+                                    />
+                                    <InputError message={form.errors.email} />
+                                    <p className="text-muted-foreground text-xs">
+                                        We&apos;ll send your order confirmation
+                                        here. You don&apos;t need an account to
+                                        buy.{" "}
+                                        <Link
+                                            href={login()}
+                                            className="text-foreground underline underline-offset-4"
+                                        >
+                                            Have an account? Log in
+                                        </Link>
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
                         <h1 className="text-2xl font-semibold">
                             Shipping details
                         </h1>
@@ -385,7 +424,7 @@ export default function Checkout({
                             </p>
                         )}
                         {appliedCoupon && !couponError && (
-                            <p className="mt-1 text-sm text-green-600">
+                            <p className="mt-1 text-sm text-green-600 dark:text-green-400">
                                 Coupon &quot;{appliedCoupon}&quot; applied.
                             </p>
                         )}

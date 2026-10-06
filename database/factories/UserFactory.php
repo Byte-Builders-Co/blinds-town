@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Support\Rbac\PermissionCatalog;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -84,7 +85,11 @@ class UserFactory extends Factory
      */
     public function admin(): static
     {
-        return $this->afterCreating(fn (User $user) => $user->syncRoles(['admin']));
+        // Admins hold their modules individually; this one has all of them, like a freshly created Admin.
+        return $this->afterCreating(function (User $user) {
+            $user->syncRoles(['admin']);
+            $user->syncPermissions(PermissionCatalog::assignable());
+        });
     }
 
     /**

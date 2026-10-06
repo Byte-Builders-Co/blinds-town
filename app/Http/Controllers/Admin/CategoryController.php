@@ -17,23 +17,17 @@ use Inertia\Response;
 
 class CategoryController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(): Response
     {
+        // The whole taxonomy is small, so the page gets every category at once
+        // and builds the parent/child tree, search and filters in the browser.
         return Inertia::render('admin/categories/index', [
             'categories' => Category::query()
                 ->withCount(['products', 'children'])
                 ->with('parent:id,name')
-                ->when($request->string('search')->toString(), fn ($q, $search) => $q->where('name', 'like', "%{$search}%"))
-                ->when($request->string('status')->toString(), fn ($q, $status) => $q->where('is_active', $status === 'active'))
-                ->when($request->string('parent')->toString(), fn ($q, $parent) => $parent === 'top-level'
-                    ? $q->whereNull('parent_id')
-                    : $q->where('parent_id', $parent))
-                ->when($request->boolean('featured'), fn ($q) => $q->where('is_featured', true))
-                ->orderBy($this->sortColumn($request))
-                ->paginate(15)
-                ->withQueryString(),
-            'parentOptions' => Category::query()->whereNull('parent_id')->orderBy('name')->get(['id', 'name']),
-            'filters' => $request->only('search', 'status', 'parent', 'featured', 'sort'),
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get(),
         ]);
     }
 
@@ -107,6 +101,52 @@ class CategoryController extends Controller
         return redirect()->route('admin.categories.index');
     }
 
+    public function toggle(Request $request, Category $category): RedirectResponse
+    {
+        $category->update([
+            'is_active' => ! $category->is_active,
+            'updated_by' => $request->user()->id,
+        ]);
+
+        $state = $category->is_active ? 'Activated' : 'Deactivated';
+
+        ActivityLog::record('updated', $category, "{$state} category \"{$category->name}\"");
+
+        return back();
+    }
+
+    /**
+     * Copies a category's own details (not its subcategories, products or
+     * images). The copy starts inactive so it can be reviewed before it shows.
+     */
+    public function duplicate(Request $request, Category $category): RedirectResponse
+    {
+        $name = "{$category->name} (Copy)";
+
+        $copy = Category::query()->create([
+            ...$category->only([
+                'parent_id',
+                'short_description',
+                'description',
+                'meta_title',
+                'meta_description',
+                'meta_keywords',
+                'sort_order',
+                'is_featured',
+                'show_in_menu',
+            ]),
+            'name' => $name,
+            'slug' => $this->uniqueSlug($name),
+            'is_active' => false,
+            'created_by' => $request->user()->id,
+            'updated_by' => $request->user()->id,
+        ]);
+
+        ActivityLog::record('created', $copy, "Duplicated category \"{$category->name}\"");
+
+        return back();
+    }
+
     public function destroy(Category $category): RedirectResponse
     {
         if ($category->children()->exists()) {
@@ -142,14 +182,6 @@ class CategoryController extends Controller
             ->when($excludeId, fn ($q, $id) => $q->whereKeyNot($id))
             ->orderBy('name')
             ->get(['id', 'name']);
-    }
-
-    private function sortColumn(Request $request): string
-    {
-        $allowed = ['name', 'sort_order', 'created_at'];
-        $sort = $request->string('sort', 'sort_order')->toString();
-
-        return in_array($sort, $allowed, true) ? $sort : 'sort_order';
     }
 
     private function uniqueSlug(string $name, ?int $ignoreId = null): string

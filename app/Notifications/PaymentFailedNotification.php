@@ -36,7 +36,7 @@ class PaymentFailedNotification extends Notification implements ShouldQueue
             ->greeting("Hi {$order->shipping_name},")
             ->line("We couldn't process payment for order {$order->order_number}.")
             ->line('Reason: '.($this->payment->failure_reason ?? 'Payment was not completed.'))
-            ->action('View order', route('orders.show', $order));
+            ->action('View order', $order->viewUrl());
     }
 
     public function toSms(object $notifiable): SmsMessage

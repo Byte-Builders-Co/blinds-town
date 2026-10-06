@@ -14,7 +14,7 @@ class CouponService
     /**
      * @param  Collection<int, CartItem>  $cartItems
      */
-    public function validate(string $code, User $user, float $subtotal, Collection $cartItems): Coupon
+    public function validate(string $code, ?User $user, float $subtotal, Collection $cartItems, ?string $guestEmail = null): Coupon
     {
         $coupon = Coupon::query()->with(['products:id', 'categories:id'])
             ->where('code', $code)
@@ -41,7 +41,13 @@ class CouponService
             throw ValidationException::withMessages(['coupon_code' => 'This coupon has reached its usage limit.']);
         }
 
-        if ($coupon->per_user_limit !== null && $coupon->usages()->where('user_id', $user->id)->count() >= $coupon->per_user_limit) {
+        $usedByCustomer = match (true) {
+            $user !== null => $coupon->usages()->where('user_id', $user->id)->count(),
+            $guestEmail !== null => $coupon->usages()->where('guest_email', $guestEmail)->count(),
+            default => 0,
+        };
+
+        if ($coupon->per_user_limit !== null && $usedByCustomer >= $coupon->per_user_limit) {
             throw ValidationException::withMessages(['coupon_code' => 'You have already used this coupon the maximum number of times.']);
         }
 
@@ -57,6 +63,11 @@ class CouponService
      */
     public function calculateDiscount(Coupon $coupon, Collection $cartItems): float
     {
+        // A free-shipping coupon takes nothing off the items; checkout waives the shipping charge instead.
+        if ($coupon->type === CouponType::FreeShipping) {
+            return 0.0;
+        }
+
         $eligibleSubtotal = $this->eligibleSubtotal($coupon, $cartItems);
 
         $discount = $coupon->type === CouponType::Percentage

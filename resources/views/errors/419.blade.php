@@ -1,0 +1,1 @@
+<x-error-page code="419" title="Your session has expired" message="For your security, this session is no longer valid. Refresh the page to continue." icon="clock" :retry="true" retry-label="Refresh page" />

@@ -22,6 +22,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { index, update } from "@/routes/admin/products";
+import { categoryChoices } from "@/lib/categories";
 import type { Category, MeasurementUnit, Product, StockStatus } from "@/types";
 
 type FormData = {
@@ -146,14 +147,22 @@ export default function AdminProductEdit({
                                             <SelectValue placeholder="Select a category" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {categories.map((category) => (
-                                                <SelectItem
-                                                    key={category.id}
-                                                    value={category.id.toString()}
-                                                >
-                                                    {category.name}
-                                                </SelectItem>
-                                            ))}
+                                            {categoryChoices(categories).map(
+                                                (category) => (
+                                                    <SelectItem
+                                                        key={category.id}
+                                                        value={category.id.toString()}
+                                                    >
+                                                        {category.depth ===
+                                                            1 && (
+                                                            <span className="text-muted-foreground">
+                                                                &mdash;
+                                                            </span>
+                                                        )}
+                                                        {category.name}
+                                                    </SelectItem>
+                                                ),
+                                            )}
                                         </SelectContent>
                                     </Select>
                                     <InputError

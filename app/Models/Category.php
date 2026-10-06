@@ -25,6 +25,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $meta_keywords
  * @property int $sort_order
  * @property bool $is_featured
+ * @property bool $show_in_menu
  * @property bool $is_active
  * @property int|null $created_by
  * @property int|null $updated_by
@@ -49,6 +50,7 @@ use Illuminate\Support\Carbon;
     'meta_keywords',
     'sort_order',
     'is_featured',
+    'show_in_menu',
     'is_active',
     'created_by',
     'updated_by',
@@ -63,6 +65,7 @@ class Category extends Model
         return [
             'is_active' => 'boolean',
             'is_featured' => 'boolean',
+            'show_in_menu' => 'boolean',
         ];
     }
 

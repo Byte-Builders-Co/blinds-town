@@ -32,7 +32,7 @@ export function NavMain({
             group.items.some((item) => isCurrentUrl(item.href)),
         );
 
-        return (activeGroup ?? groups[0])?.label ?? null;
+        return activeGroup?.label ?? null;
     });
 
     const toggle = (label: string) => {

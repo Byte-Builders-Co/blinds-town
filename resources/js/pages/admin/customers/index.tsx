@@ -1,9 +1,18 @@
 import { Head, Link, router } from "@inertiajs/react";
-import { Download, Eye, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import {
+    Download,
+    Eye,
+    Pencil,
+    Plus,
+    Search,
+    Trash2,
+    UserSearch,
+} from "lucide-react";
 import { useEffect, useState } from "react";
+import { StatusDot, USER_STATUS_DOT } from "@/components/admin/status-dot";
+import { TableEmptyRow } from "@/components/admin/table-empty-row";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { PaginationLinks } from "@/components/pagination-links";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -38,15 +47,6 @@ type Filters = {
     status?: string;
     sort?: string;
     direction?: string;
-};
-
-const statusVariant: Record<
-    UserStatus,
-    "default" | "secondary" | "destructive"
-> = {
-    active: "default",
-    inactive: "secondary",
-    blocked: "destructive",
 };
 
 const COLUMNS: { key: SortColumn; label: string }[] = [
@@ -105,41 +105,39 @@ export default function AdminCustomersIndex({
             <Head title="Customers" />
 
             <div className="p-4 md:p-4">
-                <div className="flex flex-wrap items-center justify-end gap-3">
-                    <div className="flex flex-wrap items-center gap-2">
-                        <div className="relative w-full sm:w-64">
-                            <Search className="text-muted-foreground pointer-events-none absolute top-2.5 left-2.5 size-4" />
-                            <Input
-                                placeholder="Search customers..."
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                className="pl-8"
-                            />
-                        </div>
+                <div className="flex flex-wrap items-center gap-2">
+                    <div className="relative w-full sm:w-72">
+                        <Search className="text-muted-foreground pointer-events-none absolute top-2.5 left-2.5 size-4" />
+                        <Input
+                            placeholder="Search customers..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="pl-8"
+                        />
+                    </div>
 
-                        <Select
-                            value={filters.status ?? "all"}
-                            onValueChange={(value) =>
-                                applyFilters({
-                                    status: value === "all" ? undefined : value,
-                                })
-                            }
-                        >
-                            <SelectTrigger className="w-44">
-                                <SelectValue placeholder="Status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">
-                                    All statuses
+                    <Select
+                        value={filters.status ?? "all"}
+                        onValueChange={(value) =>
+                            applyFilters({
+                                status: value === "all" ? undefined : value,
+                            })
+                        }
+                    >
+                        <SelectTrigger className="w-44">
+                            <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All statuses</SelectItem>
+                            {statuses.map((status) => (
+                                <SelectItem key={status} value={status}>
+                                    {USER_STATUS_LABELS[status]}
                                 </SelectItem>
-                                {statuses.map((status) => (
-                                    <SelectItem key={status} value={status}>
-                                        {USER_STATUS_LABELS[status]}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                            ))}
+                        </SelectContent>
+                    </Select>
 
+                    <div className="flex flex-wrap items-center gap-2 sm:ml-auto">
                         <Button variant="outline" asChild>
                             <a
                                 href={
@@ -165,135 +163,138 @@ export default function AdminCustomersIndex({
                     </div>
                 </div>
 
-                <div className="mt-4 rounded-lg border">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                            <thead>
-                                <tr className="bg-muted/40 text-muted-foreground border-b text-left">
-                                    {COLUMNS.map((column) => (
-                                        <th
-                                            key={column.key}
-                                            className="px-4 py-3 font-medium whitespace-nowrap"
+                {/* Open table: no outer box, just hairline dividers. The negative
+                    margin lets row hover backgrounds bleed past the text edge so
+                    content still lines up with the toolbar above. */}
+                <div className="-mx-3 mt-4 overflow-x-auto">
+                    <table className="w-full text-sm">
+                        <thead>
+                            <tr className="text-muted-foreground border-b text-left text-xs tracking-wider uppercase">
+                                {COLUMNS.map((column) => (
+                                    <th
+                                        key={column.key}
+                                        scope="col"
+                                        className="px-3 py-3 font-medium whitespace-nowrap"
+                                    >
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                toggleSort(column.key)
+                                            }
+                                            className="hover:text-foreground focus-visible:ring-ring/50 -mx-1.5 rounded px-1.5 py-0.5 uppercase transition-colors outline-none focus-visible:ring-2"
                                         >
+                                            {column.label}
+                                        </button>
+                                    </th>
+                                ))}
+                                <th
+                                    scope="col"
+                                    className="px-3 py-3 font-medium whitespace-nowrap"
+                                >
+                                    Status
+                                </th>
+                                <th scope="col" className="w-0 px-3 py-3">
+                                    <span className="sr-only">Actions</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {customers.data.map((customer) => (
+                                <tr
+                                    key={customer.id}
+                                    onClick={() =>
+                                        router.visit(show(customer).url)
+                                    }
+                                    className="group hover:bg-muted/40 border-border/60 cursor-pointer border-b transition-colors"
+                                >
+                                    <td className="text-muted-foreground px-3 py-3.5 whitespace-nowrap tabular-nums">
+                                        {customer.id}
+                                    </td>
+                                    <td className="px-3 py-3.5 font-medium whitespace-nowrap">
+                                        {customer.first_name}
+                                    </td>
+                                    <td className="px-3 py-3.5 whitespace-nowrap">
+                                        {customer.last_name}
+                                    </td>
+                                    <td className="text-muted-foreground px-3 py-3.5 whitespace-nowrap">
+                                        {customer.email}
+                                    </td>
+                                    <td className="text-muted-foreground px-3 py-3.5 whitespace-nowrap">
+                                        {customer.last_login_at
+                                            ? formatRelativeTime(
+                                                  customer.last_login_at,
+                                              )
+                                            : "—"}
+                                    </td>
+                                    <td className="text-muted-foreground px-3 py-3.5 whitespace-nowrap">
+                                        {formatRelativeTime(
+                                            customer.created_at,
+                                        )}
+                                    </td>
+                                    <td className="px-3 py-3.5">
+                                        <StatusDot
+                                            label={
+                                                USER_STATUS_LABELS[
+                                                    customer.status
+                                                ]
+                                            }
+                                            dotClassName={
+                                                USER_STATUS_DOT[customer.status]
+                                            }
+                                            muted={customer.status !== "active"}
+                                        />
+                                    </td>
+                                    <td className="px-3 py-3.5">
+                                        {/* Revealed on hover for pointer devices;
+                                            always visible on touch and when a
+                                            control inside has keyboard focus. */}
+                                        <div className="flex items-center justify-end gap-0.5 transition-opacity focus-within:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100">
+                                            <Link
+                                                href={show(customer)}
+                                                onClick={(e) =>
+                                                    e.stopPropagation()
+                                                }
+                                                className="text-muted-foreground hover:text-foreground hover:bg-accent inline-flex size-8 items-center justify-center rounded-md transition-colors"
+                                                aria-label={`View ${customer.name}`}
+                                            >
+                                                <Eye className="size-4" />
+                                            </Link>
+                                            <Link
+                                                href={edit(customer)}
+                                                onClick={(e) =>
+                                                    e.stopPropagation()
+                                                }
+                                                className="text-muted-foreground hover:text-foreground hover:bg-accent inline-flex size-8 items-center justify-center rounded-md transition-colors"
+                                                aria-label={`Edit ${customer.name}`}
+                                            >
+                                                <Pencil className="size-4" />
+                                            </Link>
                                             <button
                                                 type="button"
-                                                onClick={() =>
-                                                    toggleSort(column.key)
-                                                }
-                                                className="hover:text-foreground"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setCustomerToDelete(
+                                                        customer,
+                                                    );
+                                                }}
+                                                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 inline-flex size-8 items-center justify-center rounded-md transition-colors"
+                                                aria-label={`Delete ${customer.name}`}
                                             >
-                                                {column.label}
+                                                <Trash2 className="size-4" />
                                             </button>
-                                        </th>
-                                    ))}
-                                    <th className="px-4 py-3 font-medium whitespace-nowrap">
-                                        Status
-                                    </th>
-                                    <th className="px-4 py-3 font-medium whitespace-nowrap">
-                                        Actions
-                                    </th>
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody className="divide-y">
-                                {customers.data.map((customer) => (
-                                    <tr
-                                        key={customer.id}
-                                        onClick={() =>
-                                            router.visit(show(customer).url)
-                                        }
-                                        className="hover:bg-accent/50 cursor-pointer"
-                                    >
-                                        <td className="px-4 py-3 whitespace-nowrap">
-                                            {customer.id}
-                                        </td>
-                                        <td className="px-4 py-3 font-medium whitespace-nowrap">
-                                            {customer.first_name}
-                                        </td>
-                                        <td className="px-4 py-3 whitespace-nowrap">
-                                            {customer.last_name}
-                                        </td>
-                                        <td className="text-muted-foreground px-4 py-3 whitespace-nowrap">
-                                            {customer.email}
-                                        </td>
-                                        <td className="text-muted-foreground px-4 py-3 whitespace-nowrap">
-                                            {customer.last_login_at
-                                                ? formatRelativeTime(
-                                                      customer.last_login_at,
-                                                  )
-                                                : "—"}
-                                        </td>
-                                        <td className="text-muted-foreground px-4 py-3 whitespace-nowrap">
-                                            {formatRelativeTime(
-                                                customer.created_at,
-                                            )}
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <Badge
-                                                variant={
-                                                    statusVariant[
-                                                        customer.status
-                                                    ]
-                                                }
-                                            >
-                                                {
-                                                    USER_STATUS_LABELS[
-                                                        customer.status
-                                                    ]
-                                                }
-                                            </Badge>
-                                        </td>
-                                        <td className="px-4 py-3">
-                                            <div className="flex items-center gap-1">
-                                                <Link
-                                                    href={show(customer)}
-                                                    onClick={(e) =>
-                                                        e.stopPropagation()
-                                                    }
-                                                    className="text-muted-foreground hover:text-foreground hover:bg-accent inline-flex size-8 items-center justify-center rounded-md"
-                                                    aria-label={`View ${customer.name}`}
-                                                >
-                                                    <Eye className="size-4" />
-                                                </Link>
-                                                <Link
-                                                    href={edit(customer)}
-                                                    onClick={(e) =>
-                                                        e.stopPropagation()
-                                                    }
-                                                    className="text-muted-foreground hover:text-foreground hover:bg-accent inline-flex size-8 items-center justify-center rounded-md"
-                                                    aria-label={`Edit ${customer.name}`}
-                                                >
-                                                    <Pencil className="size-4" />
-                                                </Link>
-                                                <button
-                                                    type="button"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setCustomerToDelete(
-                                                            customer,
-                                                        );
-                                                    }}
-                                                    className="text-muted-foreground hover:text-destructive hover:bg-accent inline-flex size-8 items-center justify-center rounded-md"
-                                                    aria-label={`Delete ${customer.name}`}
-                                                >
-                                                    <Trash2 className="size-4" />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                                {customers.data.length === 0 && (
-                                    <tr>
-                                        <td
-                                            colSpan={COLUMNS.length + 2}
-                                            className="text-muted-foreground px-4 py-10 text-center"
-                                        >
-                                            No customers found.
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
+                            ))}
+                            {customers.data.length === 0 && (
+                                <TableEmptyRow
+                                    colSpan={COLUMNS.length + 2}
+                                    icon={UserSearch}
+                                    title="No customers found"
+                                />
+                            )}
+                        </tbody>
+                    </table>
                 </div>
 
                 <div className="mt-4">

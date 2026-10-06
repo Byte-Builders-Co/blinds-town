@@ -1,20 +1,21 @@
 <?php
 
-use App\Http\Controllers\Customer\AddressController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
 use Illuminate\Auth\Middleware\RequirePassword;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth'])->group(function () {
-    Route::redirect('settings', '/settings/profile');
+// Appearance (light/dark) is available to guests as well as signed-in users.
+Route::redirect('settings', '/settings/appearance');
+Route::inertia('settings/appearance', 'settings/appearance')->name('appearance.edit');
 
-    Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('settings/profile', [ProfileController::class, 'update'])->name('profile.update');
+Route::middleware(['auth'])->group(function () {
+    Route::get('account/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('account/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::delete('settings/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::delete('account/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('settings/security', [SecurityController::class, 'edit'])
         ->middleware(RequirePassword::class)
@@ -24,13 +25,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('throttle:6,1')
         ->name('user-password.update');
 
-    Route::inertia('settings/appearance', 'settings/appearance')->name('appearance.edit');
-
-    Route::get('settings/addresses', [AddressController::class, 'index'])->name('addresses.index');
-    Route::post('settings/addresses', [AddressController::class, 'store'])->name('addresses.store');
-    Route::put('settings/addresses/{address}', [AddressController::class, 'update'])->name('addresses.update');
-    Route::delete('settings/addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
-    Route::patch('settings/addresses/{address}/default', [AddressController::class, 'setDefault'])->name('addresses.set-default');
 });
 
 Route::get('.well-known/passkey-endpoints', function () {

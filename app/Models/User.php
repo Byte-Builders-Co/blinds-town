@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -117,6 +118,14 @@ class User extends Authenticatable implements PasskeyUser
     public function isAdminPanelUser(): bool
     {
         return $this->hasAnyRole(['super-admin', 'admin', 'staff']);
+    }
+
+    /**
+     * The highest role this user holds (Super Admin > Admin > Staff > Customer).
+     */
+    public function highestRole(): ?UserRole
+    {
+        return UserRole::highestFor($this);
     }
 
     /**

@@ -9,9 +9,16 @@ import { invoice } from "@/routes/orders";
 import { PAYMENT_METHOD_LABELS } from "@/types";
 import type { Order } from "@/types";
 
-export default function OrderShow({ order }: { order: Order }) {
+export default function OrderShow({
+    order,
+    guestView = false,
+}: {
+    order: Order;
+    guestView?: boolean;
+}) {
     const retryForm = useForm({});
     const canRetryPayment =
+        !guestView &&
         order.status === "pending" &&
         order.payment?.method === "online" &&
         order.payment.status !== "paid";
@@ -216,13 +223,15 @@ export default function OrderShow({ order }: { order: Order }) {
                     </p>
                 </div>
 
-                <div className="mt-8">
-                    <Button variant="outline" asChild>
-                        <Link href={invoice(order.order_number)}>
-                            View Invoice
-                        </Link>
-                    </Button>
-                </div>
+                {!guestView && (
+                    <div className="mt-8">
+                        <Button variant="outline" asChild>
+                            <Link href={invoice(order.order_number)}>
+                                View Invoice
+                            </Link>
+                        </Button>
+                    </div>
+                )}
             </div>
         </>
     );

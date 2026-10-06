@@ -35,7 +35,7 @@ class RefundCompletedNotification extends Notification implements ShouldQueue
             ->subject("Refund Completed — {$order->order_number}")
             ->greeting("Hi {$order->shipping_name},")
             ->line('Your refund of '.strtoupper($order->currency).' '.number_format((float) $this->refund->amount, 2)." for order {$order->order_number} has been completed.")
-            ->action('View your order', route('orders.show', $order));
+            ->action('View your order', $order->viewUrl());
     }
 
     public function toSms(object $notifiable): SmsMessage

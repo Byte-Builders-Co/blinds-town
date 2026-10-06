@@ -70,7 +70,7 @@ class ProductController extends Controller
     public function create(): Response
     {
         return Inertia::render('admin/products/create', [
-            'categories' => Category::query()->orderBy('name')->get(['id', 'name']),
+            'categories' => Category::query()->orderBy('sort_order')->orderBy('name')->get(['id', 'name', 'parent_id']),
         ]);
     }
 
@@ -138,7 +138,7 @@ class ProductController extends Controller
     {
         return Inertia::render('admin/products/edit', [
             'product' => $product->load('optionGroups.values', 'pricingTiers'),
-            'categories' => Category::query()->orderBy('name')->get(['id', 'name']),
+            'categories' => Category::query()->orderBy('sort_order')->orderBy('name')->get(['id', 'name', 'parent_id']),
         ]);
     }
 

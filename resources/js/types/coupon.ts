@@ -6,7 +6,7 @@ export type CouponRestrictionOption = {
 export type Coupon = {
     id: number;
     code: string;
-    type: "percentage" | "fixed";
+    type: "percentage" | "fixed" | "free_shipping";
     value: string;
     min_order_amount: string | null;
     max_discount: string | null;

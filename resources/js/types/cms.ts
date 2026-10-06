@@ -5,6 +5,8 @@ export type CmsPage = {
     content: string | null;
     sections: Record<string, never> | null;
     is_active: boolean;
+    show_in_footer: boolean;
+    footer_order: number;
     seo_title: string | null;
     seo_description: string | null;
 };

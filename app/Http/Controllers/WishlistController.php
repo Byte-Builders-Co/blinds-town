@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Customer\AccountController;
 use App\Models\Product;
 use App\Models\WishlistItem;
 use Illuminate\Http\RedirectResponse;
@@ -14,6 +15,7 @@ class WishlistController extends Controller
     public function index(Request $request): Response
     {
         return Inertia::render('shop/wishlist', [
+            'stats' => AccountController::stats($request->user()),
             'items' => WishlistItem::query()
                 ->where('user_id', $request->user()->id)
                 ->with('product.category')

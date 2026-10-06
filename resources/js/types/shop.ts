@@ -14,6 +14,7 @@ export type Category = {
     meta_keywords: string | null;
     sort_order: number;
     is_featured: boolean;
+    show_in_menu: boolean;
     is_active: boolean;
     products_count?: number;
     children_count?: number;
@@ -376,7 +377,8 @@ export type OrderItem = {
 
 export type Order = {
     id: number;
-    user_id: number;
+    user_id: number | null;
+    guest_email?: string | null;
     order_number: string;
     status: OrderStatus;
     subtotal: string;

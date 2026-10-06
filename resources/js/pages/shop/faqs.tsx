@@ -1,11 +1,14 @@
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { RichText } from "@/components/shop/rich-text";
+import { Button } from "@/components/ui/button";
 import {
     Collapsible,
     CollapsibleContent,
     CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { show as contactShow } from "@/routes/contact";
 import type { Faq } from "@/types";
 
 function FaqItem({ faq }: { faq: Faq }) {
@@ -23,8 +26,8 @@ function FaqItem({ faq }: { faq: Faq }) {
                     className={`size-4 shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
                 />
             </CollapsibleTrigger>
-            <CollapsibleContent className="text-muted-foreground mt-2 text-sm whitespace-pre-line">
-                {faq.answer}
+            <CollapsibleContent className="mt-3 pb-1 text-sm">
+                <RichText text={faq.answer} />
             </CollapsibleContent>
         </Collapsible>
     );
@@ -39,7 +42,7 @@ export default function ShopFaqs({ faqs }: { faqs: Faq[] }) {
         <>
             <Head title="Frequently Asked Questions" />
 
-            <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
                 <h1 className="text-3xl font-semibold">
                     Frequently Asked Questions
                 </h1>
@@ -66,6 +69,20 @@ export default function ShopFaqs({ faqs }: { faqs: Faq[] }) {
                         </div>
                     </div>
                 ))}
+
+                <div className="mt-14 pt-8 text-center">
+                    <h2 className="text-xl font-semibold">
+                        Still have questions?
+                    </h2>
+                    <p className="text-muted-foreground mt-2 text-sm">
+                        Can&apos;t find the answer you&apos;re looking for? Our
+                        team is here to help with any question about your
+                        windows or blinds.
+                    </p>
+                    <Button asChild className="mt-5">
+                        <Link href={contactShow()}>Contact Us</Link>
+                    </Button>
+                </div>
             </div>
         </>
     );

@@ -13,6 +13,8 @@ Route::get('privacy-policy', [CmsPageController::class, 'show'])->defaults('slug
 Route::get('terms', [CmsPageController::class, 'show'])->defaults('slug', 'terms')->name('cms.terms');
 Route::get('shipping-policy', [CmsPageController::class, 'show'])->defaults('slug', 'shipping-policy')->name('cms.shipping-policy');
 Route::get('return-refund-policy', [CmsPageController::class, 'show'])->defaults('slug', 'return-refund-policy')->name('cms.return-refund-policy');
+// Pages created in the admin. The five pages above keep their original URLs.
+Route::get('pages/{slug}', [CmsPageController::class, 'show'])->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*')->name('cms.page');
 Route::get('faq', [FaqController::class, 'index'])->name('faq');
 
 Route::get('contact', [ContactController::class, 'show'])->name('contact.show');

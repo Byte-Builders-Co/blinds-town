@@ -1,3 +1,4 @@
+import { useState } from "react";
 import InputError from "@/components/input-error";
 import {
     Card,
@@ -51,6 +52,10 @@ export function CouponFormFields({
     categories: CouponRestrictionOption[];
     errors: Errors;
 }) {
+    const [type, setType] = useState<Coupon["type"]>(
+        coupon?.type ?? "percentage",
+    );
+    const isFreeShipping = type === "free_shipping";
     const selectedProductIds = new Set(
         (coupon?.products ?? []).map((product) => product.id),
     );
@@ -84,7 +89,10 @@ export function CouponFormFields({
                         <Label htmlFor="type">Discount type</Label>
                         <Select
                             name="type"
-                            defaultValue={coupon?.type ?? "percentage"}
+                            value={type}
+                            onValueChange={(value) =>
+                                setType(value as Coupon["type"])
+                            }
                         >
                             <SelectTrigger id="type" className="w-full">
                                 <SelectValue />
@@ -96,24 +104,34 @@ export function CouponFormFields({
                                 <SelectItem value="fixed">
                                     Flat amount
                                 </SelectItem>
+                                <SelectItem value="free_shipping">
+                                    Free shipping
+                                </SelectItem>
                             </SelectContent>
                         </Select>
                         <InputError message={errors.type} />
                     </div>
 
-                    <div className="grid gap-2">
-                        <Label htmlFor="value">Discount value</Label>
-                        <Input
-                            id="value"
-                            name="value"
-                            type="number"
-                            step="0.01"
-                            min={0}
-                            defaultValue={coupon?.value ?? 0}
-                            required
-                        />
-                        <InputError message={errors.value} />
-                    </div>
+                    {isFreeShipping ? (
+                        <p className="text-muted-foreground text-sm sm:self-end sm:pb-2">
+                            The customer pays no shipping charge. Items are not
+                            discounted.
+                        </p>
+                    ) : (
+                        <div className="grid gap-2">
+                            <Label htmlFor="value">Discount value</Label>
+                            <Input
+                                id="value"
+                                name="value"
+                                type="number"
+                                step="0.01"
+                                min={0}
+                                defaultValue={coupon?.value ?? 0}
+                                required
+                            />
+                            <InputError message={errors.value} />
+                        </div>
+                    )}
 
                     <div className="grid gap-2">
                         <Label htmlFor="min_order_amount">
@@ -130,20 +148,22 @@ export function CouponFormFields({
                         <InputError message={errors.min_order_amount} />
                     </div>
 
-                    <div className="grid gap-2">
-                        <Label htmlFor="max_discount">
-                            Maximum discount (optional)
-                        </Label>
-                        <Input
-                            id="max_discount"
-                            name="max_discount"
-                            type="number"
-                            step="0.01"
-                            min={0}
-                            defaultValue={coupon?.max_discount ?? ""}
-                        />
-                        <InputError message={errors.max_discount} />
-                    </div>
+                    {!isFreeShipping && (
+                        <div className="grid gap-2">
+                            <Label htmlFor="max_discount">
+                                Maximum discount (optional)
+                            </Label>
+                            <Input
+                                id="max_discount"
+                                name="max_discount"
+                                type="number"
+                                step="0.01"
+                                min={0}
+                                defaultValue={coupon?.max_discount ?? ""}
+                            />
+                            <InputError message={errors.max_discount} />
+                        </div>
+                    )}
                 </CardContent>
             </Card>
 

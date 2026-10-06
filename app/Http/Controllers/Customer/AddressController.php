@@ -15,7 +15,8 @@ class AddressController extends Controller
 {
     public function index(Request $request): Response
     {
-        return Inertia::render('settings/addresses', [
+        return Inertia::render('account/addresses', [
+            'stats' => AccountController::stats($request->user()),
             'addresses' => $request->user()->addresses()->orderByDesc('is_default')->get(),
         ]);
     }

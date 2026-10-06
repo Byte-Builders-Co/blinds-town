@@ -3,6 +3,8 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\Customer\AccountController;
+use App\Http\Controllers\Customer\AddressController;
 use App\Http\Controllers\Customer\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductReviewController;
@@ -31,7 +33,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('wishlist/{product}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
 });
 
-Route::middleware(['auth', 'verified', 'role:customer'])->group(function () {
+Route::middleware('checkout.access')->group(function () {
     Route::get('checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::get('checkout/quote', [CheckoutController::class, 'quote'])->name('checkout.quote');
     Route::post('checkout', [CheckoutController::class, 'store'])->name('checkout.store');
@@ -39,6 +41,20 @@ Route::middleware(['auth', 'verified', 'role:customer'])->group(function () {
     Route::get('checkout/{order}/success', [CheckoutController::class, 'success'])->name('checkout.success');
     Route::get('checkout/{order}/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
     Route::post('checkout/{order}/retry', [CheckoutController::class, 'retryPayment'])->name('checkout.retry');
+});
+
+Route::get('orders/{order:order_number}/track', [OrderController::class, 'track'])
+    ->middleware('signed')
+    ->name('orders.track');
+
+Route::middleware(['auth', 'verified', 'role:customer'])->group(function () {
+    Route::get('account', [AccountController::class, 'index'])->name('account.index');
+
+    Route::get('account/addresses', [AddressController::class, 'index'])->name('addresses.index');
+    Route::post('account/addresses', [AddressController::class, 'store'])->name('addresses.store');
+    Route::put('account/addresses/{address}', [AddressController::class, 'update'])->name('addresses.update');
+    Route::delete('account/addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
+    Route::patch('account/addresses/{address}/default', [AddressController::class, 'setDefault'])->name('addresses.set-default');
 
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('orders/{order:order_number}', [OrderController::class, 'show'])->name('orders.show');

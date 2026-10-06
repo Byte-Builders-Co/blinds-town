@@ -69,10 +69,72 @@ function shippingDetails(array $overrides = []): array
     ], $overrides);
 }
 
-test('checkout requires authentication', function () {
-    $response = $this->get('/checkout');
+test('guests can open the checkout page when their cart has items', function () {
+    $product = Product::factory()->create(['base_price' => 20, 'price_per_sqm' => 0]);
 
-    $response->assertRedirect(route('login'));
+    addProductToCart($this, $product);
+
+    $this->get('/checkout')->assertOk();
+});
+
+test('a guest can place an order and pay without logging in', function () {
+    fakePaymentGateway();
+
+    $product = Product::factory()->create(['base_price' => 20, 'price_per_sqm' => 0]);
+
+    addProductToCart($this, $product);
+
+    $response = $this->post('/checkout', shippingDetails(['email' => 'guest@example.com']));
+
+    $order = Order::query()->firstOrFail();
+
+    expect($order->user_id)->toBeNull();
+    expect($order->guest_email)->toBe('guest@example.com');
+    expect((float) $order->total)->toBe(20.0);
+
+    $response->assertRedirect(route('checkout.pay', $order));
+
+    $this->get(route('checkout.pay', $order))->assertOk();
+});
+
+test('guest checkout requires a valid email address', function () {
+    $product = Product::factory()->create(['base_price' => 20, 'price_per_sqm' => 0]);
+
+    addProductToCart($this, $product);
+
+    $this->post('/checkout', shippingDetails())->assertSessionHasErrors('email');
+    $this->post('/checkout', shippingDetails(['email' => 'nope']))->assertSessionHasErrors('email');
+
+    expect(Order::query()->count())->toBe(0);
+});
+
+test('a guest cannot open another browsers guest order', function () {
+    fakePaymentGateway();
+
+    $order = Order::factory()->create(['user_id' => null, 'guest_email' => 'someone@example.com']);
+
+    $this->get(route('checkout.pay', $order))->assertForbidden();
+    $this->get(route('checkout.success', $order))->assertForbidden();
+});
+
+test('a guest cannot open an order that belongs to an account', function () {
+    $order = Order::factory()->create();
+
+    $this->get(route('checkout.success', $order))->assertForbidden();
+});
+
+test('guests can view their order through the signed tracking link only', function () {
+    $order = Order::factory()->create(['user_id' => null, 'guest_email' => 'someone@example.com']);
+
+    $this->get(route('orders.track', $order))->assertForbidden();
+
+    $this->get($order->viewUrl())->assertOk();
+});
+
+test('admin and staff accounts cannot check out', function () {
+    $admin = User::factory()->admin()->create();
+
+    $this->actingAs($admin)->get('/checkout')->assertForbidden();
 });
 
 test('placing an order records a new-order admin alert', function () {

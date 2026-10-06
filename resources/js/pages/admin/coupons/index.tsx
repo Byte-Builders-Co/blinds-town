@@ -1,7 +1,9 @@
 import { Head, Link, router, usePage } from "@inertiajs/react";
-import { Plus } from "lucide-react";
+import { Pencil, Plus, Power, PowerOff, Ticket, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
+import { StatusDot } from "@/components/admin/status-dot";
+import { TableEmptyRow } from "@/components/admin/table-empty-row";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -26,6 +28,7 @@ export default function AdminCouponsIndex({
 }) {
     const [search, setSearch] = useState(filters.search ?? "");
     const { errors } = usePage().props;
+    const [deleting, setDeleting] = useState<Coupon | null>(null);
 
     const applyFilters = (patch: Partial<Filters>) => {
         router.get(
@@ -40,22 +43,13 @@ export default function AdminCouponsIndex({
             <Head title="Coupons" />
 
             <div className="p-4">
-                <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-semibold">Coupons</h1>
-                    <Button asChild>
-                        <Link href={create()}>
-                            <Plus /> New Coupon
-                        </Link>
-                    </Button>
-                </div>
-
                 {errors.coupon && (
                     <p className="text-destructive mt-4 text-sm">
                         {errors.coupon}
                     </p>
                 )}
 
-                <div className="mt-4 flex flex-wrap gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                     <Input
                         placeholder="Search by code..."
                         value={search}
@@ -83,6 +77,9 @@ export default function AdminCouponsIndex({
                                 Percentage
                             </SelectItem>
                             <SelectItem value="fixed">Flat amount</SelectItem>
+                            <SelectItem value="free_shipping">
+                                Free shipping
+                            </SelectItem>
                         </SelectContent>
                     </Select>
                     <Select
@@ -102,88 +99,167 @@ export default function AdminCouponsIndex({
                             <SelectItem value="inactive">Inactive</SelectItem>
                         </SelectContent>
                     </Select>
+                    <Button asChild className="ml-auto">
+                        <Link href={create()}>
+                            <Plus /> New Coupon
+                        </Link>
+                    </Button>
                 </div>
 
-                <div className="mt-6 divide-y rounded-lg border">
-                    {coupons.data.map((coupon) => (
-                        <div
-                            key={coupon.id}
-                            className="flex items-center justify-between px-4 py-3"
-                        >
-                            <div>
-                                <p className="font-medium">
-                                    {coupon.code}
-                                    <span className="text-muted-foreground font-normal">
-                                        {" "}
-                                        &middot;{" "}
-                                        {coupon.type === "percentage"
-                                            ? `${coupon.value}%`
-                                            : `$${coupon.value}`}{" "}
-                                        off
-                                    </span>
-                                </p>
-                                <p className="text-muted-foreground text-sm">
-                                    Used {coupon.usages_count ?? 0} time
-                                    {coupon.usages_count === 1 ? "" : "s"}
-                                    {coupon.usage_limit
-                                        ? ` of ${coupon.usage_limit}`
-                                        : ""}
-                                </p>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <Badge
-                                    variant={
-                                        coupon.is_active
-                                            ? "default"
-                                            : "secondary"
-                                    }
+                {/* Open table: no outer box, just hairline dividers. The negative
+                    margin lets row hover backgrounds bleed past the text edge so
+                    content still lines up with the toolbar above. */}
+                <div className="-mx-3 mt-4 overflow-x-auto">
+                    <table className="w-full text-left text-sm">
+                        <thead>
+                            <tr className="text-muted-foreground border-b text-xs tracking-wider uppercase">
+                                <th
+                                    scope="col"
+                                    className="px-3 py-3 font-medium"
                                 >
-                                    {coupon.is_active ? "Active" : "Inactive"}
-                                </Badge>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() =>
-                                        router.patch(toggle(coupon).url)
-                                    }
+                                    Coupon
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="px-3 py-3 font-medium"
                                 >
-                                    {coupon.is_active
-                                        ? "Deactivate"
-                                        : "Activate"}
-                                </Button>
-                                <Button variant="outline" size="sm" asChild>
-                                    <Link href={edit(coupon)}>Edit</Link>
-                                </Button>
-                                <Button
-                                    variant="destructive"
-                                    size="sm"
-                                    onClick={() => {
-                                        if (
-                                            confirm(
-                                                `Delete coupon "${coupon.code}"?`,
-                                            )
-                                        ) {
-                                            router.delete(destroy(coupon).url);
-                                        }
-                                    }}
+                                    Usage
+                                </th>
+                                <th
+                                    scope="col"
+                                    className="px-3 py-3 font-medium"
                                 >
-                                    Delete
-                                </Button>
-                            </div>
-                        </div>
-                    ))}
-
-                    {coupons.data.length === 0 && (
-                        <p className="text-muted-foreground px-4 py-8 text-center text-sm">
-                            No coupons found.
-                        </p>
-                    )}
+                                    Status
+                                </th>
+                                <th scope="col" className="w-0 px-3 py-3">
+                                    <span className="sr-only">Actions</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {coupons.data.map((coupon) => (
+                                <tr
+                                    key={coupon.id}
+                                    className="group hover:bg-muted/40 border-border/60 border-b transition-colors"
+                                >
+                                    <td className="px-3 py-3.5">
+                                        <span className="font-medium">
+                                            {coupon.code}
+                                        </span>
+                                        <span className="text-muted-foreground">
+                                            {" "}
+                                            &middot;{" "}
+                                            {coupon.type === "free_shipping"
+                                                ? "Free shipping"
+                                                : `${
+                                                      coupon.type ===
+                                                      "percentage"
+                                                          ? `${coupon.value}%`
+                                                          : `$${coupon.value}`
+                                                  } off`}
+                                        </span>
+                                    </td>
+                                    <td className="text-muted-foreground px-3 py-3.5 whitespace-nowrap">
+                                        Used {coupon.usages_count ?? 0} time
+                                        {coupon.usages_count === 1 ? "" : "s"}
+                                        {coupon.usage_limit
+                                            ? ` of ${coupon.usage_limit}`
+                                            : ""}
+                                    </td>
+                                    <td className="px-3 py-3.5">
+                                        <StatusDot
+                                            label={
+                                                coupon.is_active
+                                                    ? "Active"
+                                                    : "Inactive"
+                                            }
+                                            dotClassName={
+                                                coupon.is_active
+                                                    ? "bg-emerald-500"
+                                                    : "bg-slate-400"
+                                            }
+                                            muted={!coupon.is_active}
+                                        />
+                                    </td>
+                                    <td className="px-3 py-3.5">
+                                        {/* Revealed on hover for pointer devices;
+                                            always visible on touch and when a
+                                            control inside has keyboard focus. */}
+                                        <div className="flex items-center justify-end gap-0.5 transition-opacity focus-within:opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100">
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    router.patch(
+                                                        toggle(coupon).url,
+                                                    )
+                                                }
+                                                className="text-muted-foreground hover:text-foreground hover:bg-accent inline-flex size-8 items-center justify-center rounded-md transition-colors"
+                                                aria-label={`${coupon.is_active ? "Deactivate" : "Activate"} ${coupon.code}`}
+                                                title={
+                                                    coupon.is_active
+                                                        ? "Deactivate"
+                                                        : "Activate"
+                                                }
+                                            >
+                                                {coupon.is_active ? (
+                                                    <PowerOff className="size-4" />
+                                                ) : (
+                                                    <Power className="size-4" />
+                                                )}
+                                            </button>
+                                            <Link
+                                                href={edit(coupon)}
+                                                className="text-muted-foreground hover:text-foreground hover:bg-accent inline-flex size-8 items-center justify-center rounded-md transition-colors"
+                                                aria-label={`Edit ${coupon.code}`}
+                                                title="Edit"
+                                            >
+                                                <Pencil className="size-4" />
+                                            </Link>
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    setDeleting(coupon)
+                                                }
+                                                className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 inline-flex size-8 items-center justify-center rounded-md transition-colors"
+                                                aria-label={`Delete ${coupon.code}`}
+                                                title="Delete"
+                                            >
+                                                <Trash2 className="size-4" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                            {coupons.data.length === 0 && (
+                                <TableEmptyRow
+                                    colSpan={4}
+                                    icon={Ticket}
+                                    title="No coupons found"
+                                />
+                            )}
+                        </tbody>
+                    </table>
                 </div>
 
-                <div className="mt-6">
+                <div className="mt-4">
                     <PaginationLinks paginated={coupons} label="coupons" />
                 </div>
             </div>
+
+            <ConfirmDialog
+                open={deleting !== null}
+                onOpenChange={(open) => !open && setDeleting(null)}
+                title={`Delete coupon "${deleting?.code}"?`}
+                description="This cannot be undone."
+                confirmLabel="Delete"
+                onConfirm={() => {
+                    if (deleting) {
+                        router.delete(destroy(deleting).url);
+                    }
+
+                    setDeleting(null);
+                }}
+            />
         </>
     );
 }
