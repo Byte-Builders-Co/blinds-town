@@ -98,6 +98,6 @@ trait ValidatesBlindConfiguration
         return $product->optionGroups
             ->flatMap(fn (ProductOptionGroup $group) => $group->values)
             ->firstWhere('id', $valueId)
-            ?->label ?? 'a required option';
+            ->label ?? 'a required option';
     }
 }

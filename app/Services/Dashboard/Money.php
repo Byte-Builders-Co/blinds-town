@@ -19,6 +19,7 @@ final class Money
             return $currency.' '.number_format($amount, 2);
         }
 
-        return Number::currency($amount, $currency, $currency === 'INR' ? 'en_IN' : 'en_US');
+        return Number::currency($amount, $currency, $currency === 'INR' ? 'en_IN' : 'en_US')
+            ?: $currency.' '.number_format($amount, 2);
     }
 }

@@ -136,7 +136,7 @@ class Order extends Model
 
     public function customerEmail(): ?string
     {
-        return $this->user?->email ?? $this->guest_email;
+        return $this->user->email ?? $this->guest_email;
     }
 
     /**

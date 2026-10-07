@@ -16,6 +16,8 @@ use Illuminate\Support\Collection;
  * A merged, newest-first timeline of what happened in the store, built from
  * the records themselves (orders, payments, refunds, customers, products)
  * rather than a separate log that could drift out of sync.
+ *
+ * @phpstan-type FeedEntry array{type: string, title: string, description: string, at: CarbonInterface, timestamp: int, subject: array{type: string, id: int}}
  */
 class ActivityFeed
 {
@@ -30,7 +32,7 @@ class ActivityFeed
      */
     public function recent(int $limit = 10): array
     {
-        return collect()
+        return array_values(collect()
             ->concat($this->newOrders())
             ->concat($this->shippedOrders())
             ->concat($this->payments())
@@ -47,12 +49,11 @@ class ActivityFeed
                 'at' => $entry['at']->toIso8601String(),
                 'subject' => $entry['subject'],
             ])
-            ->values()
-            ->all();
+            ->all());
     }
 
     /**
-     * @return Collection<int, array<string, mixed>>
+     * @return Collection<int, FeedEntry>
      */
     private function newOrders(): Collection
     {
@@ -60,7 +61,7 @@ class ActivityFeed
             ->map(fn (Order $order) => $this->entry(
                 'order_received',
                 'New order received',
-                "{$order->order_number} · ".($order->user?->name ?? $order->shipping_name).' · '.Money::format((float) $order->total, $order->currency),
+                "{$order->order_number} · ".($order->user->name ?? $order->shipping_name).' · '.Money::format((float) $order->total, $order->currency),
                 $order->created_at,
                 'order',
                 $order->id,
@@ -68,7 +69,7 @@ class ActivityFeed
     }
 
     /**
-     * @return Collection<int, array<string, mixed>>
+     * @return Collection<int, FeedEntry>
      */
     private function shippedOrders(): Collection
     {
@@ -84,7 +85,7 @@ class ActivityFeed
     }
 
     /**
-     * @return Collection<int, array<string, mixed>>
+     * @return Collection<int, FeedEntry>
      */
     private function payments(): Collection
     {
@@ -105,7 +106,7 @@ class ActivityFeed
     }
 
     /**
-     * @return Collection<int, array<string, mixed>>
+     * @return Collection<int, FeedEntry>
      */
     private function refunds(): Collection
     {
@@ -125,7 +126,7 @@ class ActivityFeed
     }
 
     /**
-     * @return Collection<int, array<string, mixed>>
+     * @return Collection<int, FeedEntry>
      */
     private function newCustomers(): Collection
     {
@@ -141,7 +142,7 @@ class ActivityFeed
     }
 
     /**
-     * @return Collection<int, array<string, mixed>>
+     * @return Collection<int, FeedEntry>
      */
     private function addedProducts(): Collection
     {
@@ -150,7 +151,7 @@ class ActivityFeed
     }
 
     /**
-     * @return Collection<int, array<string, mixed>>
+     * @return Collection<int, FeedEntry>
      */
     private function updatedProducts(): Collection
     {
@@ -161,7 +162,7 @@ class ActivityFeed
     }
 
     /**
-     * @return array{type: string, title: string, description: string, at: CarbonInterface, timestamp: int, subject: array{type: string, id: int}}
+     * @return FeedEntry
      */
     private function entry(string $type, string $title, string $description, CarbonInterface $at, string $subjectType, int $subjectId): array
     {

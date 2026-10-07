@@ -25,7 +25,20 @@ class FaqSeeder extends Seeder
         $answer = [];
         $order = 0;
 
-        $flush = function () use (&$category, &$question, &$answer, &$order): void {
+        $lines = preg_split('/\R/', (string) file_get_contents(database_path('seeders/content/faqs.md'))) ?: [];
+
+        foreach ([...$lines, '## '] as $line) {
+            $isQuestion = str_starts_with($line, '### ');
+            $isCategory = ! $isQuestion && str_starts_with($line, '## ');
+
+            if (! $isQuestion && ! $isCategory) {
+                if ($question !== null) {
+                    $answer[] = $line;
+                }
+
+                continue;
+            }
+
             if ($question !== null && $category !== null) {
                 Faq::query()->create([
                     'question' => $question,
@@ -36,24 +49,12 @@ class FaqSeeder extends Seeder
                 ]);
             }
 
-            $question = null;
+            $question = $isQuestion ? trim(substr($line, 4)) : null;
             $answer = [];
-        };
 
-        $lines = preg_split('/\R/', (string) file_get_contents(database_path('seeders/content/faqs.md'))) ?: [];
-
-        foreach ($lines as $line) {
-            if (str_starts_with($line, '### ')) {
-                $flush();
-                $question = trim(substr($line, 4));
-            } elseif (str_starts_with($line, '## ')) {
-                $flush();
+            if ($isCategory) {
                 $category = trim(substr($line, 3));
-            } elseif ($question !== null) {
-                $answer[] = $line;
             }
         }
-
-        $flush();
     }
 }

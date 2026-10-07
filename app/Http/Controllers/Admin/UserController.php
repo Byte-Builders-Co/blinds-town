@@ -123,7 +123,7 @@ class UserController extends Controller
                 'email' => $user->email,
                 'mobile_number' => $user->mobile_number,
                 'status' => $user->status->value,
-                'role' => $user->highestRole()?->value ?? UserRole::Customer->value,
+                'role' => $user->highestRole()->value ?? UserRole::Customer->value,
                 'permissions' => $user->getDirectPermissions()->pluck('name')->values(),
             ],
             'isSelf' => $user->is($actor),

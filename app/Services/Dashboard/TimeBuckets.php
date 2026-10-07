@@ -3,6 +3,7 @@
 namespace App\Services\Dashboard;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -72,6 +73,18 @@ final class TimeBuckets
         $driver = $connection->getDriverName();
 
         return $driver === 'sqlsrv' ? "CAST({$wrapped} AS date)" : "DATE({$wrapped})";
+    }
+
+    /**
+     * The group expression selected under the `bucket` alias.
+     *
+     * @return Expression<float|int|literal-string>
+     */
+    public function bucketSelect(string $column): Expression
+    {
+        // The column is wrapped by the query grammar and the rest is static SQL, so this is safe.
+        // @phpstan-ignore argument.type
+        return new Expression($this->groupExpression($column).' as bucket');
     }
 
     /**

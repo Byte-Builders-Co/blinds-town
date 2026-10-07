@@ -12,6 +12,7 @@ use App\Models\User;
 use Carbon\CarbonInterface;
 use Closure;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Computes every figure on the admin dashboard from real order, customer and
@@ -238,7 +239,7 @@ class DashboardService
      */
     public function recentOrders(): array
     {
-        return Order::query()
+        return array_values(Order::query()
             ->with(['user', 'payment', 'items:id,order_id,product_name'])
             ->orderByDesc('created_at')
             ->orderByDesc('id')
@@ -247,7 +248,7 @@ class DashboardService
             ->map(fn (Order $order) => [
                 'id' => $order->id,
                 'order_number' => $order->order_number,
-                'customer_name' => $order->user?->name ?? $order->shipping_name,
+                'customer_name' => $order->user->name ?? $order->shipping_name,
                 'customer_email' => $order->customerEmail(),
                 'product' => $order->items->first()?->product_name,
                 'extra_items' => max(0, $order->items->count() - 1),
@@ -256,7 +257,7 @@ class DashboardService
                 'payment_status' => $order->payment?->status->value,
                 'created_at' => $order->created_at?->toIso8601String(),
             ])
-            ->all();
+            ->all());
     }
 
     /**
@@ -273,7 +274,7 @@ class DashboardService
             $rows = User::role('customer')
                 ->whereBetween('users.created_at', [$range->from, $range->to])
                 ->toBase()
-                ->selectRaw($buckets->groupExpression('users.created_at').' as bucket, count(*) as aggregate')
+                ->select($buckets->bucketSelect('users.created_at'), DB::raw('count(*) as aggregate'))
                 ->groupBy('bucket')
                 ->get();
 
@@ -302,7 +303,7 @@ class DashboardService
         $orders = array_fill(0, $buckets->count(), 0);
 
         $rows = $this->validOrders($from, $to)
-            ->selectRaw($buckets->groupExpression('orders.created_at').' as bucket, coalesce(sum(orders.total), 0) as revenue, count(*) as orders')
+            ->select($buckets->bucketSelect('orders.created_at'), DB::raw('coalesce(sum(orders.total), 0) as revenue'), DB::raw('count(*) as orders'))
             ->groupBy('bucket')
             ->get();
 
@@ -315,7 +316,7 @@ class DashboardService
             }
         }
 
-        return ['revenue' => $revenue, 'orders' => $orders];
+        return ['revenue' => array_values($revenue), 'orders' => array_values($orders)];
     }
 
     /**
