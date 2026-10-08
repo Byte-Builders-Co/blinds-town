@@ -68,13 +68,10 @@ export default function OrderShow({
                         </div>
                     </div>
 
-                    {(order.carrier || order.tracking_number) && (
+                    {order.tracking_number && (
                         <div>
                             <h2 className="font-semibold">Delivery Tracking</h2>
                             <div className="text-muted-foreground mt-3 space-y-1 text-sm">
-                                {order.carrier && (
-                                    <p>Carrier: {order.carrier}</p>
-                                )}
                                 {order.tracking_number && (
                                     <p>
                                         Tracking number: {order.tracking_number}

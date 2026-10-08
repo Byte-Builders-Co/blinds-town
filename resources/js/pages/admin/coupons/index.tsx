@@ -17,7 +17,7 @@ import { PaginationLinks } from "@/components/pagination-links";
 import { create, destroy, edit, index, toggle } from "@/routes/admin/coupons";
 import type { Coupon, Paginated } from "@/types";
 
-type Filters = { search?: string; type?: string; status?: string };
+type Filters = { search?: string; status?: string };
 
 export default function AdminCouponsIndex({
     coupons,
@@ -60,28 +60,6 @@ export default function AdminCouponsIndex({
                         onBlur={() => applyFilters({})}
                         className="max-w-xs"
                     />
-                    <Select
-                        value={filters.type ?? "all"}
-                        onValueChange={(value) =>
-                            applyFilters({
-                                type: value === "all" ? undefined : value,
-                            })
-                        }
-                    >
-                        <SelectTrigger className="w-40">
-                            <SelectValue placeholder="Type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">All types</SelectItem>
-                            <SelectItem value="percentage">
-                                Percentage
-                            </SelectItem>
-                            <SelectItem value="fixed">Flat amount</SelectItem>
-                            <SelectItem value="free_shipping">
-                                Free shipping
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
                     <Select
                         value={filters.status ?? "all"}
                         onValueChange={(value) =>

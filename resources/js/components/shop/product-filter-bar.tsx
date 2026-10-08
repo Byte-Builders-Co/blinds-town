@@ -233,9 +233,6 @@ export function ProductFilterBar({
                         <SelectItem value="out_of_stock">
                             Out of Stock
                         </SelectItem>
-                        <SelectItem value="made_to_order">
-                            Available for Customization
-                        </SelectItem>
                     </SelectContent>
                 </Select>
             </div>

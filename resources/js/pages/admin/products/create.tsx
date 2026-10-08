@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { create, index, store } from "@/routes/admin/products";
 import { categoryChoices } from "@/lib/categories";
-import type { Category, MeasurementUnit, StockStatus } from "@/types";
+import type { Category, MeasurementUnit } from "@/types";
 
 type FormData = {
     sku: string;
@@ -42,7 +42,7 @@ type FormData = {
     measurement_unit_default: MeasurementUnit;
     is_active: boolean;
     is_featured: boolean;
-    stock_status: StockStatus;
+    stock_units: string;
     image: File | null;
     option_groups: EditableOptionGroup[];
     pricing_tiers: EditablePricingTier[];
@@ -70,7 +70,7 @@ export default function AdminProductCreate({
         measurement_unit_default: "cm",
         is_active: true,
         is_featured: false,
-        stock_status: "in_stock",
+        stock_units: "0",
         image: null,
         option_groups: [],
         pricing_tiers: [],
@@ -337,35 +337,28 @@ export default function AdminProductCreate({
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="stock_status">
-                                        Stock status
+                                    <Label htmlFor="stock_units">
+                                        Stock units
                                     </Label>
-                                    <Select
-                                        value={form.data.stock_status}
-                                        onValueChange={(value) =>
+                                    <Input
+                                        id="stock_units"
+                                        type="number"
+                                        min="0"
+                                        step="1"
+                                        value={form.data.stock_units}
+                                        onChange={(e) =>
                                             form.setData(
-                                                "stock_status",
-                                                value as StockStatus,
+                                                "stock_units",
+                                                e.target.value,
                                             )
                                         }
-                                    >
-                                        <SelectTrigger id="stock_status">
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="in_stock">
-                                                In Stock
-                                            </SelectItem>
-                                            <SelectItem value="out_of_stock">
-                                                Out of Stock
-                                            </SelectItem>
-                                            <SelectItem value="made_to_order">
-                                                Available for Customization
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    />
+                                    <p className="text-xs text-muted-foreground">
+                                        Shown as Out of Stock to customers
+                                        when this is 0.
+                                    </p>
                                     <InputError
-                                        message={form.errors.stock_status}
+                                        message={form.errors.stock_units}
                                     />
                                 </div>
 

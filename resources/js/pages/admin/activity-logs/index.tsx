@@ -14,7 +14,12 @@ import {
 import { index } from "@/routes/admin/activity-logs";
 import type { ActivityLogRow, Paginated } from "@/types";
 
-type Filters = { search?: string; action?: string };
+type Filters = {
+    search?: string;
+    action?: string;
+    from?: string;
+    to?: string;
+};
 
 export default function AdminActivityLogsIndex({
     logs,
@@ -71,6 +76,32 @@ export default function AdminActivityLogsIndex({
                             ))}
                         </SelectContent>
                     </Select>
+                    <label className="text-muted-foreground flex items-center gap-2 text-sm">
+                        From
+                        <Input
+                            type="date"
+                            value={filters.from ?? ""}
+                            onChange={(e) =>
+                                applyFilters({
+                                    from: e.target.value || undefined,
+                                })
+                            }
+                            className="w-52"
+                        />
+                    </label>
+                    <label className="text-muted-foreground flex items-center gap-2 text-sm">
+                        To
+                        <Input
+                            type="date"
+                            value={filters.to ?? ""}
+                            onChange={(e) =>
+                                applyFilters({
+                                    to: e.target.value || undefined,
+                                })
+                            }
+                            className="w-52"
+                        />
+                    </label>
                 </div>
 
                 {/* Open table: no outer box, just hairline dividers. The negative

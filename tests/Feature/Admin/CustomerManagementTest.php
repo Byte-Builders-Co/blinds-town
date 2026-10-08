@@ -97,7 +97,7 @@ test('admins can create a customer', function () {
     ]);
 
     $customer = User::query()->where('email', 'jane.doe@example.com')->firstOrFail();
-    $response->assertRedirect(route('admin.customers.show', $customer));
+    $response->assertRedirect(route('admin.customers.index'));
     expect($customer->isCustomer())->toBeTrue();
     expect($customer->email_verified_at)->not->toBeNull();
 });
@@ -128,7 +128,7 @@ test('admins can update a customer', function () {
         'status' => 'inactive',
     ]);
 
-    $response->assertRedirect(route('admin.customers.show', $customer));
+    $response->assertRedirect(route('admin.customers.index'));
     expect($customer->fresh()->first_name)->toBe('New');
     expect($customer->fresh()->status)->toBe(UserStatus::Inactive);
 });

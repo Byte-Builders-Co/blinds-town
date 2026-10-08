@@ -46,6 +46,7 @@ type FormData = {
     parent_id: string;
     sort_order: string;
     description: string;
+    image: File | null;
     is_active: boolean;
     is_featured: boolean;
     show_in_menu: boolean;
@@ -104,6 +105,7 @@ function DrawerForm({
         parent_id: String(category?.parent_id ?? parentId ?? NO_PARENT),
         sort_order: String(category?.sort_order ?? nextOrder(parentId)),
         description: category?.description ?? "",
+        image: null,
         is_active: category?.is_active ?? true,
         is_featured: category?.is_featured ?? false,
         show_in_menu: category?.show_in_menu ?? true,
@@ -219,6 +221,26 @@ function DrawerForm({
                         }
                     />
                     <InputError message={form.errors.description} />
+                </div>
+
+                <div className="grid gap-2">
+                    <Label htmlFor="category-image">Category Image</Label>
+                    {category?.image_path && !form.data.image && (
+                        <img
+                            src={`/storage/${category.image_path}`}
+                            alt={category.name}
+                            className="h-24 w-24 rounded-md object-cover"
+                        />
+                    )}
+                    <Input
+                        id="category-image"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) =>
+                            form.setData("image", e.target.files?.[0] ?? null)
+                        }
+                    />
+                    <InputError message={form.errors.image} />
                 </div>
 
                 <div className="divide-y rounded-md border px-4">

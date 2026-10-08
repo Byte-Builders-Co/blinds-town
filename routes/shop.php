@@ -6,6 +6,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Customer\AccountController;
 use App\Http\Controllers\Customer\AddressController;
 use App\Http\Controllers\Customer\OrderController;
+use App\Http\Controllers\Customer\TrackOrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\StripeWebhookController;
@@ -42,6 +43,8 @@ Route::middleware('checkout.access')->group(function () {
     Route::get('checkout/{order}/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
     Route::post('checkout/{order}/retry', [CheckoutController::class, 'retryPayment'])->name('checkout.retry');
 });
+
+Route::get('track-order', [TrackOrderController::class, 'show'])->middleware('throttle:30,1')->name('track-order');
 
 Route::get('orders/{order:order_number}/track', [OrderController::class, 'track'])
     ->middleware('signed')

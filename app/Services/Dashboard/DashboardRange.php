@@ -13,7 +13,7 @@ use Throwable;
  */
 final class DashboardRange
 {
-    public const DEFAULT = '30d';
+    public const DEFAULT = 'today';
 
     /** Longest custom range we will aggregate, in days. */
     private const MAX_CUSTOM_DAYS = 1095;
@@ -61,12 +61,12 @@ final class DashboardRange
         $end = $today->endOfDay();
 
         return match ($key) {
-            'today' => self::build('today', $today, $end, Granularity::Day, 'Today', 'today', 'yesterday'),
             '7d' => self::build('7d', $today->subDays(6), $end, Granularity::Day, 'Last 7 days', 'in the last 7 days', 'the previous 7 days'),
             // Thirteen whole weeks, so every weekly bucket is a full week.
             '3m' => self::build('3m', $today->subDays(90), $end, Granularity::Week, 'Last 3 months', 'in the last 3 months', 'the previous 3 months'),
             '12m' => self::build('12m', $today->startOfMonth()->subMonthsNoOverflow(11), $end, Granularity::Month, 'Last 12 months', 'in the last 12 months', 'the previous 12 months'),
-            default => self::build('30d', $today->subDays(29), $end, Granularity::Day, 'Last 30 days', 'in the last 30 days', 'the previous 30 days'),
+            '30d' => self::build('30d', $today->subDays(29), $end, Granularity::Day, 'Last 30 days', 'in the last 30 days', 'the previous 30 days'),
+            default => self::build('today', $today, $end, Granularity::Day, 'Today', 'today', 'yesterday'),
         };
     }
 

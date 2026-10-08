@@ -120,7 +120,7 @@ test('admins can create a product with option groups', function () {
         'max_height_cm' => 300,
         'measurement_unit_default' => 'cm',
         'is_active' => true,
-        'stock_status' => 'in_stock',
+        'stock_units' => 10,
         'option_groups' => [
             [
                 'name' => 'Color',
@@ -136,7 +136,7 @@ test('admins can create a product with option groups', function () {
     ]);
 
     $product = Product::query()->where('name', 'Classic Roller')->firstOrFail();
-    $response->assertRedirect(route('admin.products.edit', $product));
+    $response->assertRedirect(route('admin.products.index'));
 
     expect($product->optionGroups)->toHaveCount(1);
     expect($product->optionGroups->first()->values)->toHaveCount(2);
@@ -160,7 +160,7 @@ test('updating a product preserves existing option value ids', function () {
         'max_height_cm' => $product->max_height_cm,
         'measurement_unit_default' => 'cm',
         'is_active' => true,
-        'stock_status' => 'in_stock',
+        'stock_units' => 10,
         'option_groups' => [
             [
                 'id' => $group->id,
@@ -175,7 +175,7 @@ test('updating a product preserves existing option value ids', function () {
         ],
     ]);
 
-    $response->assertRedirect(route('admin.products.edit', $product));
+    $response->assertRedirect(route('admin.products.index'));
     expect($value->fresh()->label)->toBe('Bright White');
     expect($value->fresh()->id)->toBe($value->id);
 });
@@ -196,7 +196,7 @@ test('admins can create a product with fabric and mount-type option groups', fun
         'max_height_cm' => 300,
         'measurement_unit_default' => 'cm',
         'is_active' => true,
-        'stock_status' => 'in_stock',
+        'stock_units' => 10,
         'option_groups' => [
             [
                 'name' => 'Fabric',
@@ -225,7 +225,7 @@ test('admins can create a product with fabric and mount-type option groups', fun
     ]);
 
     $product = Product::query()->where('name', 'Premium Zebra')->firstOrFail();
-    $response->assertRedirect(route('admin.products.edit', $product));
+    $response->assertRedirect(route('admin.products.index'));
 
     $fabricGroup = $product->optionGroups()->where('kind', 'fabric')->firstOrFail();
     $mountGroup = $product->optionGroups()->where('kind', 'mount_type')->firstOrFail();
@@ -256,4 +256,33 @@ test('a deleted product no longer appears in the product list', function () {
         ->component('admin/products/index')
         ->has('products.data', 0)
     );
+});
+
+test('deleting a product returns the admin to the page they were on', function () {
+    $admin = User::factory()->admin()->create();
+    $product = Product::factory()->create();
+
+    $this->actingAs($admin)
+        ->from('/admin/products?page=3')
+        ->delete("/admin/products/{$product->id}")
+        ->assertRedirect('/admin/products?page=3');
+});
+
+test('an out of range page falls back to the last page', function () {
+    $admin = User::factory()->admin()->create();
+    Product::factory()->count(16)->create();
+
+    $this->actingAs($admin)->get('/admin/products?page=3')
+        ->assertRedirect(route('admin.products.index', ['page' => 2]));
+});
+
+test('stock units of zero mark a product out of stock', function () {
+    $product = Product::factory()->create(['stock_units' => 5]);
+    expect($product->fresh()->stock_status->value)->toBe('in_stock');
+
+    $product->update(['stock_units' => 0]);
+    expect($product->fresh()->stock_status->value)->toBe('out_of_stock');
+
+    $product->update(['stock_units' => 3]);
+    expect($product->fresh()->stock_status->value)->toBe('in_stock');
 });

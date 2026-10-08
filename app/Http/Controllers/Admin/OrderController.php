@@ -89,7 +89,6 @@ class OrderController extends Controller
     public function updateTracking(UpdateOrderTrackingRequest $request, Order $order): RedirectResponse
     {
         $order->update([
-            'carrier' => $request->validated('carrier'),
             'tracking_number' => $request->validated('tracking_number'),
             'shipped_at' => $order->shipped_at ?? now(),
         ]);

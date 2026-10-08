@@ -113,7 +113,7 @@ class CustomerController extends Controller
 
         Inertia::flash('toast', ['type' => 'success', 'message' => "{$customer->name} created."]);
 
-        return redirect()->route('admin.customers.show', $customer);
+        return redirect()->route('admin.customers.index');
     }
 
     public function show(User $customer): Response
@@ -150,7 +150,7 @@ class CustomerController extends Controller
 
         Inertia::flash('toast', ['type' => 'success', 'message' => "{$customer->name} updated."]);
 
-        return redirect()->route('admin.customers.show', $customer);
+        return redirect()->route('admin.customers.index');
     }
 
     public function updateStatus(UpdateCustomerStatusRequest $request, User $customer): RedirectResponse

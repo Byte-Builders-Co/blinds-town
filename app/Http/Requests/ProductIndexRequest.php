@@ -24,7 +24,7 @@ class ProductIndexRequest extends FormRequest
             'max_price' => ['nullable', 'numeric', 'gte:min_price'],
             'color' => ['nullable', 'array'],
             'color.*' => ['string', 'max:255'],
-            'availability' => ['nullable', 'string', 'in:in_stock,out_of_stock,made_to_order'],
+            'availability' => ['nullable', 'string', 'in:in_stock,out_of_stock'],
             'sort' => ['nullable', 'string', 'in:featured,newest,price_low,price_high,name_asc,name_desc,popular,rating'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:48'],
         ];

@@ -130,12 +130,11 @@ export type ProductPricingTier = {
     is_active: boolean;
 };
 
-export type StockStatus = "in_stock" | "out_of_stock" | "made_to_order";
+export type StockStatus = "in_stock" | "out_of_stock";
 
 export const STOCK_STATUS_LABELS: Record<StockStatus, string> = {
     in_stock: "In Stock",
     out_of_stock: "Out of Stock",
-    made_to_order: "Available for Customization",
 };
 
 export type Product = {
@@ -162,6 +161,7 @@ export type Product = {
     is_active: boolean;
     is_featured: boolean;
     stock_status: StockStatus;
+    stock_units: number;
     reviews_count?: number;
     reviews_avg_rating?: number | null;
     option_groups?: ProductOptionGroup[];

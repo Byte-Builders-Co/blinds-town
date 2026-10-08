@@ -34,7 +34,6 @@ export default function AdminOrderShow({
 }) {
     const statusForm = useForm({ status: order.status, note: "" });
     const trackingForm = useForm({
-        carrier: order.carrier ?? "",
         tracking_number: order.tracking_number ?? "",
     });
     const refundForm = useForm({
@@ -321,23 +320,6 @@ export default function AdminOrderShow({
                                 <CardTitle>Tracking Information</CardTitle>
                             </CardHeader>
                             <CardContent className="grid gap-3">
-                                <div className="grid gap-2">
-                                    <Label className="text-sm font-medium">
-                                        Carrier
-                                    </Label>
-                                    <Input
-                                        value={trackingForm.data.carrier}
-                                        onChange={(e) =>
-                                            trackingForm.setData(
-                                                "carrier",
-                                                e.target.value,
-                                            )
-                                        }
-                                    />
-                                    <InputError
-                                        message={trackingForm.errors.carrier}
-                                    />
-                                </div>
                                 <div className="grid gap-2">
                                     <Label className="text-sm font-medium">
                                         Tracking Number

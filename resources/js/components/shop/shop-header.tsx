@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { UserMenuContent } from "@/components/user-menu-content";
 import { useCurrentUrl } from "@/hooks/use-current-url";
-import { home, login, register } from "@/routes";
+import { home, login, register, trackOrder } from "@/routes";
 import { edit as appearanceEdit } from "@/routes/appearance";
 import { dashboard as adminDashboard } from "@/routes/admin";
 import { show as categoryShow } from "@/routes/categories";
@@ -238,6 +238,18 @@ export function ShopHeader() {
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator className="mx-0 my-1.5" />
+                                <DropdownMenuItem
+                                    asChild
+                                    className="gap-2.5 rounded-md px-2.5 py-2"
+                                >
+                                    <Link
+                                        className="flex w-full cursor-pointer items-center gap-2.5"
+                                        href={trackOrder()}
+                                    >
+                                        <Package />
+                                        Track Order
+                                    </Link>
+                                </DropdownMenuItem>
                                 <DropdownMenuItem
                                     asChild
                                     className="gap-2.5 rounded-md px-2.5 py-2"

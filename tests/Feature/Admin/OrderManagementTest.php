@@ -105,13 +105,11 @@ test('admins can add tracking information to an order', function () {
     $order = Order::factory()->confirmed()->create();
 
     $response = $this->actingAs($admin)->patch("/admin/orders/{$order->id}/tracking", [
-        'carrier' => 'UPS',
         'tracking_number' => '1Z999AA10123456784',
     ]);
 
     $response->assertRedirect(route('admin.orders.show', $order));
     $order->refresh();
-    expect($order->carrier)->toBe('UPS');
     expect($order->tracking_number)->toBe('1Z999AA10123456784');
     expect($order->shipped_at)->not->toBeNull();
 });

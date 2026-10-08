@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateOrderTrackingRequest extends FormRequest
 {
@@ -18,8 +19,7 @@ class UpdateOrderTrackingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'carrier' => ['required', 'string', 'max:255'],
-            'tracking_number' => ['required', 'string', 'max:255'],
+            'tracking_number' => ['required', 'string', 'max:255', Rule::unique('orders', 'tracking_number')->ignore($this->route('order'))],
         ];
     }
 }

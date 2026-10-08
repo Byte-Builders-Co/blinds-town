@@ -40,7 +40,7 @@ class StoreProductRequest extends FormRequest
             'image' => ['nullable', 'image', 'max:4096'],
             'is_active' => ['boolean'],
             'is_featured' => ['boolean'],
-            'stock_status' => ['required', Rule::enum(StockStatus::class)],
+            'stock_units' => ['required', 'integer', 'min:0', 'max:1000000'],
 
             'option_groups' => ['array'],
             'option_groups.*.name' => ['required', 'string', 'max:255'],

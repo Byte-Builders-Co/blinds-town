@@ -56,11 +56,11 @@ test('the dashboard defaults to the last 30 days with one point per day', functi
 
     $this->actingAs($admin)->get('/admin/dashboard')->assertInertia(fn (AssertableInertia $page) => $page
         ->component('admin/dashboard')
-        ->where('range.key', '30d')
-        ->where('range.from', '2026-09-16')
+        ->where('range.key', 'today')
+        ->where('range.from', '2026-10-15')
         ->where('range.to', '2026-10-15')
         ->where('currency', 'USD')
-        ->has('sales.points', 30));
+        ->has('sales.points', 1));
 });
 
 test('each preset produces the expected number of chart points', function (string $range, int $points, string $granularity) {
@@ -89,7 +89,7 @@ test('a custom range is honoured and an unusable one falls back', function () {
             ->has('sales.points', 10));
 
     $this->actingAs($admin)->get('/admin/dashboard?range=custom&from=nope&to=2026-09-10')
-        ->assertInertia(fn (AssertableInertia $page) => $page->where('range.key', '30d'));
+        ->assertInertia(fn (AssertableInertia $page) => $page->where('range.key', 'today'));
 });
 
 test('revenue and orders cover the selected period and ignore cancelled orders', function () {
@@ -125,7 +125,7 @@ test('the change is null when the previous period had no sales', function () {
     $admin = User::factory()->admin()->create();
     dashboardOrder(80);
 
-    $this->actingAs($admin)->get('/admin/dashboard')->assertInertia(fn (AssertableInertia $page) => $page
+    $this->actingAs($admin)->get('/admin/dashboard?range=30d')->assertInertia(fn (AssertableInertia $page) => $page
         ->where('sales.summary.revenue_change', null)
         ->where('kpis.revenue.change', null));
 });
@@ -198,7 +198,7 @@ test('top products are ranked by revenue with their trend', function () {
     $cancelled = dashboardOrder(900, attributes: ['status' => OrderStatus::Cancelled]);
     OrderItem::factory()->for($cancelled)->for($roman)->create(['quantity' => 9, 'line_total' => 900]);
 
-    $this->actingAs($admin)->get('/admin/dashboard')->assertInertia(fn (AssertableInertia $page) => $page
+    $this->actingAs($admin)->get('/admin/dashboard?range=30d')->assertInertia(fn (AssertableInertia $page) => $page
         ->has('topProducts', 2)
         ->where('topProducts.0.name', 'Roller Blind')
         ->where('topProducts.0.image_path', 'products/roller.jpg')
@@ -222,7 +222,7 @@ test('category sales roll sub-categories up into their parent', function () {
     OrderItem::factory()->for($order)->for(Product::factory()->for($rollerChild)->create())->create(['quantity' => 3, 'line_total' => 300]);
     OrderItem::factory()->for($order)->for(Product::factory()->for($zebra)->create())->create(['quantity' => 1, 'line_total' => 100]);
 
-    $this->actingAs($admin)->get('/admin/dashboard')->assertInertia(fn (AssertableInertia $page) => $page
+    $this->actingAs($admin)->get('/admin/dashboard?range=30d')->assertInertia(fn (AssertableInertia $page) => $page
         ->has('categories', 2)
         ->where('categories.0.name', 'Roller Blinds')
         // Both roller lines sit in the same order, so it counts once.
@@ -238,7 +238,7 @@ test('customer figures count registrations in the period against the one before'
     User::factory()->count(3)->create(['created_at' => now()->subDays(2)]);
     User::factory()->count(1)->create(['created_at' => now()->subDays(40)]);
 
-    $this->actingAs($admin)->get('/admin/dashboard')->assertInertia(fn (AssertableInertia $page) => $page
+    $this->actingAs($admin)->get('/admin/dashboard?range=30d')->assertInertia(fn (AssertableInertia $page) => $page
         ->where('kpis.customers.total', 4)
         ->where('kpis.customers.new', 3)
         ->where('kpis.customers.previous_new', 1)
@@ -250,9 +250,9 @@ test('product figures separate active and out of stock products', function () {
     $admin = User::factory()->admin()->create();
     Product::factory()->create(['is_active' => true, 'stock_status' => StockStatus::InStock]);
     Product::factory()->create(['is_active' => true, 'stock_status' => StockStatus::OutOfStock]);
-    Product::factory()->create(['is_active' => false, 'stock_status' => StockStatus::MadeToOrder]);
+    Product::factory()->create(['is_active' => false, 'stock_status' => StockStatus::InStock]);
 
-    $this->actingAs($admin)->get('/admin/dashboard')->assertInertia(fn (AssertableInertia $page) => $page
+    $this->actingAs($admin)->get('/admin/dashboard?range=30d')->assertInertia(fn (AssertableInertia $page) => $page
         ->where('kpis.products.total', 3)
         ->where('kpis.products.active', 2)
         ->where('kpis.products.out_of_stock', 1));
@@ -268,7 +268,7 @@ test('recent orders list the newest first with customer, product and payment sta
     OrderItem::factory()->for($new)->create(['product_name' => 'Roman Blind']);
     Payment::factory()->for($new)->paid()->create();
 
-    $this->actingAs($admin)->get('/admin/dashboard')->assertInertia(fn (AssertableInertia $page) => $page
+    $this->actingAs($admin)->get('/admin/dashboard?range=30d')->assertInertia(fn (AssertableInertia $page) => $page
         ->where('recentOrders.0.id', $new->id)
         ->where('recentOrders.0.customer_name', 'Asha Rao')
         ->where('recentOrders.0.product', 'Zebra Blind')
@@ -283,7 +283,7 @@ test('recent orders are capped at eight and include guest checkouts', function (
     $admin = User::factory()->admin()->create();
     Order::factory()->count(9)->create(['user_id' => null, 'guest_email' => 'guest@example.com', 'shipping_name' => 'Guest Buyer']);
 
-    $this->actingAs($admin)->get('/admin/dashboard')->assertInertia(fn (AssertableInertia $page) => $page
+    $this->actingAs($admin)->get('/admin/dashboard?range=30d')->assertInertia(fn (AssertableInertia $page) => $page
         ->has('recentOrders', 8)
         ->where('recentOrders.0.customer_name', 'Guest Buyer')
         ->where('recentOrders.0.customer_email', 'guest@example.com'));

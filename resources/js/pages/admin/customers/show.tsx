@@ -331,5 +331,8 @@ export default function AdminCustomerShow({
 }
 
 AdminCustomerShow.layout = {
-    breadcrumbs: [{ title: "Customers", href: index() }],
+    breadcrumbs: [
+        { title: "Customers", href: index() },
+        { title: "Details", href: "#" },
+    ],
 };

@@ -448,3 +448,17 @@ test('a customer cannot view another customers checkout success page', function 
 
     $response->assertForbidden();
 });
+
+test('anyone can look up an order by its tracking number without seeing personal details', function () {
+    $order = Order::factory()->create(['tracking_number' => 'TRK-12345']);
+
+    $this->get('/track-order?tracking_number=TRK-12345')->assertInertia(fn ($page) => $page
+        ->component('orders/track')
+        ->where('order.order_number', $order->order_number)
+        ->missing('order.shipping_phone')
+        ->missing('order.guest_email'));
+
+    $this->get('/track-order?tracking_number=nope')->assertInertia(fn ($page) => $page
+        ->where('searched', true)
+        ->where('order', null));
+});

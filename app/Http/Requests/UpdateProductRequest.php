@@ -50,7 +50,7 @@ class UpdateProductRequest extends FormRequest
             'image' => ['nullable', 'image', 'max:4096'],
             'is_active' => ['boolean'],
             'is_featured' => ['boolean'],
-            'stock_status' => ['required', Rule::enum(StockStatus::class)],
+            'stock_units' => ['required', 'integer', 'min:0', 'max:1000000'],
 
             'option_groups' => ['array'],
             'option_groups.*.id' => ['nullable', 'integer', 'exists:product_option_groups,id'],

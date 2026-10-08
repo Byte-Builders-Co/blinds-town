@@ -55,7 +55,6 @@ const DEFAULT_SORT: SortColumn = "name";
 const STOCK_DOT: Record<StockStatus, string> = {
     in_stock: "bg-blue-500",
     out_of_stock: "bg-red-500",
-    made_to_order: "bg-amber-500",
 };
 
 export default function AdminProductsIndex({

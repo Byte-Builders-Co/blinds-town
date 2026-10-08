@@ -37,6 +37,7 @@ use Illuminate\Support\Carbon;
  * @property bool $is_active
  * @property bool $is_featured
  * @property StockStatus $stock_status
+ * @property int $stock_units
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
@@ -68,6 +69,7 @@ use Illuminate\Support\Carbon;
     'is_active',
     'is_featured',
     'stock_status',
+    'stock_units',
 ])]
 class Product extends Model
 {
@@ -78,6 +80,17 @@ class Product extends Model
 
     /** @var list<string> */
     protected $appends = ['sale_price'];
+
+    protected static function booted(): void
+    {
+        // Stock units drive the customer-facing status: 0 units is out of stock.
+        // An explicitly set stock_status (e.g. seeds, imports) is left alone.
+        static::saving(function (Product $product) {
+            if ($product->isDirty('stock_units') && ! $product->isDirty('stock_status')) {
+                $product->stock_status = $product->stock_units > 0 ? StockStatus::InStock : StockStatus::OutOfStock;
+            }
+        });
+    }
 
     protected function casts(): array
     {
@@ -91,6 +104,7 @@ class Product extends Model
             'is_active' => 'boolean',
             'is_featured' => 'boolean',
             'stock_status' => StockStatus::class,
+            'stock_units' => 'integer',
             // withAvg()/loadAvg() populate this as a raw DB aggregate, which
             // PDO returns as a numeric string — cast it so every consumer
             // (frontend .toFixed() calls included) always gets a real float.

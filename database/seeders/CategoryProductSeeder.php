@@ -110,6 +110,7 @@ class CategoryProductSeeder extends Seeder
                         'max_width_cm' => 300,
                         'min_height_cm' => 30,
                         'max_height_cm' => 300,
+                        'stock_units' => 50,
                         'is_active' => true,
                     ],
                 );

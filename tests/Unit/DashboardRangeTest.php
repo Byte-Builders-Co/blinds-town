@@ -13,17 +13,17 @@ afterEach(function () {
     CarbonImmutable::setTestNow();
 });
 
-test('the default range is the last 30 days', function () {
+test('the default range is today', function () {
     $range = DashboardRange::resolve();
 
-    expect($range->key)->toBe('30d')
+    expect($range->key)->toBe('today')
         ->and($range->granularity)->toBe(Granularity::Day)
-        ->and($range->from->toDateString())->toBe('2026-09-16')
+        ->and($range->from->toDateString())->toBe('2026-10-15')
         ->and($range->to->toDateString())->toBe('2026-10-15');
 });
 
 test('unknown keys fall back to the default range', function () {
-    expect(DashboardRange::resolve('forever')->key)->toBe('30d');
+    expect(DashboardRange::resolve('forever')->key)->toBe('today');
 });
 
 test('presets compare against the equally long period before them', function (string $key, string $from, string $previousFrom, string $previousTo, Granularity $granularity) {
@@ -61,7 +61,7 @@ test('a custom range ends no later than today', function () {
 });
 
 test('unusable custom dates fall back to the default range', function (string $from, string $to) {
-    expect(DashboardRange::resolve('custom', $from, $to)->key)->toBe('30d');
+    expect(DashboardRange::resolve('custom', $from, $to)->key)->toBe('today');
 })->with([
     'missing dates' => ['', ''],
     'garbage' => ['not-a-date', '2026-10-01'],

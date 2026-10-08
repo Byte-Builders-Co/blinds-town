@@ -17,6 +17,8 @@ class ActivityLogController extends Controller
                 ->with('causer:id,first_name,last_name')
                 ->when($request->string('search')->toString(), fn ($query, $search) => $query->where('description', 'like', "%{$search}%"))
                 ->when($request->string('action')->toString(), fn ($query, $action) => $query->where('action', $action))
+                ->when($request->date('from'), fn ($query, $from) => $query->where('created_at', '>=', $from->startOfDay()))
+                ->when($request->date('to'), fn ($query, $to) => $query->where('created_at', '<=', $to->endOfDay()))
                 ->latest('id')
                 ->paginate(25)
                 ->withQueryString()
@@ -27,7 +29,7 @@ class ActivityLogController extends Controller
                     'causer' => $log->causer?->name,
                     'created_at' => $log->created_at?->toIso8601String(),
                 ]),
-            'filters' => $request->only('search', 'action'),
+            'filters' => $request->only('search', 'action', 'from', 'to'),
             'actions' => ActivityLog::query()->distinct()->orderBy('action')->pluck('action'),
         ]);
     }

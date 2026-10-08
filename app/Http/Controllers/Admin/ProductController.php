@@ -35,23 +35,30 @@ class ProductController extends Controller
         'updated_at' => 'products.updated_at',
     ];
 
-    public function index(Request $request): Response
+    public function index(Request $request): Response|RedirectResponse
     {
         $sort = $request->string('sort')->toString();
         $sortColumn = self::SORTABLE_COLUMNS[$sort] ?? self::SORTABLE_COLUMNS['name'];
         $direction = $request->string('direction')->toString() === 'desc' ? 'desc' : 'asc';
 
+        $products = Product::query()
+            ->select('products.*')
+            ->join('categories', 'categories.id', '=', 'products.category_id')
+            ->with('category')
+            ->search($request->string('search')->toString())
+            ->when($request->string('stock_status')->toString(), fn ($query, $stockStatus) => $query->where('products.stock_status', $stockStatus))
+            ->when($request->string('status')->toString(), fn ($query, $status) => $query->where('products.is_active', $status === 'active'))
+            ->orderBy($sortColumn, $direction)
+            ->paginate(15)
+            ->withQueryString();
+
+        // Deleting the last product on a page leaves it empty: go to the new last page.
+        if ($products->isEmpty() && $products->currentPage() > 1) {
+            return redirect()->route('admin.products.index', [...$request->query(), 'page' => $products->lastPage()]);
+        }
+
         return Inertia::render('admin/products/index', [
-            'products' => Product::query()
-                ->select('products.*')
-                ->join('categories', 'categories.id', '=', 'products.category_id')
-                ->with('category')
-                ->search($request->string('search')->toString())
-                ->when($request->string('stock_status')->toString(), fn ($query, $stockStatus) => $query->where('products.stock_status', $stockStatus))
-                ->when($request->string('status')->toString(), fn ($query, $status) => $query->where('products.is_active', $status === 'active'))
-                ->orderBy($sortColumn, $direction)
-                ->paginate(15)
-                ->withQueryString(),
+            'products' => $products,
             'stockStatuses' => StockStatus::cases(),
             'filters' => [
                 ...$request->only(['search', 'sort', 'stock_status', 'status']),
@@ -131,7 +138,7 @@ class ProductController extends Controller
 
         Inertia::flash('toast', ['type' => 'success', 'message' => "{$product->name} created."]);
 
-        return redirect()->route('admin.products.edit', $product);
+        return redirect()->route('admin.products.index');
     }
 
     public function edit(Product $product): Response
@@ -251,7 +258,7 @@ class ProductController extends Controller
 
         Inertia::flash('toast', ['type' => 'success', 'message' => "{$product->name} updated."]);
 
-        return redirect()->route('admin.products.edit', $product);
+        return redirect()->route('admin.products.index');
     }
 
     public function destroy(Product $product): RedirectResponse
@@ -260,7 +267,9 @@ class ProductController extends Controller
 
         Inertia::flash('toast', ['type' => 'success', 'message' => "{$product->name} deleted."]);
 
-        return redirect()->route('admin.products.index');
+        // Back to the page (and filters) the admin deleted from; index() steps
+        // back a page if that one is now empty.
+        return redirect()->back(fallback: route('admin.products.index'));
     }
 
     private function uniqueSlug(string $name, ?int $ignoreId = null): string
